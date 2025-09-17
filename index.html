@@ -777,9 +777,13 @@ pro:nth-child(4) {
   }
   
   /* HEADER */
-  header {
-      height: 89vh;
-  }
+header {
+  min-height: 89vh;
+  display: flex; /* For flexible content alignment */
+  flex-direction: column; /* Stacks items vertically */
+  justify-content: center; /* Centers content vertically */
+  padding: 2rem; /* Adds some breathing room */
+}
   .header-container {
     grid-template-columns: 1fr;
     text-align: center;
@@ -1430,6 +1434,7 @@ document.addEventListener("DOMContentLoaded", function () {
  
 </body>
 </html>
+
 
 
 
