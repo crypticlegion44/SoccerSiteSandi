@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cryptic Legion</title>
+
+
+
+    <!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script defer src="main.js"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Raleway:wght@100;200;300;400;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  text-decoration: none;
+  list-style: none;
+  box-sizing: border-box;
+}
+
+:root {
+  --poppins: "Poppins", sans-serif;
+  --Lato: "Lato", sans-serif;
+  --montserrat: "Montserrat", sans-serif;
+  --verda: Verdana, Geneva, Tahoma, sans-serif;
+
+  --main: #ebd978;
+  --main2: #6c63ff;
+  --main3: #101c32;
+  --main4: #0c1525;
+  --main5: #060b14;
+  --sub-m: #00bf8e;
+  --danger: #f75842;
+  --warning: #f7c94b;
+  --danger-varient: rgba(247, 88, 66, 0.4);
+  --white: #fff;
+  --Vwhite: #e9e7e7;
+  --dwhite: #cccccc;
+  --light: rgba(255, 255, 255, 0.7);
+  --black: #000;
+  --bg: #1f2641;
+  --bg1: #2e3267;
+  --bg2: #424890;
+
+  --container-width-lg: 76%;
+  --container-width-md: 90%;
+  --container-width-sm: 94%;
+
+  --trensition: all 400ms ease;
+}
+
+body {
+  font-family: var(--montserrat);
+  line-height: 1.7;
+  color: var(--black);
+}
+
+.container {
+  width: var(--container-width-lg);
+  margin: 0 auto;
+}
+
+section {
+  padding: 6rem 0;
+}
+
+section h2 {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  line-height: 1.2;
+}
+.btn {
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+  margin: 7px 0;
+  color: var(--white);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  background: var(--main3);
+}
+/*-------------------NAVBAR -------------------*/
+nav {
+  background: transparent;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
+.nav__container {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav button {
+  display: none;
+}
+
+nav img {
+  margin: 0;
+  padding: 0;
+  width: 190px;
+  margin-left: -15px;
+  height: auto;
+  cursor: pointer;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+.nav-menu a {
+  position: relative;
+  font-size: 1rem;
+  font-family: var(--poppins);
+  color: #ece584;
+  font-weight: 500;
+  text-decoration: none;
+  margin-left: 10px;
+  margin-top: 35px;
+  transition: var(--trensition);
+}
+.nav-menu li a::after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 3px;
+  background-color: var(--main);
+  border-radius: 4px;
+  transform: scaleX(0);
+  transition: transform 0.5s;
+}
+.nav-menu li a:hover {
+  color: var(--white);
+}
+.nav-menu li a .u:hover::after {
+  transform: scaleX(1);
+}
+.Logo-name {
+  margin-left: -390px;
+  margin-top: 35px;
+  padding: 0;
+  color: #fff;
+}
+
+.Logo-name2{
+  font-size: medium;
+}
+nav h4 {
+  font-size: 1.6rem;
+  font-family: var(--poppins);
+}
+nav p {
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+.Enroll-btn {
+  width: 100px;
+  height: 40px;
+  padding: 10px;
+  margin: 0;
+  background-color: var(--main5);
+  font-size: 1rem;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  transition: 0.8s;
+}
+
+.window-scroll {
+  background: var(--main3);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+}
+
+/* HEADER */
+header {
+  background-image: linear-gradient(rgba(9, 5, 54, 0.3), rgba(5, 4, 46, 0.7));
+}
+header .container {
+  position: relative;
+  top: 10rem;
+  overflow: hidden;
+  height: 70vh;
+  margin-bottom: 5rem;
+}
+.header-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  color: var(--white);
+  gap: 5rem;
+  height: 100%;
+}
+
+.Cnt01 {
+  padding: 5vw 8vw 0 2vw;
+  margin: 0 8vw 2vw 2vw;
+}
+
+.welcome {
+  font-family: var(--verda);
+  text-align: left;
+  color: var(--main3);
+}
+.welcome-txt {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+}
+/* Slider */
+#slider {
+  position: relative;
+  height: 700px; /* Adjust the height as needed */
+  overflow: hidden;
+}
+
+#slider img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 900px;
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: -1;
+}
+
+#slider img.active {
+  opacity: 1;
+}
+
+/*================= FACILITIES ======================*/
+.facilities {
+  background: var(--dwhite);
+  height: 29rem;
+  margin-bottom: 0;
+}
+
+.facilities h1 {
+  line-height: 1;
+  margin-bottom: 3rem;
+}
+
+.facilities-container {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  gap: 4rem;
+}
+.facilities-container .facilities-left h5 {
+  font-size: 19px;
+}
+.facilities-container .facilities-left p {
+  font-size: 13px;
+  font-weight: 500;
+}
+.facilities-right h1 {
+margin-bottom: 0;
+}
+.facilities-right p {
+  margin: 1rem 0 3rem;
+}
+.facilities-left {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+}
+
+.facility {
+  background-color: var(--Vwhite);
+  padding: 2rem;
+  border-radius: 2rem;
+  transition: var(--trensition);
+}
+
+.facility:hover {
+  box-shadow: 0 3rem 3rem rgba(0, 0, 0, 0.3);
+}
+
+.facilities-icon {
+  background-color: var(--bg2);
+  padding: 0.6rem;
+  border-radius: 0.9rem;
+}
+
+.facility h5 {
+  margin: 2rem 0 1rem;
+  font-size: 9.9rem;
+}
+.facility:nth-child(2) .facilities-icon {
+  background: var(--sub-m);
+}
+.facility:nth-child(3) .facilities-icon {
+  background: var(--danger);
+}
+.facility:nth-child(4) .facilities-icon {
+  background: var(--warning);
+}
+
+.admin-sch {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+}
+
+#management {
+  margin-top: 90px;
+  padding: 8vw 8vw 0 8vw;
+  text-align: center;
+}
+#management .management-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 1rem;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+#management .management-box .pro {
+  background-color: #ebebe5;
+  padding: 30px 10px;
+  border-radius: 10px;
+}
+.pro-link {
+  margin-top: 10px;
+}
+.pro-link i {
+  padding: 10px 13px;
+  border: 1px solid rgb(2, 2, 75);
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.4s ease-out;
+}
+.pro-link i:hover {
+  background-color: rgb(2, 2, 75);
+  cursor: pointer;
+  color: #fff;
+}
+.pro-links {
+  margin-top: 10px;
+}
+.pro-links i {
+  color: #000000;
+  padding: 10px 13px;
+  border: none;
+  cursor: pointer;
+  font-weight: 400;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: 0.4s ease-out;
+}
+.pro-links i:hover {
+  background-color: rgb(2, 2, 75);
+  cursor: pointer;
+  color: #fff;
+}
+
+/* TESTIMONIALS */
+.testimonial-conatainer {
+  overflow-x: hidden;
+  position: relative;
+  margin-bottom: 5rem;
+}
+
+.testimonial {
+  padding-top: 2rem;
+}
+
+.avatar {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1rem;
+}
+.avatar img {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+}
+
+.testimonial-info {
+  text-align: center;
+}
+
+.testimonial-body {
+  background: var(--main3);
+  color: var(--light);
+  padding: 2rem;
+  margin-top: 3rem;
+  position: relative;
+}
+.testimonial-body::before {
+  content: "";
+  display: block;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    var(--main3),
+    var(--main3),
+    var(--main3)
+  );
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: 46%;
+  top: -1.5rem;
+  transform: rotate(45deg);
+}
+
+footer {
+  background: var(--main3);
+  padding-top: 5rem;
+  font-size: 1rem;
+  font-family: var(--Lato);
+}
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5rem;
+}
+.footer-container > div h4 {
+  margin-bottom: 1.2rem;
+  color: var(--Vwhite);
+}
+.footer-1 p {
+  margin: 0 0 2rem;
+  color: var(--white);
+}
+
+footer ul li {
+  margin-bottom: 0.7rem;
+  color: var(--Vwhite);
+}
+footer ul li a {
+  color: var(--white);
+}
+footer ul li a:hover {
+  text-decoration: underline;
+  color: var(--main);
+}
+
+.footer-4 {
+  color: var(--white);
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.footer-copyright {
+  color: var(--white);
+  text-align: center;
+  margin-top: 4rem;
+  padding: 1.2rem 0;
+  border-top: 0.5px solid;
+}
+.facility:nth-child(2) .facility:nth-child(4) {
+  transition: all 3s;
+}
+.facilities,
+.facility:nth-child(3) {
+  transition: all 1s;
+}
+pro:nth-child(2) {
+  transition: all 5s;
+}
+pro:nth-child(3) {
+  transition: all 7s;
+}
+pro:nth-child(4) {
+  transition: all 8s;
+}
+
+.scrool {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateX(-100%);
+  transition: all 1s;
+}
+.vibe {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(-100%);
+  transition: all 1s;
+}
+.pop {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateX(100%);
+  transition: all 1s;
+}
+.show {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateX(0);
+}
+.team{
+    background: var(--main4);
+    box-shadow: inset 0 0 3rem rgba(0, 0, 0, 0.5);
+}
+
+.team h2{
+    color: var(--white);
+    font-family: var(--Lato);
+}
+
+.team-container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+    margin-left: 10rem;
+}
+.team-member{
+    background: var(--main3);
+    padding: 1.5rem;
+    border: 1px solid transparent;
+    transition: var(--trensition);
+    position: relative;
+    overflow: hidden;
+}
+.team-member:hover{
+    background: transparent;
+    border-color: var(--main3);
+}
+
+.team-member-image img{
+    width: 180px;
+    height: 180px;
+    align-items: center;
+    /* filter: saturate(0); */
+    transition: var(--trensition);
+}
+
+.team-member-info{
+    text-align: center;
+    margin-top: 1.4rem;
+    font-family: var(--poppins);
+    color: var(--white);
+}
+.team-member-info p{
+    color: var(--light);
+}
+
+.team-member-socials{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--main3);
+    border-radius: 1rem 0 0 1rem;
+    box-shadow: -4rem 0 4rem rgba(0, 0, 0, 0.3);
+    transition: var(--trensition);
+}
+.team-member-socials a{
+    padding: 1rem;
+    color: var(--white);
+}
+.team-member:hover
+.team-member-socials{
+    right: 0;
+}
+.team-head{
+  margin-top: 85px;
+}
+
+.team-member-video {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.team-member-video iframe,
+.team-member-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =====================================
+   TABLET MEDIA QUERY (1024px)
+   ===================================== */
+@media screen and (max-width: 1024px) {
+  .container {
+    width: var(--container-width-md);
+  }
+
+  /* NavBar */
+  nav button {
+    display: inline-block;
+    background: transparent;
+    font-size: 1.8rem;
+    color: var(--white);
+    cursor: pointer;
+  }
+
+  nav button#close-menu-btn {
+    display: none;
+  }
+  .nav-menu {
+    position: fixed;
+    top: 5rem;
+    right: 5%;
+    height: fit-content;
+    width: 18rem;
+    flex-direction: column;
+    gap: 0;
+    display: none;
+  }
+
+  .nav-menu li {
+    width: 100%;
+    height: 5.8rem;
+  }
+
+  .nav-menu li a {
+    background: var(--main3);
+    box-shadow: -4rem 6rem 18rem rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+  }
+  .nav-menu li a:hover {
+    background-color: var(--main4);
+  }
+  nav img {
+    margin: 0;
+    padding: 0;
+    width: 100px;
+    margin-left: -5px;
+    height: auto;
+    cursor: pointer;
+  }
+  .Logo-name {
+    margin-left: -350px;
+    margin-top: 35px;
+    padding: 0;
+    color: #fff;
+  }
+  nav h4 {
+    font-size: 1.4rem;
+    font-family: var(--poppins);
+  }
+  nav p {
+    font-size: 1.2rem;
+    font-weight: 350;
+  }
+  .nav-menu li a:hover::after {
+    display: none;
+  }
+
+  /* HEADER */
+  header {
+    height: 52vh;
+  }
+  header .container {
+    height: 100%;
+  }
+  #slider {
+    height: 500px; 
+  }
+
+  .header-container {
+    gap: 3rem;
+    margin-bottom: 50px;
+  }
+  .header-left {
+    margin-bottom: 0;
+  }
+  
+  /* FACILITIES */
+  .facilities {
+    height: auto; /* Allow height to adjust to content */
+  }
+  .facilities-container {
+    grid-template-columns: 1fr; /* Stack columns */
+    gap: 2.5rem;
+  }
+
+  /* TEAM SECTION */
+  .team-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+    gap: 1.5rem;
+    margin-left: 0; /* Remove fixed margin */
+  }
+
+  /* FOOTER */
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+  }
+}
+
+/* =====================================
+   MOBILE MEDIA QUERY (620px)
+   ===================================== */
+@media screen and (max-width: 620px) {
+  .container {
+    width: var(--container-width-sm);
+  }
+  
+  /* NavBar */
+  .nav-menu {
+    right: 3%;
+  }
+  nav img {
+    margin-right: 25px;
+    padding: 0;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+  }
+  .Main-img {
+    margin: 0;
+  }
+  .Logo-name {
+    margin-left: -70px;
+    margin-top: 9px;
+    padding: -50px;
+    color: #fff;
+  }
+  nav h4 {
+    font-size: 1.1rem;
+    font-family: var(--poppins);
+  }
+  nav p {
+    font-size: 0.9rem;
+    font-weight: 350;
+  }
+  nav button {
+    display: inline-block;
+    background: transparent;
+    font-size: 1.8rem;
+    margin-right: 20px;
+    color: var(--white);
+    cursor: pointer;
+  }
+  
+  /* HEADER */
+  header {
+      height: 82.3vh;
+  }
+  .header-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    margin-top: 0;
+    gap: 0;
+  }
+  .header-left p {
+    margin-bottom: 1.3rem;
+  }
+
+  /* FACILITIES */
+  .facilities-container {
+    grid-template-columns: 1fr; /* Stack on mobile */
+    gap: 1.5rem;
+  }
+  .facilities-left {
+    grid-template-columns: 1fr; /* Stack facility boxes */
+    gap: 1rem;
+  }
+  .facility {
+    padding: 1.5rem;
+  }
+
+  /* MANAGEMENT */
+  #management {
+    margin-top: 6rem; /* Reduced excessive margin */
+  }
+
+  /* TEAM */
+  .team-container{
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 1rem;
+  }
+  .team-member {
+    padding: 1rem;
+    margin-left:1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center member content */
+  }
+
+  /* TESTIMONIALS */
+  .testimonial-body {
+    padding: 1.2rem;
+  }
+
+  /* FOOTER */
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .footer-1 p {
+    margin: 1rem auto;
+  }
+  .footer-socials {
+    justify-content: center;
+  }
+}
+
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav__container">
+            <a href="index.html">
+                <img src="The_Cryptic_Legion_Logo__1_-removebg-preview.png" alt="logo" class="Main-img">
+            </a>
+            <h4 class="Logo-name">The Cryptic Legion
+                <br>
+                <p class="Logo-name2">The Game Never Sleeps</p>
+            </h4>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="u">Home</a></li>
+                <li><a href="indexhighlight.html" class="u">Highlights</a></li>
+                <li><a href="IndexNews.html" class="u">News</a></li>
+            </ul>
+            <button id="open-menu-btn"><i class='bx bx-menu'></i></button>
+            <button id="close-menu-btn"><i class='bx bx-x'></i></button>
+        </div>
+    </nav>
+    <!--------------- CONTENT ------------------->
+
+
+
+    <header>
+        <div id="slider">
+            <div class="slide">
+                <div class="container header-container">
+                    <div class="header-left scrool">
+                        <h1>Where Passion Meets the Beautiful Game</h1>
+                        <p>From grassroots to the grand stage, football unites us all.
+Dive into stories, highlights, and insights that bring the game to life.
+Every match, every moment, every heartbeat captured here</p>
+                        <a href="IndexNews.html" class="btn">Join the Match</a>
+                    </div>
+                </div>
+            </div>
+            <img src="Pics/G05F6SZWgAA8Hx-.jpg" alt="Image 1">
+            <img src="Pics/1500x500.jpg" alt="Image 2">
+            <img src="Pics/GsToqpMXMAAcXHK.jpg" alt="Image 3">
+            <img src="Pics/GvaTH-eWQAAWAPQ.jpg" alt="Image 4">
+          </div>
+    </header>
+
+    <div class="Cnt01">
+        <h1 class="welcome">Welcome to The Cryptic Legion</h1>
+        <p class="welcome-txt">
+            Football is more than 90 minutes it’s the drama, the passion, and the stories that shape the beautiful game.
+At The Cryptic Legion, we dive into the biggest moments, club rivalries, transfer buzz, and matchday thrills from around the world.
+Whether it’s breaking news, behind-the-scenes insights, or unforgettable highlights the game lives here.
+        </p>
+    </div>
+
+
+    <section class="facilities">
+        <div class="container facilities-container">
+            <div class="facilities-left scrool">
+                <article class="facility scrool">
+                    <span class="facilities-icon"><i class='bx  bx-play'></i></span>
+                    <h5>Match Highlights</h5>
+                    <p>Stay updated with the biggest goals, saves, and turning points from Europe’s elite leagues and tournaments.</p>
+                </article>
+                <article class="facility scrool">
+                    <span class="facilities-icon"><i class='bx  bx-news'  ></i> </span>
+                    <h5>Transfer News</h5>
+                    <p>Get the latest updates on player moves, rumors, and confirmed deals shaping the future of football.</p>
+                </article>
+                <article class="facility scrool">
+                    <span class="facilities-icon"><i class='bx  bx-search'  ></i> </span>
+                    <h5>Club Insights</h5>
+                    <p>Deep dives into clubs, rivalries, tactics, and the culture that fuels the beautiful game.</p>
+                </article>
+                <article class="facility scrool">
+                    <span class="facilities-icon"><i class='bx  bx-trophy'  ></i> </span>
+                    <h5>European & International Football</h5>
+                    <p>Coverage of Europe’s top leagues and national team action — from thrilling derbies to unforgettable international clashes.</p>
+                </article>
+            </div>
+            
+
+            <!-- <div class="facilities-right">
+                <h1>Our Facilities</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, dicta fuga? Quidem perferendis exercitationem nulla, enim culpa similique dignissimos reprehenderit ullam consequatur veritatis iusto mollitia. Veritatis fugiat aspernatur fugit esse?</p>
+                <a href="about.html" class="btn">Learn more</a>
+            </div> -->
+            
+        </div>
+    </section>
+
+
+
+    <!-- <section id="management">
+        <h1>Our Management</h1>
+        <p>The Light Kids School Management Staff</p>
+        <div class="management-box scrool">
+          <div class="pro colo scrool">
+            <img src="Images/pexels-clay-elliot-14634929.jpg" alt="Admin" class="admin-sch">
+            <h6>Admin Name</h6>
+            <p>Head-Mistress</p>
+            <div class="pro-link">
+              <i class='bx bxl-facebook'></i>
+              <i class='bx bxl-whatsapp'></i>
+              <i class='bx bx-phone'></i>
+            </div>
+          </div>
+          
+          <div class="pro colo scrool">
+            <img src="Images/pexels-clay-elliot-14634929.jpg" alt="Admin" class="admin-sch">
+            <h6>Admin Name</h6>
+            <p>Borser</p>
+            <div class="pro-link">
+              <i class='bx bxl-facebook'></i>
+            <i class='bx bxl-whatsapp'></i>
+            <i class='bx bx-phone'></i>
+          </div>
+        </div>
+  
+        <div class="pro colo scrool">
+          <img src="Images/pexels-clay-elliot-14634929.jpg" alt="Admin" class="admin-sch">
+          <h6>Admin Name</h6>
+          <p>Accountant</p>
+          <div class="pro-link">
+            <i class='bx bxl-facebook'></i>
+            <i class='bx bxl-whatsapp'></i>
+            <i class='bx bx-phone'></i>
+          </div>
+        </div>
+        
+        <div class="pro colo scrool">
+          <img src="Images/pexels-clay-elliot-14634929.jpg" alt="Admin" class="admin-sch">
+          <h6>Admin Name</h6>
+          <p>Management</p>
+          <div class="pro-link">
+            <i class='bx bxl-facebook'></i>
+            <i class='bx bxl-whatsapp'></i>
+            <i class='bx bx-phone'></i>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+<section class="team">
+    <h2 class="team-head">Highlights</h2>
+    <div class="container team-container">
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4></h4>
+        <p>Enzo Fernandez shoving Wesley Fofana into the sprinkler 🤣</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="EuroFoot_-_The_UEFA_Champions_League_is_back_this_week._Throwback_to_when_Calvin..._yPhmn1.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4></h4>
+        <p>The UEFA Champions League is back. Throwback to when Calvin Bassey heard the anthem for the first time in his career. 🥹❤️</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4></h4>
+        <p>Real fact: Bayern Munich is not ready for Chelsea 👀</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+        
+
+
+
+    </div>
+</section>
+
+    
+    <section class="container testimonial-conatainer mySwiper">
+        <h2>Live Report 🔴</h2>
+        <div class="swiper-wrapper">
+            <article class="testimonial swiper-slide">
+                <div class="avatar">
+                    <img src="Images/Profile/pexels-anastasia-shuraeva-8074612.jpg" alt="01">
+                </div>
+                <div class="testimonial-info">
+                    <h5>David Okereke</h5>
+                    <small>Parent</small>
+                </div>
+                <div class="testimonial-body">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo amet est, laboriosam reprehenderit rem repellat error numquam provident ea commodi!
+                    </p>
+                </div>
+            </article>
+            <article class="testimonial swiper-slide">
+                <div class="avatar">
+                    <img src="Images/Profile/pexels-tony-zed-3990502.jpg" alt="01">
+                </div>
+                <div class="testimonial-info">
+                    <h5>Morris Austin</h5>
+                    <small>Parent</small>
+                </div>
+                <div class="testimonial-body">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo amet est, laboriosam reprehenderit rem repellat error numquam provident ea commodi!
+                    </p>
+                </div>
+            </article>
+            <article class="testimonial swiper-slide">
+                <div class="avatar">
+                    <img src="Images/Profile/pexels-pixabay-415829.jpg" alt="01">
+                </div>
+                <div class="testimonial-info">
+                    <h5>Chimdi God's-Will</h5>
+                    <small>Parent</small>
+                </div>
+                <div class="testimonial-body">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo amet est, laboriosam reprehenderit rem repellat error numquam provident ea commodi!
+                    </p>
+                </div>
+            </article>
+            <article class="testimonial swiper-slide">
+                <div class="avatar">
+                    <img src="Images/Profile/pexels-pixabay-220453.jpg" alt="01">
+                </div>
+                <div class="testimonial-info">
+                    <h5>Oguoma Favor</h5>
+                    <small>Parent</small>
+                </div>
+                <div class="testimonial-body">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo amet est, laboriosam reprehenderit rem repellat error numquam provident ea commodi!
+                    </p>
+                </div>
+            </article>
+            <article class="testimonial swiper-slide">
+                <div class="avatar">
+                    <img src="Images/Profile/pexels-nappy-936090.jpg" alt="01">
+                </div>
+                <div class="testimonial-info">
+                    <h5>Steven Clark</h5>
+                    <small>Parent</small>
+                </div>
+                <div class="testimonial-body">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo amet est, laboriosam reprehenderit rem repellat error numquam provident ea commodi!
+                    </p>
+                </div>
+            </article>
+            <article class="testimonial swiper-slide">
+                <div class="avatar">
+                    <img src="Images/Profile/pexels-andrea-piacquadio-3779760.jpg" alt="01">
+                </div>
+                <div class="testimonial-info">
+                    <h5>Diana Prince</h5>
+                    <small>Parent</small>
+                </div>
+                <div class="testimonial-body">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo amet est, laboriosam reprehenderit rem repellat error numquam provident ea commodi!
+                    </p>
+                </div>
+            </article>
+        </div>
+        <div class="swiper-pagination"></div>
+    </section>
+
+
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-1">
+                <a href="index.html" class="footer-logo"><h4>About Us</h4></a>
+                <p>The Cryptic Legion brings you football’s drama, passion, rivalries, transfers, and unforgettable stories where the beautiful game truly lives.</p>
+            </div>
+
+            <div class="footer-2">
+                <h4>Permalinks</h4>
+                <ul class="permalinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="indexhighlight.html">Highlights</a></li>
+                    <li><a href="IndexNews.html">News</a></li>
+                </ul>
+            </div>
+
+            
+
+            <div class="footer-4">
+                <h4>Contact Us</h4>
+                <div>
+                    <p>+234 81 5234 6609</p>
+                    <p>crypticlegion4@gmail.com</p>
+                </div>
+                <ul class="footer-socials">
+                    <li><a href="#"><i class='bx bxl-whatsapp'></i></a></li>
+                    <li><a href="#"><i class='bx bxl-facebook'></i></a></li>
+                    <li><a href="#"><i class='bx bx-phone'></i></a></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="footer-copyright">
+            <small>Copyright &copy; The Cryptic Legion</small>
+        </div>
+    </footer>
+
+
+<!-- Swiper Js -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js">
+</script>
+
+<script>
+                // Corasel
+// Wait for the DOM to load
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the slider element
+    const slider = document.getElementById('slider');
+  
+    // Get the images within the slider
+    const images = slider.querySelectorAll('img');
+    let currentImageIndex = 0;
+  
+    // Function to show the next image in the slider
+    function showNextImage() {
+      // Hide the current image
+      images[currentImageIndex].classList.remove('active');
+  
+      // Increment the image index
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+  
+      // Show the next image
+      images[currentImageIndex].classList.add('active');
+    }
+  
+    // Initially show the first image
+    images[currentImageIndex].classList.add('active');
+  
+    // Set the interval for transitioning to the next image (15 seconds = 15000 milliseconds)
+    setInterval(showNextImage, 5000);
+  });
+
+//------------- NAV SCROLL ------------------//
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').classList.toggle
+  ('window-scroll', window.scrollY > 0);
+})
+
+// SWIPER JS Code
+
+// var swiper = new Swiper(".mySwiper", {
+//   slidesPerView: 1,
+//   spaceBetween: 30,
+//   pagination: {
+//     el: ".swiper-pagination",
+//     clickable: true,
+//   },
+//   // when window width is >= 600px
+//   breakpoints: {
+//     600: {
+//       slidesPerView: 2
+//     }
+//   }
+// });
+
+
+  var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    grabCursor: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    autoplay: {
+      delay: 7000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: 2, // 2 slides side by side on tablets
+      },
+      1024: {
+        slidesPerView: 3, // 3 slides side by side on desktops
+      }
+    }
+  });
+
+
+
+// Menu Bar Toggle
+const menu = document.querySelector(".nav-menu");
+const menuBtn = document.querySelector("#open-menu-btn");
+const closeBtn = document.querySelector("#close-menu-btn");
+
+menuBtn.addEventListener('click', () => {
+  menu.style.display = "flex";
+  closeBtn.style.display = "inline-block";
+  menuBtn.style.display = "none";
+})
+
+const closeNav = () => {
+  menu.style.display = "none";
+  closeBtn.style.display = "none";
+  menuBtn.style.display = "inline-block";
+}
+
+closeBtn.addEventListener('click', closeNav);
+
+// Scrool Animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    console.log(entry)
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    } else {
+      entry.target.classList.remove('show');
+    }
+  });
+});
+
+const scroolElements = document.querySelectorAll('.scrool');
+scroolElements.forEach((el) => observer.observe(el));
+
+const vibeElements = document.querySelectorAll('.vibe');
+vibeElements.forEach((el) => observer.observe(el));
+
+const popElements = document.querySelectorAll('.pop');
+popElements.forEach((el) => observer.observe(el));
+
+/////                 Count Animation Code
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("count");
+  const plusElement = document.getElementById("plus");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let count = 0;
+      const targetCount = 75;
+      const interval = 75; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          count++;
+          countElement.textContent = count;
+
+          if (count === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
+
+
+/////       02
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("coun");
+  const plusElement = document.getElementById("plu");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let coun = 0;
+      const targetCount = 1000;
+      const interval = 5.5; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          coun++;
+          countElement.textContent = coun;
+
+          if (coun === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
+
+
+
+/////       03
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("cou");
+  const plusElement = document.getElementById("pl");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let cou = 0;
+      const targetCount = 25;
+      const interval = 250; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          cou++;
+          countElement.textContent = cou;
+
+          if (cou === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
+</script>
+
+ 
+</body>
+</html>
