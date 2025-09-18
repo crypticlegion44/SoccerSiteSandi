@@ -26,6 +26,7 @@
             --bg1: #2e3267;
             --container-width-lg: 80%;
             --container-width-md: 90%;
+            --container-width-sm: 94%; /* Added for mobile */
             --trensition: all 400ms ease;
         }
 
@@ -163,7 +164,7 @@
 
         .back-link {
             display: inline-block;
-            margin: 2rem 0 0 2rem;
+            margin: 2rem 0 0 0; /* Adjusted for container alignment */
             color: #ebd978;
             text-decoration: none;
             font-weight: 500;
@@ -172,11 +173,71 @@
         .back-link i {
             margin-right: 8px;
         }
+
+        /* ================================================= */
+        /* ============== MEDIA QUERIES (ADAPTIVE) ========= */
+        /* ================================================= */
+
+        /* Tablet Devices */
+        @media screen and (max-width: 1024px) {
+            .container {
+                width: var(--container-width-md);
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .management-grid {
+                gap: 1rem;
+            }
+        }
+
+
+        /* Mobile Devices */
+        @media screen and (max-width: 768px) {
+            .container {
+                width: var(--container-width-sm);
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                margin-top: 1rem; 
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .admin-section {
+                padding: 1rem;
+            }
+
+            /* Make buttons full-width and stack them for easier tapping */
+            .item-card .btn {
+                display: block;
+                width: 100%;
+            }
+
+            .item-card .btn-danger {
+                margin-left: 0;
+                margin-top: 0.5rem; /* Add space between stacked buttons */
+            }
+
+            .back-link {
+                /* On mobile, center the back link for a cleaner look */
+                display: block;
+                text-align: center;
+                margin-top: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
+    
     <div class="container">
+        <a href="index.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
+
         <h1>Admin Control Panel</h1>
 
         <section class="admin-section">
