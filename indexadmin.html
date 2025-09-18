@@ -26,7 +26,6 @@
             --bg1: #2e3267;
             --container-width-lg: 80%;
             --container-width-md: 90%;
-            --container-width-sm: 94%; /* Added for mobile */
             --trensition: all 400ms ease;
         }
 
@@ -164,7 +163,7 @@
 
         .back-link {
             display: inline-block;
-            margin: 2rem 0 0 0; /* Adjusted for container alignment */
+            margin: 2rem 0 0 2rem;
             color: #ebd978;
             text-decoration: none;
             font-weight: 500;
@@ -173,71 +172,11 @@
         .back-link i {
             margin-right: 8px;
         }
-
-        /* ================================================= */
-        /* ============== MEDIA QUERIES (ADAPTIVE) ========= */
-        /* ================================================= */
-
-        /* Tablet Devices */
-        @media screen and (max-width: 1024px) {
-            .container {
-                width: var(--container-width-md);
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .management-grid {
-                gap: 1rem;
-            }
-        }
-
-
-        /* Mobile Devices */
-        @media screen and (max-width: 768px) {
-            .container {
-                width: var(--container-width-sm);
-            }
-
-            h1 {
-                font-size: 1.8rem;
-                margin-top: 1rem; 
-            }
-
-            h2 {
-                font-size: 1.4rem;
-            }
-
-            .admin-section {
-                padding: 1rem;
-            }
-
-            /* Make buttons full-width and stack them for easier tapping */
-            .item-card .btn {
-                display: block;
-                width: 100%;
-            }
-
-            .item-card .btn-danger {
-                margin-left: 0;
-                margin-top: 0.5rem; /* Add space between stacked buttons */
-            }
-
-            .back-link {
-                /* On mobile, center the back link for a cleaner look */
-                display: block;
-                text-align: center;
-                margin-top: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
-    
+    <a href="index.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
     <div class="container">
-        <a href="index.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
-
         <h1>Admin Control Panel</h1>
 
         <section class="admin-section">
@@ -289,174 +228,185 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- DOM Elements ---
-        const imagesGrid = document.getElementById('header-images-grid');
-        const videosGrid = document.getElementById('videos-grid');
-        const testimonialsGrid = document.getElementById('testimonials-grid');
+document.addEventListener('DOMContentLoaded', function() {
+    // --- DOM Elements ---
+    const imagesGrid = document.getElementById('header-images-grid');
+    const videosGrid = document.getElementById('videos-grid');
+    const testimonialsGrid = document.getElementById('testimonials-grid');
 
-        // --- Data keys for localStorage ---
-        const IMAGE_STORAGE_KEY = 'crypticLegionImages';
-        const VIDEO_STORAGE_KEY = 'crypticLegionVideos';
-        const TESTIMONIAL_STORAGE_KEY = 'crypticLegionTestimonials';
+    // --- Data keys for localStorage ---
+    const IMAGE_STORAGE_KEY = 'crypticLegionImages';
+    const VIDEO_STORAGE_KEY = 'crypticLegionVideos';
+    const TESTIMONIAL_STORAGE_KEY = 'crypticLegionTestimonials';
 
-        // --- Helper functions to get and set data in localStorage ---
-        const getStoredData = (key) => JSON.parse(localStorage.getItem(key)) || [];
-        const setStoredData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+    // --- Helper functions to get and set data in localStorage ---
+    const getStoredData = (key) => JSON.parse(localStorage.getItem(key)) || [];
+    const setStoredData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
 
-        // --- Default data ---
-        const defaultImages = [
-            { id: 1, src: 'Pics/G05F6SZWgAA8Hx-.jpg' },
-            { id: 2, src: 'Pics/1500x500.jpg' },
-            { id: 3, src: 'Pics/GsToqpMXMAAcXHK.jpg' },
-            { id: 4, src: 'Pics/GvaTH-eWQAAWAPQ.jpg' }
-        ];
+    // --- Default data ---
+    const defaultImages = [
+        { id: 1, src: 'Pics/G05F6SZWgAA8Hx-.jpg' },
+        { id: 2, src: 'Pics/1500x500.jpg' },
+        { id: 3, src: 'Pics/GsToqpMXMAAcXHK.jpg' },
+        { id: 4, src: 'Pics/GvaTH-eWQAAWAPQ.jpg' }
+    ];
 
-        // --- Load initial image data ---
-        let images = getStoredData(IMAGE_STORAGE_KEY);
-        if (images.length === 0) {
-            setStoredData(IMAGE_STORAGE_KEY, defaultImages);
+    // --- Load initial image data ---
+    let images = getStoredData(IMAGE_STORAGE_KEY);
+    if (images.length === 0) {
+        setStoredData(IMAGE_STORAGE_KEY, defaultImages);
+    }
+    
+    // --- RENDER FUNCTIONS ---
+    const renderImages = () => {
+        imagesGrid.innerHTML = '';
+        getStoredData(IMAGE_STORAGE_KEY).forEach(image => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.innerHTML = `
+                <img src="${image.src}" alt="Header Image">
+                <button class="btn btn-danger" onclick="deleteItem('image', ${image.id})">Delete</button>
+            `;
+            imagesGrid.appendChild(card);
+        });
+    };
+    
+    const renderVideos = () => {
+        videosGrid.innerHTML = '';
+        getStoredData(VIDEO_STORAGE_KEY).forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.innerHTML = `
+                <video src="${video.src}" muted loop controls></video> <p>${video.description}</p>
+                <button class="btn btn-danger" onclick="deleteItem('video', ${video.id})">Delete</button>
+            `;
+            videosGrid.appendChild(card);
+        });
+    };
+
+    const renderTestimonials = () => {
+        testimonialsGrid.innerHTML = '';
+        getStoredData(TESTIMONIAL_STORAGE_KEY).forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.innerHTML = `
+                <div>
+                    <img src="${t.avatarSrc}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%;">
+                    <h5>${t.name}</h5>
+                    <small>${t.role}</small>
+                    <p style="font-size: 0.8rem; margin-top: 1rem;">"${t.body}"</p>
+                </div>
+                <button class="btn btn-danger" onclick="deleteItem('testimonial', ${t.id})">Delete</button>
+            `;
+            testimonialsGrid.appendChild(card);
+        });
+    };
+
+    // --- Initial render on page load ---
+    renderImages();
+    renderVideos();
+    renderTestimonials();
+
+    // --- Delete functionality ---
+    window.deleteItem = (type, id) => {
+        if (confirm('Are you sure you want to delete this item?')) {
+            let key, renderFunc;
+            if (type === 'image') {
+                key = IMAGE_STORAGE_KEY;
+                renderFunc = renderImages;
+            } else if (type === 'video') {
+                key = VIDEO_STORAGE_KEY;
+                renderFunc = renderVideos;
+            } else {
+                key = TESTIMONIAL_STORAGE_KEY;
+                renderFunc = renderTestimonials;
+            }
+            
+            let data = getStoredData(key);
+            data = data.filter(item => item.id !== id);
+            setStoredData(key, data);
+            renderFunc();
+        }
+    };
+
+    // --- Helper to convert a file to a base64 string (still needed for images) ---
+    const fileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    // --- Add Functionality ---
+    window.addImage = async () => {
+        const imageInput = document.getElementById('new-image-upload');
+        if (!imageInput.files.length) { alert('Please select an image file.'); return; }
+        try {
+            const base64String = await fileToBase64(imageInput.files[0]);
+            const newItem = { id: Date.now(), src: base64String };
+            const data = getStoredData(IMAGE_STORAGE_KEY);
+            data.push(newItem);
+            setStoredData(IMAGE_STORAGE_KEY, data);
+            renderImages();
+            imageInput.value = '';
+        } catch (error) { alert('Failed to read image file.'); }
+    };
+    
+    // --- ✨ NEW AND IMPROVED addVideo function! ✨ ---
+    window.addVideo = () => { // No longer needs to be 'async'
+        const videoInput = document.getElementById('new-video-upload');
+        const descInput = document.getElementById('new-video-description');
+        if (!videoInput.files.length || !descInput.value.trim()) { 
+            alert('Please select a video file and provide a description.'); 
+            return; 
         }
         
-        // --- RENDER FUNCTIONS ---
-        const renderImages = () => {
-            imagesGrid.innerHTML = '';
-            getStoredData(IMAGE_STORAGE_KEY).forEach(image => {
-                const card = document.createElement('div');
-                card.className = 'item-card';
-                card.innerHTML = `
-                    <img src="${image.src}" alt="Header Image">
-                    <button class="btn btn-danger" onclick="deleteItem('image', ${image.id})">Delete</button>
-                `;
-                imagesGrid.appendChild(card);
-            });
-        };
-        
-        const renderVideos = () => {
-            videosGrid.innerHTML = '';
-            getStoredData(VIDEO_STORAGE_KEY).forEach(video => {
-                const card = document.createElement('div');
-                card.className = 'item-card';
-                card.innerHTML = `
-                    <video src="${video.src}" muted loop></video>
-                    <p>${video.description}</p>
-                    <button class="btn btn-danger" onclick="deleteItem('video', ${video.id})">Delete</button>
-                `;
-                videosGrid.appendChild(card);
-            });
+        // CHANGE #1: Instead of reading the file, we create a direct object URL.
+        const videoFile = videoInput.files[0];
+        const videoURL = URL.createObjectURL(videoFile);
+
+        // CHANGE #2: We save this new, simple URL instead of the huge base64 string.
+        const newItem = { 
+            id: Date.now(), 
+            src: videoURL, 
+            description: descInput.value.trim() 
         };
 
-        const renderTestimonials = () => {
-            testimonialsGrid.innerHTML = '';
-            getStoredData(TESTIMONIAL_STORAGE_KEY).forEach(t => {
-                const card = document.createElement('div');
-                card.className = 'item-card';
-                card.innerHTML = `
-                    <div>
-                        <img src="${t.avatarSrc}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%;">
-                        <h5>${t.name}</h5>
-                        <small>${t.role}</small>
-                        <p style="font-size: 0.8rem; margin-top: 1rem;">"${t.body}"</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="deleteItem('testimonial', ${t.id})">Delete</button>
-                `;
-                testimonialsGrid.appendChild(card);
-            });
-        };
-
-        // --- Initial render on page load ---
-        renderImages();
+        const data = getStoredData(VIDEO_STORAGE_KEY);
+        data.push(newItem);
+        setStoredData(VIDEO_STORAGE_KEY, data);
         renderVideos();
-        renderTestimonials();
+        videoInput.value = '';
+        descInput.value = '';
+    };
 
-        // --- Delete functionality ---
-        window.deleteItem = (type, id) => {
-            if (confirm('Are you sure you want to delete this item?')) {
-                let key, renderFunc;
-                if (type === 'image') {
-                    key = IMAGE_STORAGE_KEY;
-                    renderFunc = renderImages;
-                } else if (type === 'video') {
-                    key = VIDEO_STORAGE_KEY;
-                    renderFunc = renderVideos;
-                } else {
-                    key = TESTIMONIAL_STORAGE_KEY;
-                    renderFunc = renderTestimonials;
-                }
-                
-                let data = getStoredData(key);
-                data = data.filter(item => item.id !== id);
-                setStoredData(key, data);
-                renderFunc();
-            }
-        };
-
-        // --- Helper to convert a file to a base64 string ---
-        const fileToBase64 = (file) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
-        // --- Add Functionality ---
-        window.addImage = async () => {
-            const imageInput = document.getElementById('new-image-upload');
-            if (!imageInput.files.length) { alert('Please select an image file.'); return; }
-            try {
-                const base64String = await fileToBase64(imageInput.files[0]);
-                const newItem = { id: Date.now(), src: base64String };
-                const data = getStoredData(IMAGE_STORAGE_KEY);
-                data.push(newItem);
-                setStoredData(IMAGE_STORAGE_KEY, data);
-                renderImages();
-                imageInput.value = '';
-            } catch (error) { alert('Failed to read image file.'); }
-        };
+    window.addTestimonial = async () => {
+        const avatarInput = document.getElementById('new-testimonial-avatar');
+        const nameInput = document.getElementById('new-testimonial-name');
+        const roleInput = document.getElementById('new-testimonial-role');
+        const bodyInput = document.getElementById('new-testimonial-body');
         
-        window.addVideo = async () => {
-            const videoInput = document.getElementById('new-video-upload');
-            const descInput = document.getElementById('new-video-description');
-            if (!videoInput.files.length || !descInput.value.trim()) { alert('Please select a video file and provide a description.'); return; }
-            try {
-                const base64String = await fileToBase64(videoInput.files[0]);
-                const newItem = { id: Date.now(), src: base64String, description: descInput.value.trim() };
-                const data = getStoredData(VIDEO_STORAGE_KEY);
-                data.push(newItem);
-                setStoredData(VIDEO_STORAGE_KEY, data);
-                renderVideos();
-                videoInput.value = '';
-                descInput.value = '';
-            } catch (error) { alert('Failed to read video file. Large videos may not work.'); }
-        };
-
-        window.addTestimonial = async () => {
-            const avatarInput = document.getElementById('new-testimonial-avatar');
-            const nameInput = document.getElementById('new-testimonial-name');
-            const roleInput = document.getElementById('new-testimonial-role');
-            const bodyInput = document.getElementById('new-testimonial-body');
-            
-            if (!avatarInput.files.length || !nameInput.value.trim() || !roleInput.value.trim() || !bodyInput.value.trim()) {
-                alert('Please fill out all testimonial fields.');
-                return;
-            }
-            try {
-                const avatarSrc = await fileToBase64(avatarInput.files[0]);
-                const newItem = {
-                    id: Date.now(),
-                    avatarSrc: avatarSrc,
-                    name: nameInput.value.trim(),
-                    role: roleInput.value.trim(),
-                    body: bodyInput.value.trim()
-                };
-                const data = getStoredData(TESTIMONIAL_STORAGE_KEY);
-                data.push(newItem);
-                setStoredData(TESTIMONIAL_STORAGE_KEY, data);
-                renderTestimonials();
-                avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
-            } catch (error) { alert('Failed to read avatar image.'); }
-        };
-    });
+        if (!avatarInput.files.length || !nameInput.value.trim() || !roleInput.value.trim() || !bodyInput.value.trim()) {
+            alert('Please fill out all testimonial fields.');
+            return;
+        }
+        try {
+            const avatarSrc = await fileToBase64(avatarInput.files[0]);
+            const newItem = {
+                id: Date.now(),
+                avatarSrc: avatarSrc,
+                name: nameInput.value.trim(),
+                role: roleInput.value.trim(),
+                body: bodyInput.value.trim()
+            };
+            const data = getStoredData(TESTIMONIAL_STORAGE_KEY);
+            data.push(newItem);
+            setStoredData(TESTIMONIAL_STORAGE_KEY, data);
+            renderTestimonials();
+            avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
+        } catch (error) { alert('Failed to read avatar image.'); }
+    };
+});
     </script>
 </body>
 </html>
