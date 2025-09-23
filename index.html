@@ -1210,6 +1210,101 @@ Whether it’s breaking news, behind-the-scenes insights, or unforgettable highl
 </script>
 
 <script>
+
+    // --- DYNAMIC CONTENT RENDERING FROM LOCAL STORAGE ---
+document.addEventListener('DOMContentLoaded', function() {
+    // Local storage keys (must match your admin page)
+    const IMAGE_STORAGE_KEY = 'crypticLegionImages';
+    const VIDEO_STORAGE_KEY = 'crypticLegionVideos';
+    const TESTIMONIAL_STORAGE_KEY = 'crypticLegionTestimonials';
+
+    // Helper function to get data from local storage
+    const getStoredData = (key) => JSON.parse(localStorage.getItem(key)) || [];
+
+    // Function to render header images
+    const renderHeaderImages = () => {
+        const images = getStoredData(IMAGE_STORAGE_KEY);
+        const slider = document.getElementById('slider');
+        if (!slider || images.length === 0) return;
+
+        // Clear existing images
+        slider.innerHTML = ''; 
+
+        images.forEach((image, index) => {
+            const img = document.createElement('img');
+            img.src = image.src;
+            img.alt = `Header Image ${index + 1}`;
+            slider.appendChild(img);
+        });
+
+        // Re-initialize the carousel after adding new images
+        const carouselImages = slider.querySelectorAll('img');
+        if (carouselImages.length > 0) {
+            let currentImageIndex = 0;
+            carouselImages[currentImageIndex].classList.add('active');
+            
+            function showNextImage() {
+                carouselImages[currentImageIndex].classList.remove('active');
+                currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
+                carouselImages[currentImageIndex].classList.add('active');
+            }
+            setInterval(showNextImage, 5000); // 5 seconds interval
+        }
+    };
+
+    // Function to render videos
+    const renderVideos = () => {
+        const videos = getStoredData(VIDEO_STORAGE_KEY);
+        const videosContainer = document.querySelector('.highlights__container');
+        if (!videosContainer || videos.length === 0) return;
+
+        videosContainer.innerHTML = ''; // Clear existing videos
+
+        videos.forEach(video => {
+            const videoArticle = document.createElement('article');
+            videoArticle.className = 'highlight__article';
+            videoArticle.innerHTML = `
+                <div class="highlight__video">
+                    <video src="${video.src}" controls loop></video>
+                </div>
+                <h4>${video.description}</h4>
+            `;
+            videosContainer.appendChild(videoArticle);
+        });
+    };
+
+    // Function to render testimonials
+    const renderTestimonials = () => {
+        const testimonials = getStoredData(TESTIMONIAL_STORAGE_KEY);
+        const testimonialsContainer = document.querySelector('.mySwiper .swiper-wrapper');
+        if (!testimonialsContainer || testimonials.length === 0) return;
+
+        testimonialsContainer.innerHTML = ''; // Clear existing testimonials
+
+        testimonials.forEach(testimonial => {
+            const slide = document.createElement('article');
+            slide.className = 'swiper-slide';
+            slide.innerHTML = `
+                <div class="swiper-client-msg">
+                    <p>${testimonial.body}</p>
+                </div>
+                <div class="swiper-client-data">
+                    <img src="${testimonial.avatarSrc}" alt="">
+                    <div class="swiper-client-details">
+                        <h5>${testimonial.name}</h5>
+                        <small>${testimonial.role}</small>
+                    </div>
+                </div>
+            `;
+            testimonialsContainer.appendChild(slide);
+        });
+    };
+
+    // Call the rendering functions on page load
+    renderHeaderImages();
+    renderVideos();
+    renderTestimonials();
+});
                 // Corasel
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
@@ -1431,6 +1526,7 @@ document.addEventListener("DOMContentLoaded", function () {
  
 </body>
 </html>
+
 
 
 
