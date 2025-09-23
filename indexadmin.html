@@ -90,23 +90,50 @@
         </section>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-storage-compat.js"></script>
-    
     <script>
-        // IMPORTANT: PASTE YOUR REAL FIREBASE KEYS HERE!
-        const firebaseConfig = {
-        apiKey: "AIzaSyCuuqTPYzVXUIY6vKTRlywrn0SrGp2EApA",
-        authDomain: "cryptic-legion-admin.firebaseapp.com",
-        projectId: "cryptic-legion-admin",
-        storageBucket: "cryptic-legion-admin.firebasestorage.app",
-        messagingSenderId: "699875847338",
-        appId: "1:699875847338:web:94b39b8e1229d2df9a34d3"
+        // --- CLOUDINARY CONFIGURATION AND UPLOAD FUNCTION ---
+        // Replace these with your actual Cloudinary details
+        const CLOUDINARY_CLOUD_NAME = "deeri6yu"; 
+        const CLOUDINARY_UPLOAD_PRESET = "The Cryptic Legion"; 
+
+        const uploadFileToCloudinary = async (file, statusElement) => {
+            const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+            return new Promise((resolve, reject) => {
+                statusElement.style.display = 'block';
+                statusElement.textContent = 'Uploading...';
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url, true);
+
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        const progress = (e.loaded / e.total) * 100;
+                        statusElement.textContent = `Uploading: ${Math.round(progress)}%`;
+                    }
+                };
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        statusElement.style.display = 'none';
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            resolve(response.secure_url); 
+                        } else {
+                            console.error("Upload failed:", xhr.responseText);
+                            reject(new Error('Upload failed'));
+                        }
+                    }
+                };
+
+                xhr.send(formData);
+            });
         };
-
-        firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
-
+    
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
             const imagesGrid = document.getElementById('header-images-grid');
@@ -166,7 +193,7 @@
 
             // --- DELETE FUNCTION ---
             window.deleteItem = (type, id) => {
-                 if (confirm('Are you sure you want to delete this item?')) {
+                if (confirm('Are you sure you want to delete this item?')) {
                     let key, renderFunc;
                     if (type === 'image') { key = IMAGE_STORAGE_KEY; renderFunc = renderImages; }
                     else if (type === 'video') { key = VIDEO_STORAGE_KEY; renderFunc = renderVideos; }
@@ -181,42 +208,14 @@
                 }
             };
 
-            // --- UPLOAD HELPER FUNCTION ---
-            const uploadFile = (file, path, statusElement) => {
-                return new Promise((resolve, reject) => {
-                    statusElement.style.display = 'block';
-                    const storageRef = storage.ref(path);
-                    const uploadTask = storageRef.put(file);
-
-                    uploadTask.on('state_changed', 
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            statusElement.textContent = `Uploading: ${Math.round(progress)}%`;
-                        }, 
-                        (error) => {
-                            console.error("Upload failed:", error);
-                            statusElement.style.display = 'none';
-                            reject(error);
-                        }, 
-                        () => {
-                            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                                statusElement.style.display = 'none';
-                                resolve(downloadURL);
-                            });
-                        }
-                    );
-                });
-            };
-
-            // --- ADD FUNCTIONS (NOW ALL POWERED BY FIREBASE) ---
+            // --- ADD FUNCTIONS (NOW ALL POWERED BY CLOUDINARY) ---
             window.addImage = async () => {
                 const imageInput = document.getElementById('new-image-upload');
                 const file = imageInput.files[0];
                 if (!file) { alert('Please select an image file.'); return; }
 
                 try {
-                    const filePath = `images/${Date.now()}-${file.name}`;
-                    const downloadURL = await uploadFile(file, filePath, imageUploadStatus);
+                    const downloadURL = await uploadFileToCloudinary(file, imageUploadStatus);
                     
                     const newItem = { id: Date.now(), src: downloadURL };
                     const data = getStoredData(IMAGE_STORAGE_KEY);
@@ -237,8 +236,7 @@
                 if (!file || !descInput.value.trim()) { alert('Please select a video file and provide a description.'); return; }
 
                 try {
-                    const filePath = `videos/${Date.now()}-${file.name}`;
-                    const downloadURL = await uploadFile(file, filePath, videoUploadStatus);
+                    const downloadURL = await uploadFileToCloudinary(file, videoUploadStatus);
 
                     const newItem = { id: Date.now(), src: downloadURL, description: descInput.value.trim() };
                     const data = getStoredData(VIDEO_STORAGE_KEY);
@@ -265,8 +263,7 @@
                 }
 
                 try {
-                    const filePath = `avatars/${Date.now()}-${file.name}`;
-                    const avatarUrl = await uploadFile(file, filePath, testimonialUploadStatus);
+                    const avatarUrl = await uploadFileToCloudinary(file, testimonialUploadStatus);
 
                     const newItem = {
                         id: Date.now(),
