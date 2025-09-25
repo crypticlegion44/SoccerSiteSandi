@@ -9,15 +9,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Your CSS remains unchanged */
-        :root { --montserrat: "Montserrat", sans-serif; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
+        /* Your Admin Panel CSS (Unchanged for brevity) */
+        :root { --montserrat: "Montserrat", sans-serif; --main: #ebd978; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--montserrat); line-height: 1.7; color: var(--white); background: var(--main4); }
         .container { width: var(--container-width-lg); margin: 0 auto; }
         h1, h2, h3 { line-height: 1.2; margin-bottom: 1rem; color: var(--Vwhite); }
         h1 { font-size: 2.5rem; text-align: center; margin: 2rem 0; padding-bottom: 1rem; border-bottom: 2px solid var(--bg1); }
-        h2 { margin-top: 2.5rem; color: #ebd978; }
+        h2 { margin-top: 2.5rem; color: var(--main); }
         .btn { display: inline-block; padding: 12px 24px; margin-top: 1rem; color: var(--white); background: var(--main3); border-radius: 5px; cursor: pointer; text-align: center; border: none; font-size: 1rem; font-family: var(--montserrat); transition: var(--trensition); }
         .btn:hover { background: var(--bg1); }
         .btn-danger { background: #f75842; margin-left: 10px; }
@@ -29,10 +30,13 @@
         .item-card img, .item-card video { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 1rem; }
         .item-card p { font-size: 0.9rem; color: var(--dwhite); margin-bottom: 1rem; flex-grow: 1; }
         .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--Vwhite); }
         .form-group input[type="file"], .form-group input[type="text"], .form-group textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--bg1); background: var(--main4); color: var(--white); font-family: var(--montserrat); }
-        .back-link { display: inline-block; margin: 2rem 0 0 2rem; color: #ebd978; text-decoration: none; font-weight: 500; }
+        .back-link { display: inline-block; margin: 2rem 0 0 2rem; color: var(--main); text-decoration: none; font-weight: 500; }
         .back-link i { margin-right: 8px; }
+        @media screen and (max-width: 600px) {
+            .management-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -79,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label for="new-testimonial-role">Role</label>
-                <input type="text" id="new-testimonial-role" placeholder="e.g., Parent">
+                <input type="text" id="new-testimonial-role" placeholder="e.g., Football Analyst">
             </div>
             <div class="form-group">
                 <label for="new-testimonial-body">Quote / Message</label>
@@ -91,92 +95,98 @@
     </div>
 
     <script>
-        // --- CLOUDINARY CONFIGURATION AND UPLOAD FUNCTION ---
-        // Replace these with your actual Cloudinary details
-        const CLOUDINARY_CLOUD_NAME = "deeir6yru"; 
-        const CLOUDINARY_UPLOAD_PRESET = "admin_uploads"; 
+        // --- SUPABASE CONFIGURATION ---
+        // !!! IMPORTANT: Replace with your actual Supabase details !!!
+        const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; // e.g., 'https://xyz.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
-        const uploadFileToCloudinary = async (file, statusElement) => {
-            const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const IMAGE_BUCKET = 'images'; // Define your Supabase storage bucket names
+        const VIDEO_BUCKET = 'videos';
+        const AVATAR_BUCKET = 'avatars';
+
+        // Helper to upload file to Supabase Storage
+        const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
+            statusElement.style.display = 'block';
+            statusElement.textContent = 'Uploading...';
+
+            const filePath = `${bucket}/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
             
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            // Supabase upload call
+            const { data, error } = await supabase.storage
+                .from(bucket)
+                .upload(filePath, file);
 
-            return new Promise((resolve, reject) => {
-                statusElement.style.display = 'block';
-                statusElement.textContent = 'Uploading...';
+            statusElement.style.display = 'none';
 
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', url, true);
+            if (error) {
+                console.error("Supabase Upload Error:", error);
+                throw new Error('Supabase upload failed: ' + error.message);
+            }
 
-                xhr.upload.onprogress = function(e) {
-                    if (e.lengthComputable) {
-                        const progress = (e.loaded / e.total) * 100;
-                        statusElement.textContent = `Uploading: ${Math.round(progress)}%`;
-                    }
-                };
-
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === 4) {
-                        statusElement.style.display = 'none';
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            resolve(response.secure_url); 
-                        } else {
-                            console.error("Upload failed:", xhr.responseText);
-                            reject(new Error('Upload failed'));
-                        }
-                    }
-                };
-
-                xhr.send(formData);
-            });
+            // Get the public URL for the file
+            const { data: publicURLData } = supabase.storage
+                .from(bucket)
+                .getPublicUrl(filePath);
+            
+            return publicURLData.publicUrl;
         };
-    
+
+        // Helper to fetch all data from a table and render
+        const fetchAndRender = async (tableName, renderFunc) => {
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('id', { ascending: false }); // Show newest first
+
+            if (error) {
+                console.error('Fetch Error:', error);
+                return [];
+            }
+            renderFunc(data);
+            return data;
+        };
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
+            // DOM Elements & Status Messages
             const imagesGrid = document.getElementById('header-images-grid');
             const videosGrid = document.getElementById('videos-grid');
             const testimonialsGrid = document.getElementById('testimonials-grid');
-
-            // Status Messages
             const imageUploadStatus = document.getElementById('image-upload-status');
             const videoUploadStatus = document.getElementById('video-upload-status');
             const testimonialUploadStatus = document.getElementById('testimonial-upload-status');
 
-            // localStorage Keys
-            const IMAGE_STORAGE_KEY = 'crypticLegionImages';
-            const VIDEO_STORAGE_KEY = 'crypticLegionVideos';
-            const TESTIMONIAL_STORAGE_KEY = 'crypticLegionTestimonials';
-
-            const getStoredData = (key) => JSON.parse(localStorage.getItem(key)) || [];
-            const setStoredData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+            // Table Names
+            const IMAGE_TABLE = 'crypticLegionImages';
+            const VIDEO_TABLE = 'crypticLegionVideos';
+            const TESTIMONIAL_TABLE = 'crypticLegionTestimonials';
             
             // --- RENDER FUNCTIONS ---
-            const renderImages = () => {
+            const renderImages = (images) => {
                 imagesGrid.innerHTML = '';
-                getStoredData(IMAGE_STORAGE_KEY).forEach(image => {
+                images.forEach(image => {
                     const card = document.createElement('div');
                     card.className = 'item-card';
-                    card.innerHTML = `<img src="${image.src}" alt="Header Image"><button class="btn btn-danger" onclick="deleteItem('image', ${image.id})">Delete</button>`;
+                    // Use 'src' column for the public URL
+                    card.innerHTML = `<img src="${image.src}" alt="Header Image"><button class="btn btn-danger" onclick="deleteItem('${IMAGE_TABLE}', ${image.id}, 'image')">Delete</button>`;
                     imagesGrid.appendChild(card);
                 });
             };
 
-            const renderVideos = () => {
+            const renderVideos = (videos) => {
                 videosGrid.innerHTML = '';
-                getStoredData(VIDEO_STORAGE_KEY).forEach(video => {
+                videos.forEach(video => {
                     const card = document.createElement('div');
                     card.className = 'item-card';
-                    card.innerHTML = `<video src="${video.src}" controls loop></video><p>${video.description}</p><button class="btn btn-danger" onclick="deleteItem('video', ${video.id})">Delete</button>`;
+                    card.innerHTML = `<video src="${video.src}" controls loop></video><p>${video.description}</p><button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video')">Delete</button>`;
                     videosGrid.appendChild(card);
                 });
             };
 
-            const renderTestimonials = () => {
+            const renderTestimonials = (testimonials) => {
                 testimonialsGrid.innerHTML = '';
-                getStoredData(TESTIMONIAL_STORAGE_KEY).forEach(t => {
+                testimonials.forEach(t => {
                     const card = document.createElement('div');
                     card.className = 'item-card';
                     card.innerHTML = `
@@ -186,46 +196,51 @@
                             <small>${t.role}</small>
                             <p style="font-size: 0.8rem; margin-top: 1rem;">"${t.body}"</p>
                         </div>
-                        <button class="btn btn-danger" onclick="deleteItem('testimonial', ${t.id})">Delete</button>`;
+                        <button class="btn btn-danger" onclick="deleteItem('${TESTIMONIAL_TABLE}', ${t.id}, 'testimonial')">Delete</button>`;
                     testimonialsGrid.appendChild(card);
                 });
             };
 
-            // --- DELETE FUNCTION ---
-            window.deleteItem = (type, id) => {
-                if (confirm('Are you sure you want to delete this item?')) {
-                    let key, renderFunc;
-                    if (type === 'image') { key = IMAGE_STORAGE_KEY; renderFunc = renderImages; }
-                    else if (type === 'video') { key = VIDEO_STORAGE_KEY; renderFunc = renderVideos; }
-                    else if (type === 'testimonial') { key = TESTIMONIAL_STORAGE_KEY; renderFunc = renderTestimonials; }
-                    
-                    if (key) {
-                        let data = getStoredData(key);
-                        data = data.filter(item => item.id !== id);
-                        setStoredData(key, data);
-                        renderFunc();
+            // --- DELETE FUNCTION (Made available globally) ---
+            window.deleteItem = async (tableName, id, type) => {
+                if (confirm('Are you sure you want to delete this item? This will be removed from Supabase.')) {
+                    const { error } = await supabase
+                        .from(tableName)
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) {
+                        alert(`Deletion Failed: ${error.message}`);
+                        console.error('Deletion Error:', error);
+                    } else {
+                        alert('Item deleted successfully!');
+                        // Re-render the grid based on the table
+                        if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
+                        else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
+                        else if (type === 'testimonial') await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
                     }
                 }
             };
 
-            // --- ADD FUNCTIONS (NOW ALL POWERED BY CLOUDINARY) ---
+            // --- ADD FUNCTIONS (Made available globally) ---
             window.addImage = async () => {
                 const imageInput = document.getElementById('new-image-upload');
                 const file = imageInput.files[0];
                 if (!file) { alert('Please select an image file.'); return; }
 
                 try {
-                    const downloadURL = await uploadFileToCloudinary(file, imageUploadStatus);
+                    const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET, imageUploadStatus);
                     
-                    const newItem = { id: Date.now(), src: downloadURL };
-                    const data = getStoredData(IMAGE_STORAGE_KEY);
-                    data.push(newItem);
-                    setStoredData(IMAGE_STORAGE_KEY, data);
-                    renderImages();
-                    imageInput.value = '';
-                    alert('Image uploaded successfully!');
+                    const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
+                    
+                    if (error) throw new Error(error.message);
+
+                    imageInput.value = ''; 
+                    alert('Image uploaded and saved successfully!');
+                    await fetchAndRender(IMAGE_TABLE, renderImages);
+
                 } catch (error) {
-                    alert('Image upload failed. Please try again.');
+                    alert('Image operation failed: ' + error.message);
                 }
             };
 
@@ -236,18 +251,19 @@
                 if (!file || !descInput.value.trim()) { alert('Please select a video file and provide a description.'); return; }
 
                 try {
-                    const downloadURL = await uploadFileToCloudinary(file, videoUploadStatus);
+                    const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, videoUploadStatus);
 
-                    const newItem = { id: Date.now(), src: downloadURL, description: descInput.value.trim() };
-                    const data = getStoredData(VIDEO_STORAGE_KEY);
-                    data.push(newItem);
-                    setStoredData(VIDEO_STORAGE_KEY, data);
-                    renderVideos();
-                    videoInput.value = '';
-                    descInput.value = '';
-                    alert('Video uploaded successfully!');
+                    const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+                    
+                    if (error) throw new Error(error.message);
+
+                    videoInput.value = ''; 
+                    descInput.value = ''; 
+                    alert('Video uploaded and saved successfully!');
+                    await fetchAndRender(VIDEO_TABLE, renderVideos);
+
                 } catch (error) {
-                    alert('Video upload failed. Please try again.');
+                    alert('Video operation failed: ' + error.message);
                 }
             };
             
@@ -263,32 +279,33 @@
                 }
 
                 try {
-                    const avatarUrl = await uploadFileToCloudinary(file, testimonialUploadStatus);
+                    const avatarUrl = await uploadFileToSupabaseStorage(file, AVATAR_BUCKET, testimonialUploadStatus);
 
                     const newItem = {
-                        id: Date.now(),
                         avatarSrc: avatarUrl,
                         name: nameInput.value.trim(),
                         role: roleInput.value.trim(),
                         body: bodyInput.value.trim()
                     };
-                    const data = getStoredData(TESTIMONIAL_STORAGE_KEY);
-                    data.push(newItem);
-                    setStoredData(TESTIMONIAL_STORAGE_KEY, data);
-                    renderTestimonials();
+                    const { error } = await supabase.from(TESTIMONIAL_TABLE).insert([newItem]);
+
+                    if (error) throw new Error(error.message);
+                    
+                    // Clear form fields
                     avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
-                    alert('Testimonial added successfully!');
+                    alert('Testimonial added and saved successfully!');
+                    await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
+
                 } catch (error) {
-                    alert('Failed to add testimonial. Please try again.');
+                    alert('Testimonial operation failed: ' + error.message);
                 }
             };
             
             // --- INITIAL RENDER ON PAGE LOAD ---
-            renderImages();
-            renderVideos();
-            renderTestimonials();
+            fetchAndRender(IMAGE_TABLE, renderImages);
+            fetchAndRender(VIDEO_TABLE, renderVideos);
+            fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
         });
     </script>
 </body>
 </html>
-
