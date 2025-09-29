@@ -38,11 +38,6 @@
         @media screen and (max-width: 600px) {
             .management-grid { grid-template-columns: 1fr; }
         }
-            /* ... (Existing CSS remains, adding the facility-card style) */
-    .facility-card { padding: 1rem; text-align: left; }
-    .facility-card i { font-size: 2rem; color: var(--main); }
-    .facility-card h5 { margin-top: 0.5rem; }
-    /* ... (rest of the CSS) */
     </style>
 </head>
 <body>
@@ -51,7 +46,7 @@
         <h1>Admin Control Panel</h1>
 
         <section class="admin-section">
-            <h2>Manage Header Images (index)</h2>
+            <h2>Manage Header Images</h2>
             <div id="header-images-grid" class="management-grid"></div>
             <div class="form-group">
                 <label for="new-image-upload">Upload New Header Image</label>
@@ -62,7 +57,7 @@
         </section>
 
         <section class="admin-section">
-            <h2>Manage Highlight Videos (index)</h2>
+            <h2>Manage Highlight Videos</h2>
             <div id="videos-grid" class="management-grid"></div>
             <div class="form-group">
                 <label for="new-video-upload">Upload New Video</label>
@@ -98,110 +93,118 @@
             <p id="testimonial-upload-status" style="display: none; color: #ebd978;">Uploading avatar...</p>
             <button class="btn" onclick="addTestimonial()">Add Testimonial</button>
         </section>
-
-        <section class="admin-section">
-            <h2>Manage Highlight Videos (indexhighlight.html)</h2>
-            <div id="highlight-videos-grid" class="management-grid"></div>
-            <div class="form-group">
-                <label for="new-highlight-video-upload">Upload New Highlight Video</label>
-                <input type="file" id="new-highlight-video-upload" accept="video/*">
-            </div>
-            <div class="form-group">
-                <label for="new-highlight-video-description">Highlight Video Description</label>
-                <input type="text" id="new-highlight-video-description" placeholder="e.g., Match Highlights 2024 (highlight)">
-            </div>
-            <p id="highlight-video-upload-status" style="display: none; color: #ebd978;">Uploading...</p>
-            <button class="btn" onclick="addHighlightVideo()">Add Highlight Video</button>
-        </section>
     </div>
 
     <script>
 // --- SUPABASE CONFIGURATION ---
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+// !!! IMPORTANT: Replace with your actual Supabase details !!!
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; // e.g., 'https://xyz.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const IMAGE_BUCKET = 'images'; 
+const IMAGE_BUCKET = 'images'; // Define your Supabase storage bucket names
 const VIDEO_BUCKET = 'videos';
 const AVATAR_BUCKET = 'avatars';
 
-// --- TABLE NAMES (CRITICAL CHANGE) ---
-const IMAGE_TABLE = 'crypticLegionImages';
-const MAIN_VIDEO_TABLE = 'crypticLegionVideos'; // Used for index.html (Your original VIDEO_TABLE)
-const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos'; // NEW TABLE for indexhighlight.html
-const TESTIMONIAL_TABLE = 'crypticLegionTestimonials';
-    
-// Helper to upload file to Supabase Storage (Unchanged)
+// Helper to upload file to Supabase Storage
 const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
-    // ... (logic remains the same) ...
+    statusElement.style.display = 'block';
+    statusElement.textContent = 'Uploading...';
+
+    // *** FIX 1: REMOVED bucket name from filePath to prevent double-naming in the URL ***
+    const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+    
+    // Supabase upload call
+    const { data, error } = await supabase.storage
+        .from(bucket)
+        .upload(filePath, file);
+
+    statusElement.style.display = 'none';
+
+    if (error) {
+        console.error("Supabase Upload Error:", error);
+        throw new Error('Supabase upload failed: ' + error.message);
+    }
+
+    // Get the public URL for the file
+    const { data: publicURLData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath);
+    
+    return publicURLData.publicUrl;
 };
 
-// Helper to fetch all data from a table and render (Unchanged)
+// Helper to fetch all data from a table and render
 const fetchAndRender = async (tableName, renderFunc) => {
-    // ... (logic remains the same) ...
+    const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .order('id', { ascending: false }); // Show newest first
+
+    if (error) {
+        console.error('Fetch Error:', error);
+        return [];
+    }
+    renderFunc(data);
+    return data;
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements & Status Messages (CRITICAL CHANGE: Update references)
+    // DOM Elements & Status Messages
     const imagesGrid = document.getElementById('header-images-grid');
-    const mainVideosGrid = document.getElementById('main-videos-grid'); // New ID
-    const highlightVideosGrid = document.getElementById('highlight-videos-grid'); // New ID
+    const videosGrid = document.getElementById('videos-grid');
     const testimonialsGrid = document.getElementById('testimonials-grid');
-    
     const imageUploadStatus = document.getElementById('image-upload-status');
-    const mainVideoUploadStatus = document.getElementById('main-video-upload-status'); // New ID
-    const highlightVideoUploadStatus = document.getElementById('highlight-video-upload-status'); // New ID
+    const videoUploadStatus = document.getElementById('video-upload-status');
     const testimonialUploadStatus = document.getElementById('testimonial-upload-status');
-    
-    // --- RENDER FUNCTIONS ---
-    const renderImages = (images) => {
-        // ... (logic remains the same) ...
-    };
 
-    // RENDER FUNCTION FOR MAIN VIDEOS (index.html)
-    const renderMainVideos = (videos) => {
-        mainVideosGrid.innerHTML = ''; // Use the new mainVideosGrid
-        videos.forEach(video => {
-            const safeDescription = video.description.replace(/'/g, "\\'");
-            
+    // Table Names
+    const IMAGE_TABLE = 'crypticLegionImages';
+    const VIDEO_TABLE = 'crypticLegionVideos';
+    const TESTIMONIAL_TABLE = 'crypticLegionTestimonials';
+    
+    // --- RENDER FUNCTIONS (No changes needed here, they use the correct keys) ---
+    const renderImages = (images) => {
+        imagesGrid.innerHTML = '';
+        images.forEach(image => {
             const card = document.createElement('div');
             card.className = 'item-card';
-            card.innerHTML = `
-                <video src="${video.src}" controls loop></video>
-                <p id="main-desc-${video.id}">${video.description}</p> 
-                <div style="display: flex; justify-content: center; gap: 5px; margin-top: auto;">
-                    <button class="btn" style="background: var(--bg1); margin-top: 0;" onclick="editMainVideo(${video.id}, '${safeDescription}')">Edit</button>
-                    <button class="btn btn-danger" style="margin-top: 0;" onclick="deleteItem('${MAIN_VIDEO_TABLE}', ${video.id}, 'main-video')">Delete</button>
-                </div>`;
-            mainVideosGrid.appendChild(card);
+            card.innerHTML = `<img src="${image.src}" alt="Header Image"><button class="btn btn-danger" onclick="deleteItem('${IMAGE_TABLE}', ${image.id}, 'image')">Delete</button>`;
+            imagesGrid.appendChild(card);
         });
     };
 
-    // RENDER FUNCTION FOR HIGHLIGHT VIDEOS (indexhighlight.html)
-    const renderHighlightVideos = (videos) => {
-        highlightVideosGrid.innerHTML = ''; // Use the new highlightVideosGrid
+    const renderVideos = (videos) => {
+        videosGrid.innerHTML = '';
         videos.forEach(video => {
-            const safeDescription = video.description.replace(/'/g, "\\'");
-            
             const card = document.createElement('div');
             card.className = 'item-card';
-            card.innerHTML = `
-                <video src="${video.src}" controls loop></video>
-                <p id="highlight-desc-${video.id}">${video.description}</p> 
-                <div style="display: flex; justify-content: center; gap: 5px; margin-top: auto;">
-                    <button class="btn" style="background: var(--bg1); margin-top: 0;" onclick="editHighlightVideo(${video.id}, '${safeDescription}')">Edit</button>
-                    <button class="btn btn-danger" style="margin-top: 0;" onclick="deleteItem('${HIGHLIGHT_VIDEO_TABLE}', ${video.id}, 'highlight-video')">Delete</button>
-                </div>`;
-            highlightVideosGrid.appendChild(card);
+            // The data structure used here relies on a 'description' key:
+            card.innerHTML = `<video src="${video.src}" controls loop></video><p>${video.description}</p><button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video')">Delete</button>`;
+            videosGrid.appendChild(card);
         });
     };
 
     const renderTestimonials = (testimonials) => {
-        // ... (logic remains the same) ...
+        testimonialsGrid.innerHTML = '';
+        testimonials.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            // The data structure used here relies on an 'avatarSrc' key:
+            card.innerHTML = `
+                <div>
+                    <img src="${t.avatarSrc}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%;">
+                    <h5>${t.name}</h5>
+                    <small>${t.role}</small>
+                    <p style="font-size: 0.8rem; margin-top: 1rem;">"${t.body}"</p>
+                </div>
+                <button class="btn btn-danger" onclick="deleteItem('${TESTIMONIAL_TABLE}', ${t.id}, 'testimonial')">Delete</button>`;
+            testimonialsGrid.appendChild(card);
+        });
     };
-    
-    // --- DELETE FUNCTION (MODIFIED: Checks new table/type) ---
+
+    // --- DELETE FUNCTION (No changes needed) ---
     window.deleteItem = async (tableName, id, type) => {
         if (confirm('Are you sure you want to delete this item? This will be removed from Supabase.')) {
             const { error } = await supabase
@@ -214,137 +217,101 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Deletion Error:', error);
             } else {
                 alert('Item deleted successfully!');
+                // Re-render the grid based on the table
                 if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
-                else if (type === 'main-video') await fetchAndRender(MAIN_VIDEO_TABLE, renderMainVideos);
-                else if (type === 'highlight-video') await fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos); // Re-render highlight videos
+                else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
                 else if (type === 'testimonial') await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
             }
         }
     };
 
     // --- ADD FUNCTIONS ---
-    window.addImage = async () => { /* ... (Unchanged logic) ... */ };
-    
-    // ADD FUNCTION FOR MAIN VIDEOS (index.html)
-    window.addMainVideo = async () => {
-        const videoInput = document.getElementById('new-main-video-upload'); // New ID
-        const descInput = document.getElementById('new-main-video-description'); // New ID
+    window.addImage = async () => {
+        const imageInput = document.getElementById('new-image-upload');
+        const file = imageInput.files[0];
+        if (!file) { alert('Please select an image file.'); return; }
+
+        try {
+            const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET, imageUploadStatus);
+            
+            const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
+            
+            if (error) throw new Error(error.message);
+
+            imageInput.value = ''; 
+            alert('Image uploaded and saved successfully!');
+            await fetchAndRender(IMAGE_TABLE, renderImages);
+
+        } catch (error) {
+            alert('Image operation failed: ' + error.message);
+        }
+    };
+
+    window.addVideo = async () => {
+        const videoInput = document.getElementById('new-video-upload');
+        const descInput = document.getElementById('new-video-description');
         const file = videoInput.files[0];
         if (!file || !descInput.value.trim()) { alert('Please select a video file and provide a description.'); return; }
 
         try {
-            const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, mainVideoUploadStatus); // New status ID
+            const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, videoUploadStatus);
 
-            const { error } = await supabase.from(MAIN_VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+            // *** FIX 2: The code uses 'description', so the DB column MUST be 'description' ***
+            const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
             
             if (error) throw new Error(error.message);
 
             videoInput.value = ''; 
             descInput.value = ''; 
-            alert('Main Video uploaded and saved successfully!');
-            await fetchAndRender(MAIN_VIDEO_TABLE, renderMainVideos); // New render function
+            alert('Video uploaded and saved successfully!');
+            await fetchAndRender(VIDEO_TABLE, renderVideos);
 
         } catch (error) {
-            alert('Main Video operation failed: ' + error.message);
-        }
-    };
-
-    // ADD FUNCTION FOR HIGHLIGHT VIDEOS (indexhighlight.html)
-    window.addHighlightVideo = async () => {
-        const videoInput = document.getElementById('new-highlight-video-upload'); // New ID
-        const descInput = document.getElementById('new-highlight-video-description'); // New ID
-        const file = videoInput.files[0];
-        if (!file || !descInput.value.trim()) { alert('Please select a video file and provide a description.'); return; }
-
-        try {
-            const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, highlightVideoUploadStatus); // New status ID
-
-            // CRITICAL: Insert into the NEW highlight table
-            const { error } = await supabase.from(HIGHLIGHT_VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
-            
-            if (error) throw new Error(error.message);
-
-            videoInput.value = ''; 
-            descInput.value = ''; 
-            alert('Highlight Video uploaded and saved successfully!');
-            await fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos); // New render function
-
-        } catch (error) {
-            alert('Highlight Video operation failed: ' + error.message);
-        }
-    };
-
-    window.addTestimonial = async () => { /* ... (Unchanged logic) ... */ };
-
-    // --- EDIT FUNCTIONS ---
-    // EDIT FUNCTION FOR MAIN VIDEOS (index.html)
-    window.editMainVideo = async (videoId, currentDescription) => {
-        const newDescription = prompt("Enter the new description for Main Video ID " + videoId + ":", currentDescription);
-
-        if (newDescription === null || newDescription.trim() === currentDescription) {
-            alert("Edit canceled or no change detected.");
-            return;
-        }
-
-        const trimmedDescription = newDescription.trim();
-        
-        try {
-            const { error } = await supabase
-                .from(MAIN_VIDEO_TABLE) // Use the MAIN video table
-                .update({ description: trimmedDescription })
-                .eq('id', videoId); 
-
-            if (error) throw error;
-
-            alert('Main Video description updated successfully!');
-            
-            const descElement = document.getElementById(`main-desc-${videoId}`); // Use main ID
-            if (descElement) { descElement.textContent = trimmedDescription; }
-
-        } catch (error) {
-            console.error('Main Video update failed:', error.message);
-            alert(`Main Video update failed. Supabase error: ${error.message}`);
+            alert('Video operation failed: ' + error.message);
         }
     };
     
-    // EDIT FUNCTION FOR HIGHLIGHT VIDEOS (indexhighlight.html)
-    window.editHighlightVideo = async (videoId, currentDescription) => {
-        const newDescription = prompt("Enter the new description for Highlight Video ID " + videoId + ":", currentDescription);
+    window.addTestimonial = async () => {
+        const avatarInput = document.getElementById('new-testimonial-avatar');
+        const nameInput = document.getElementById('new-testimonial-name');
+        const roleInput = document.getElementById('new-testimonial-role');
+        const bodyInput = document.getElementById('new-testimonial-body');
+        const file = avatarInput.files[0];
 
-        if (newDescription === null || newDescription.trim() === currentDescription) {
-            alert("Edit canceled or no change detected.");
-            return;
+        if (!file || !nameInput.value.trim() || !roleInput.value.trim() || !bodyInput.value.trim()) {
+            alert('Please fill out all testimonial fields and select an avatar.'); return;
         }
 
-        const trimmedDescription = newDescription.trim();
-        
         try {
-            const { error } = await supabase
-                .from(HIGHLIGHT_VIDEO_TABLE) // CRITICAL: Use the HIGHLIGHT video table
-                .update({ description: trimmedDescription })
-                .eq('id', videoId); 
+            const avatarUrl = await uploadFileToSupabaseStorage(file, AVATAR_BUCKET, testimonialUploadStatus);
 
-            if (error) throw error;
+            // *** FIX 3: The code uses 'avatarSrc', so the DB column MUST be 'avatarSrc' ***
+            const newItem = {
+                avatarSrc: avatarUrl,
+                name: nameInput.value.trim(),
+                role: roleInput.value.trim(),
+                body: bodyInput.value.trim()
+            };
+            const { error } = await supabase.from(TESTIMONIAL_TABLE).insert([newItem]);
 
-            alert('Highlight Video description updated successfully!');
+            if (error) throw new Error(error.message);
             
-            const descElement = document.getElementById(`highlight-desc-${videoId}`); // Use highlight ID
-            if (descElement) { descElement.textContent = trimmedDescription; }
+            // Clear form fields
+            avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
+            alert('Testimonial added and saved successfully!');
+            await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
 
         } catch (error) {
-            console.error('Highlight Video update failed:', error.message);
-            alert(`Highlight Video update failed. Supabase error: ${error.message}`);
+            alert('Testimonial operation failed: ' + error.message);
         }
     };
-
-    // --- INITIAL RENDER ON PAGE LOAD (CRITICAL CHANGE: Load all data sets) ---
+    
+    // --- INITIAL RENDER ON PAGE LOAD ---
     fetchAndRender(IMAGE_TABLE, renderImages);
-    fetchAndRender(MAIN_VIDEO_TABLE, renderMainVideos); // Load main page videos
-    fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos); // Load highlight page videos
+    fetchAndRender(VIDEO_TABLE, renderVideos);
     fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
-    
-    // ... (Your other placeholder functions for addImage/addTestimonial) ...
 });
     </script>
 </body>
 </html>
+
