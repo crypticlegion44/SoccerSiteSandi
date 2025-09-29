@@ -1219,7 +1219,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
 /////       03
 document.addEventListener("DOMContentLoaded", function () {
   const countElement = document.getElementById("cou");
@@ -1251,10 +1250,32 @@ document.addEventListener("DOMContentLoaded", function () {
   // Start the counting animation when the page loads
   startCounting();
 });
+
+    // indexhighlight.html script
+const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos';
+
+// ... (Your Supabase configuration) ...
+
+async function loadHighlightVideos() {
+    const { data, error } = await supabase
+        .from(HIGHLIGHT_VIDEO_TABLE) // <-- Must use the correct table name
+        .select('*');
+
+    if (error) {
+        console.error('Error fetching highlight videos:', error);
+        return;
+    }
+    
+    // Logic to insert 'data' into the correct HTML container
+    // on your indexhighlight.html page.
+}
+
+loadHighlightVideos();
 </script>
 
  
 </body>
 </html>
+
 
 
