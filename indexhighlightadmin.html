@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highlight Video Admin Panel</title>
+    <link rel="icon" type="image/png" href="The_Cryptic_Legion_Logo__1_-removebg-preview.png" sizes="32x32">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Your Admin Panel CSS (Copied from original source code) */
+        :root { --montserrat: "Montserrat", sans-serif; --main: #ebd978; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--montserrat); line-height: 1.7; color: var(--white); background: var(--main4); }
+        .container { width: var(--container-width-lg); margin: 0 auto; }
+        h1, h2, h3 { line-height: 1.2; margin-bottom: 1rem; color: var(--Vwhite); }
+        h1 { font-size: 2.5rem; text-align: center; margin: 2rem 0; padding-bottom: 1rem; border-bottom: 2px solid var(--bg1); }
+        h2 { margin-top: 2.5rem; color: var(--main); }
+        .btn { display: inline-block; padding: 12px 24px; margin-top: 1rem; color: var(--white); background: var(--main3); border-radius: 5px; cursor: pointer; text-align: center; border: none; font-size: 1rem; font-family: var(--montserrat); transition: var(--trensition); }
+        .btn:hover { background: var(--bg1); }
+        .btn-danger { background: #f75842; margin-left: 10px; }
+        .btn-danger:hover { background: #e0432d; }
+        .admin-section { background: var(--main5); padding: 2rem; margin-bottom: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .management-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .item-card { background: var(--main3); border-radius: 8px; overflow: hidden; text-align: center; padding: 1rem; transition: var(--trensition); display: flex; flex-direction: column; justify-content: space-between; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .item-card img, .item-card video { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 1rem; }
+        .item-card p { font-size: 0.9rem; color: var(--dwhite); margin-bottom: 1rem; flex-grow: 1; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--Vwhite); }
+        .form-group input[type="file"], .form-group input[type="text"], .form-group textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--bg1); background: var(--main4); color: var(--white); font-family: var(--montserrat); }
+        .back-link { display: inline-block; margin: 2rem 0 0 2rem; color: var(--main); text-decoration: none; font-weight: 500; }
+        .back-link i { margin-right: 8px; }
+        @media screen and (max-width: 600px) {
+            .management-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
+    <div class="container">
+        <h1>Highlight Videos Control Panel</h1>
+
+        <section class="admin-section">
+            <h2>Manage Highlight Videos (indexhighlight.html)</h2>
+            <div id="highlight-videos-grid" class="management-grid"></div>
+            <div class="form-group">
+                <label for="new-highlight-video-upload">Upload New Highlight Video</label>
+                <input type="file" id="new-highlight-video-upload" accept="video/*">
+            </div>
+            <div class="form-group">
+                <label for="new-highlight-video-description">Highlight Video Description</label>
+                <input type="text" id="new-highlight-video-description" placeholder="e.g., Match Highlights 2024 (Highlight)">
+            </div>
+            <p id="highlight-video-upload-status" style="display: none; color: #ebd978;">Uploading...</p>
+            <button class="btn" onclick="addHighlightVideo()">Add Highlight Video</button>
+        </section>
+    </div>
+
+    <script>
+// --- SUPABASE CONFIGURATION (FROM ORIGINAL CODE) ---
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const VIDEO_BUCKET = 'videos';
+
+// --- TARGET TABLE (CRITICAL: Targets only the new table) ---
+const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos'; 
+    
+// Helper to upload file to Supabase Storage (COPIED FROM ORIGINAL CODE)
+const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
+    statusElement.style.display = 'block';
+    statusElement.textContent = 'Uploading...';
+
+    const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+    
+    const { data, error } = await supabase.storage
+        .from(bucket)
+        .upload(filePath, file);
+
+    statusElement.style.display = 'none';
+
+    if (error) {
+        console.error("Supabase Upload Error:", error);
+        throw new Error('Supabase upload failed: ' + error.message);
+    }
+
+    const { data: publicURLData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath);
+    
+    return publicURLData.publicUrl;
+};
+
+// Helper to fetch all data from a table and render (COPIED FROM ORIGINAL CODE)
+const fetchAndRender = async (tableName, renderFunc) => {
+    const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error('Fetch Error:', error);
+        return [];
+    }
+    renderFunc(data);
+    return data;
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // --- DOM Elements & Status Messages (Unique IDs) ---
+    const highlightVideosGrid = document.getElementById('highlight-videos-grid');
+    const highlightVideoUploadStatus = document.getElementById('highlight-video-upload-status');
+    
+    // --- RENDER FUNCTION FOR HIGHLIGHT VIDEOS ---
+    const renderHighlightVideos = (videos) => {
+        highlightVideosGrid.innerHTML = '';
+        videos.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            // Using the new delete function targeting only the highlight table
+            card.innerHTML = `<video src="${video.src}" controls loop></video><p>${video.description}</p><button class="btn btn-danger" onclick="deleteHighlightVideo(${video.id})">Delete</button>`;
+            highlightVideosGrid.appendChild(card);
+        });
+    };
+
+    // --- DELETE FUNCTION (MODIFIED: Only targets the highlight table) ---
+    window.deleteHighlightVideo = async (id) => {
+        if (confirm('Are you sure you want to delete this highlight video? This will be removed from Supabase.')) {
+            const { error } = await supabase
+                .from(HIGHLIGHT_VIDEO_TABLE) // Target the HIGHLIGHT table
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert(`Deletion Failed: ${error.message}`);
+                console.error('Deletion Error:', error);
+            } else {
+                alert('Highlight video deleted successfully!');
+                await fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos); // Re-render only highlight videos
+            }
+        }
+    };
+
+    // --- ADD FUNCTION FOR HIGHLIGHT VIDEOS ---
+    window.addHighlightVideo = async () => {
+        const videoInput = document.getElementById('new-highlight-video-upload');
+        const descInput = document.getElementById('new-highlight-video-description');
+        const file = videoInput.files[0];
+        if (!file || !descInput.value.trim()) { alert('Please select a video file and provide a description.'); return; }
+
+        try {
+            const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, highlightVideoUploadStatus);
+
+            // *** CRITICAL: INSERT INTO THE NEW HIGHLIGHT TABLE ***
+            const { error } = await supabase.from(HIGHLIGHT_VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+            
+            if (error) throw new Error(error.message);
+
+            videoInput.value = ''; 
+            descInput.value = ''; 
+            alert('Highlight Video uploaded and saved successfully!');
+            await fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos); // Re-render only highlight videos
+
+        } catch (error) {
+            alert('Highlight Video operation failed: ' + error.message);
+        }
+    };
+    
+    // --- INITIAL RENDER ON PAGE LOAD ---
+    fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos);
+});
+    </script>
+</body>
+</html>
