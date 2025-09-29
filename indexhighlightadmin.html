@@ -255,8 +255,136 @@ document.addEventListener('DOMContentLoaded', function() {
     // This line is now functional as renderHighlightImages is defined
     fetchAndRender(HIGHLIGHT_IMAGE_TABLE, renderHighlightImages);
 });
+
+        
+    // --- YOUR EXISTING JAVASCRIPT FUNCTIONS (Wrapped for clarity) ---
+    
+    // Corasel
+    function initCorasel() {
+        const slider = document.getElementById('slider');
+        if (!slider) return;
+        const images = slider.querySelectorAll('img');
+        let currentImageIndex = 0;
+        
+        function showNextImage() {
+            images[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].classList.add('active');
+        }
+        
+        if (images.length > 0) {
+            images[currentImageIndex].classList.add('active');
+            setInterval(showNextImage, 5000);
+        }
+    }
+
+    // NAV SCROLL
+    function initNavScroll() {
+        window.addEventListener('scroll', () => {
+            document.querySelector('nav').classList.toggle('window-scroll', window.scrollY > 0);
+        });
+    }
+
+    // SWIPER JS Code (You had a duplicate Swiper call, so keeping the final one)
+    function initSwiper() {
+        new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            grabCursor: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            autoplay: {
+                delay: 7000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                }
+            }
+        });
+    }
+
+    // Menu Bar Toggle
+    function initMenuBarToggle() {
+        const menu = document.querySelector(".nav-menu");
+        const menuBtn = document.querySelector("#open-menu-btn");
+        const closeBtn = document.querySelector("#close-menu-btn");
+
+        if (!menu || !menuBtn || !closeBtn) return;
+
+        const closeNav = () => {
+            menu.style.display = "none";
+            closeBtn.style.display = "none";
+            menuBtn.style.display = "inline-block";
+        }
+
+        menuBtn.addEventListener('click', () => {
+            menu.style.display = "flex";
+            closeBtn.style.display = "inline-block";
+            menuBtn.style.display = "none";
+        });
+
+        closeBtn.addEventListener('click', closeNav);
+    }
+
+    // Scrool Animation
+    function initScrollAnimation() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                } else {
+                    entry.target.classList.remove('show');
+                }
+            });
+        });
+
+        document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.observe(el));
+    }
+
+    // Count Animation Code
+    function animateCount(id, plusId, targetCount, interval) {
+        const countElement = document.getElementById(id);
+        const plusElement = document.getElementById(plusId);
+
+        if (!countElement) return;
+
+        function animatePlusSign() {
+            if (plusElement) {
+                plusElement.style.opacity = "1";
+                plusElement.style.transform = "scale(1)";
+            }
+        }
+
+        let count = 0;
+        const counterInterval = setInterval(() => {
+            count++;
+            countElement.textContent = count;
+
+            if (count === targetCount) {
+                clearInterval(counterInterval);
+                setTimeout(animatePlusSign, 500);
+            }
+        }, interval);
+    }
+    
+    function initCountAnimations() {
+        // You'll need to make sure the elements with these IDs exist on this page or remove these calls.
+        // For now, I'm commenting them out to avoid console errors, as they don't seem present in the HTML provided.
+        // animateCount("count", "plus", 75, 75);
+        // animateCount("coun", "plu", 1000, 5.5);
+        // animateCount("cou", "pl", 25, 250);
+    }
     </script>
 </body>
 
 </html>
+
 
