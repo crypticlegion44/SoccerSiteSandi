@@ -863,10 +863,6 @@ pro:nth-child(4) {
             <button id="close-menu-btn"><i class='bx bx-x'></i></button>
         </div>
     </nav>
-    <!--------------- CONTENT ------------------->
-
-
-
     <header>
         <div id="slider">
             <div class="slide">
@@ -874,16 +870,13 @@ pro:nth-child(4) {
                     <div class="header-left scrool">
                         <h1>Where Passion Meets the Beautiful Game</h1>
                         <p>From grassroots to the grand stage, football unites us all.
-Dive into stories, highlights, and insights that bring the game to life.
-Every match, every moment, every heartbeat captured here</p>
+                            Dive into stories, highlights, and insights that bring the game to life.
+                            Every match, every moment, every heartbeat captured here</p>
                         <a href="about.html" class="btn">Join the Match</a>
                     </div>
                 </div>
             </div>
-            <img src="Pics/GsSsM8DWAAAlWgO.jpg" alt="Image 1">
-            <img src="Pics/GvaTH-eWQAAWAPQ.jpg" alt="Image 2">
-            <img src="Pics/GsTqS4_XgAA242l.jpg" alt="Image 3">
-          </div>
+            </div>
     </header>
 
     <div class="Cnt01">
@@ -893,102 +886,12 @@ Every match, every moment, every heartbeat captured here</p>
         </p>
     </div>
 
-<section class="team">
-    <h2 class="team-head">Highlights</h2>
-    <div class="container team-container">
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    <article class="team-member">
-      <div class="team-member-video">
-        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
-      </div>
-      <div class="team-member-info">
-        <h4>Jason Target</h4>
-        <p>Teacher</p>
-      </div>
-    </article>
-
-    </div>
-</section>
-
+    <section class="team">
+        <h2 class="team-head">Highlights</h2>
+        <div class="container team-container" id="highlight-videos-section">
+            <p id="loading-videos">Loading highlights...</p> 
+        </div>
+    </section>
 
 
     <footer>
@@ -1006,8 +909,6 @@ Every match, every moment, every heartbeat captured here</p>
                     <li><a href="IndexNews.html">News</a><a href="indexhighlightadmin.html">.</a></li>
                 </ul>
             </div>
-
-            
 
             <div class="footer-4">
                 <h4>Contact Us</h4>
@@ -1029,364 +930,267 @@ Every match, every moment, every heartbeat captured here</p>
     </footer>
 
 
-<!-- Swiper Js -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js">
-</script>
-
-<script>
-                // Corasel
-// Wait for the DOM to load
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the slider element
-    const slider = document.getElementById('slider');
-  
-    // Get the images within the slider
-    const images = slider.querySelectorAll('img');
-    let currentImageIndex = 0;
-  
-    // Function to show the next image in the slider
-    function showNextImage() {
-      // Hide the current image
-      images[currentImageIndex].classList.remove('active');
-  
-      // Increment the image index
-      currentImageIndex = (currentImageIndex + 1) % images.length;
-  
-      // Show the next image
-      images[currentImageIndex].classList.add('active');
-    }
-  
-    // Initially show the first image
-    images[currentImageIndex].classList.add('active');
-  
-    // Set the interval for transitioning to the next image (15 seconds = 15000 milliseconds)
-    setInterval(showNextImage, 5000);
-  });
-
-//------------- NAV SCROLL ------------------//
-window.addEventListener('scroll', () => {
-  document.querySelector('nav').classList.toggle
-  ('window-scroll', window.scrollY > 0);
-})
-
-// SWIPER JS Code
-
-// var swiper = new Swiper(".mySwiper", {
-//   slidesPerView: 1,
-//   spaceBetween: 30,
-//   pagination: {
-//     el: ".swiper-pagination",
-//     clickable: true,
-//   },
-//   // when window width is >= 600px
-//   breakpoints: {
-//     600: {
-//       slidesPerView: 2
-//     }
-//   }
-// });
-
-
-  var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    loop: true,
-    grabCursor: true,
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    autoplay: {
-      delay: 7000,
-      disableOnInteraction: false,
-    },
-    breakpoints: {
-      768: {
-        slidesPerView: 2, // 2 slides side by side on tablets
-      },
-      1024: {
-        slidesPerView: 3, // 3 slides side by side on desktops
-      }
-    }
-  });
-
-
-
-// Menu Bar Toggle
-const menu = document.querySelector(".nav-menu");
-const menuBtn = document.querySelector("#open-menu-btn");
-const closeBtn = document.querySelector("#close-menu-btn");
-
-menuBtn.addEventListener('click', () => {
-  menu.style.display = "flex";
-  closeBtn.style.display = "inline-block";
-  menuBtn.style.display = "none";
-})
-
-const closeNav = () => {
-  menu.style.display = "none";
-  closeBtn.style.display = "none";
-  menuBtn.style.display = "inline-block";
-}
-
-closeBtn.addEventListener('click', closeNav);
-
-// Scrool Animation
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    console.log(entry)
-    if (entry.isIntersecting) {
-      entry.target.classList.add('show');
-    } else {
-      entry.target.classList.remove('show');
-    }
-  });
-});
-
-const scroolElements = document.querySelectorAll('.scrool');
-scroolElements.forEach((el) => observer.observe(el));
-
-const vibeElements = document.querySelectorAll('.vibe');
-vibeElements.forEach((el) => observer.observe(el));
-
-const popElements = document.querySelectorAll('.pop');
-popElements.forEach((el) => observer.observe(el));
-
-/////                 Count Animation Code
-document.addEventListener("DOMContentLoaded", function () {
-  const countElement = document.getElementById("count");
-  const plusElement = document.getElementById("plus");
-
-  // Function to animate the plus sign
-  function animatePlusSign() {
-      plusElement.style.opacity = "1";
-      plusElement.style.transform = "scale(1)";
-  }
-
-  // Function to start the counting animation
-  function startCounting() {
-      let count = 0;
-      const targetCount = 75;
-      const interval = 75; // milliseconds
-
-      const counterInterval = setInterval(() => {
-          count++;
-          countElement.textContent = count;
-
-          if (count === targetCount) {
-              clearInterval(counterInterval);
-              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
-          }
-      }, interval);
-  }
-
-  // Start the counting animation when the page loads
-  startCounting();
-});
-
-
-/////       02
-document.addEventListener("DOMContentLoaded", function () {
-  const countElement = document.getElementById("coun");
-  const plusElement = document.getElementById("plu");
-
-  // Function to animate the plus sign
-  function animatePlusSign() {
-      plusElement.style.opacity = "1";
-      plusElement.style.transform = "scale(1)";
-  }
-
-  // Function to start the counting animation
-  function startCounting() {
-      let coun = 0;
-      const targetCount = 1000;
-      const interval = 5.5; // milliseconds
-
-      const counterInterval = setInterval(() => {
-          coun++;
-          countElement.textContent = coun;
-
-          if (coun === targetCount) {
-              clearInterval(counterInterval);
-              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
-          }
-      }, interval);
-  }
-
-  // Start the counting animation when the page loads
-  startCounting();
-});
-
-
-
-/////       03
-document.addEventListener("DOMContentLoaded", function () {
-  const countElement = document.getElementById("cou");
-  const plusElement = document.getElementById("pl");
-
-  // Function to animate the plus sign
-  function animatePlusSign() {
-      plusElement.style.opacity = "1";
-      plusElement.style.transform = "scale(1)";
-  }
-
-  // Function to start the counting animation
-  function startCounting() {
-      let cou = 0;
-      const targetCount = 25;
-      const interval = 250; // milliseconds
-
-      const counterInterval = setInterval(() => {
-          cou++;
-          countElement.textContent = cou;
-
-          if (cou === targetCount) {
-              clearInterval(counterInterval);
-              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
-          }
-      }, interval);
-  }
-
-  // Start the counting animation when the page loads
-  startCounting();
-});
-
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
     // --- SUPABASE CONFIGURATION ---
-// *NOTE: Use the same Supabase URL and ANON KEY from your Admin Panel.*
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDAzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// --- TABLES MANAGED BY ADMIN PANEL ---
-// *CRITICAL: These names must match the table names in your Supabase DB.*
-const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos';
-const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages';
+    // --- TABLES MANAGED BY ADMIN PANEL ---
+    const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos';
+    const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages';
 
-// --- ELEMENT TARGETS (Update these IDs in your HTML if they don't exist) ---
-const HIGHLIGHT_VIDEOS_CONTAINER_ID = 'highlight-videos-section'; // The element where videos will be inserted
-const HEADER_IMAGES_CONTAINER_ID = 'slider'; // The existing Corasel/Slider element
+    // --- ELEMENT TARGETS ---
+    const HIGHLIGHT_VIDEOS_CONTAINER_ID = 'highlight-videos-section'; 
+    const HEADER_IMAGES_CONTAINER_ID = 'slider'; 
 
-// ----------------------------------------------------------------------
-// --- CORE FETCHING LOGIC ---
-// ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
+    // --- CORE FETCHING LOGIC ---
+    // ----------------------------------------------------------------------
 
-// 1. Helper to Fetch Data from Supabase
-const fetchSupabaseData = async (tableName) => {
-    const { data, error } = await supabase
-        .from(tableName)
-        .select('*')
-        .order('id', { ascending: false }); // Fetch newest items first
+    // 1. Helper to Fetch Data from Supabase
+    const fetchSupabaseData = async (tableName) => {
+        const { data, error } = await supabase
+            .from(tableName)
+            .select('*')
+            .order('id', { ascending: false }); 
 
-    if (error) {
-        console.error(`Error fetching data from ${tableName}:`, error);
-        return [];
-    }
-    return data;
-};
+        if (error) {
+            console.error(`Error fetching data from ${tableName}:`, error);
+            return [];
+        }
+        return data;
+    };
 
-// 2. Rendering function for Header Images (Updates the Corasel/Slider)
-const renderHeaderImages = (images) => {
-    const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
-    if (!slider) return console.error(`Slider element #${HEADER_IMAGES_CONTAINER_ID} not found.`);
+    // 2. Rendering function for Header Images (Updates the Corasel/Slider)
+    const renderHeaderImages = (images) => {
+        const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
+        if (!slider) return;
 
-    // Clear existing placeholder images (if any)
-    slider.innerHTML = '';
-    
-    images.forEach((image, index) => {
-        const img = document.createElement('img');
-        img.src = image.src;
-        img.alt = `Header Image ${image.id}`;
-        // If this is the first image, add the 'active' class
-        if (index === 0) {
-            img.classList.add('active');
-        }
-        slider.appendChild(img);
-    });
-    
-    // Re-initialize the Corasel function to use the new images
-    initCorasel(); 
-};
+        // CRITICAL FIX: Only clear <img> tags, keep the text slide content
+        const textSlide = slider.querySelector('.slide');
+        slider.innerHTML = '';
+        if (textSlide) slider.appendChild(textSlide);
+        
+        images.forEach((image, index) => {
+            const img = document.createElement('img');
+            img.src = image.src;
+            img.alt = `Header Image ${image.id}`;
+            // If this is the first image, add the 'active' class (after the text slide)
+            if (index === 0) {
+                img.classList.add('active');
+            }
+            slider.appendChild(img);
+        });
+        
+        // CRITICAL: Must re-initialize the Corasel function after adding new images
+        initCorasel(); 
+    };
 
-// 3. Rendering function for Highlight Videos
-const renderHighlightVideos = (videos) => {
-    const container = document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID);
-    if (!container) return console.error(`Video container element #${HIGHLIGHT_VIDEOS_CONTAINER_ID} not found.`);
+    // 3. Rendering function for Highlight Videos
+    const renderHighlightVideos = (videos) => {
+        const container = document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID);
+        if (!container) return;
 
-    container.innerHTML = ''; // Clear existing videos
+        container.innerHTML = ''; // Clear the entire container (including the loading message)
 
-    videos.forEach(video => {
-        const videoElement = document.createElement('div');
-        videoElement.className = 'highlight-video-item'; // Use a class relevant to your styling
-        videoElement.innerHTML = `
-            <video src="${video.src}" controls poster="/assets/video-poster.jpg"></video>
-            <p>${video.description}</p>
-        `;
-        container.appendChild(videoElement);
-    });
-};
+        if (videos.length === 0) {
+            container.innerHTML = '<p>No highlights available yet. Check back soon!</p>';
+            return;
+        }
 
-// 4. Initialization function to load all dynamic content
-const loadDynamicContent = async () => {
-    // Load Header Images
-    const images = await fetchSupabaseData(HIGHLIGHT_IMAGE_TABLE);
-    if (images.length > 0) {
-        renderHeaderImages(images);
-    }
+        videos.forEach(video => {
+            const article = document.createElement('article');
+            article.className = 'team-member'; // Re-use your existing class for styling
 
-    // Load Highlight Videos
-    const videos = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
-    if (videos.length > 0) {
-        renderHighlightVideos(videos);
-    }
-};
+            // The inner HTML uses the structure from your original HTML
+            article.innerHTML = `
+                <div class="team-member-video">
+                    <video src="${video.src}" controls width="100%" height="200" loop></video>
+                </div>
+                <div class="team-member-info">
+                    <h4>Highlight</h4>
+                    <p>${video.description || 'Footage from the Legion'}</p>
+                </div>
+            `;
+            container.appendChild(article);
+        });
+    };
 
-// 5. Modify the Corasel function to support re-initialization
-function initCorasel() {
-    const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
-    if (!slider) return;
-    const images = slider.querySelectorAll('img');
-    let currentImageIndex = 0;
-  
-    function showNextImage() {
-      images[currentImageIndex].classList.remove('active');
-      currentImageIndex = (currentImageIndex + 1) % images.length;
-      images[currentImageIndex].classList.add('active');
-    }
-    
-    // Clear previous interval if re-initializing
-    if (slider.hasAttribute('data-interval')) {
-        clearInterval(parseInt(slider.getAttribute('data-interval')));
-    }
+    // 4. Initialization function to load all dynamic content
+    const loadDynamicContent = async () => {
+        // Load Highlight Videos (Show loading state while fetching)
+        const videos = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
+        renderHighlightVideos(videos);
 
-    if (images.length > 0) {
-        images[currentImageIndex].classList.add('active');
-        const newInterval = setInterval(showNextImage, 5000);
-        slider.setAttribute('data-interval', newInterval); // Store interval ID for clearing
-    }
-}
+        // Load Header Images
+        const images = await fetchSupabaseData(HIGHLIGHT_IMAGE_TABLE);
+        renderHeaderImages(images); 
+        
+        // Initialize other features that don't depend on Supabase data
+        initNavScroll();
+        initMenuBarToggle();
+        initScrollAnimation();
+        initCountAnimations(); 
+        initSwiper(); // Swiper relies on its container being present
+    };
+
+    // 5. Modified Corasel function (consolidated with your original JS)
+    function initCorasel() {
+        const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
+        if (!slider) return;
+        const images = slider.querySelectorAll('img');
+        let currentImageIndex = 0;
+        
+        // Ensure images exist before setting up the slider
+        if (images.length === 0) {
+            console.warn("No header images found to start the carousel.");
+            return;
+        }
+
+        // 1. Clear previous interval if re-initializing
+        if (slider.hasAttribute('data-interval')) {
+            clearInterval(parseInt(slider.getAttribute('data-interval')));
+        }
+        
+        // 2. Remove 'active' from all images (in case of re-render)
+        images.forEach(img => img.classList.remove('active'));
+
+        // 3. Set the first image as active
+        images[currentImageIndex].classList.add('active');
+
+        // 4. Define showNextImage function
+        function showNextImage() {
+            images[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].classList.add('active');
+        }
+
+        // 5. Start the new interval
+        const newInterval = setInterval(showNextImage, 5000);
+        slider.setAttribute('data-interval', newInterval); // Store interval ID for clearing
+    }
+
+    // ------------- NAV SCROLL (Consolidated from your original JS) -------------
+    function initNavScroll() {
+        window.addEventListener('scroll', () => {
+            document.querySelector('nav').classList.toggle(
+            'window-scroll', window.scrollY > 0);
+        });
+    }
+
+    // ------------- SWIPER JS Code (Consolidated from your original JS) -------------
+    function initSwiper() {
+        new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            grabCursor: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            autoplay: {
+                delay: 7000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2, 
+                },
+                1024: {
+                    slidesPerView: 3, 
+                }
+            }
+        });
+    }
 
 
-// 6. Call the initialization function when the DOM is ready (Place inside or right after one of your existing DOMContentLoaded listeners)
-document.addEventListener('DOMContentLoaded', loadDynamicContent);
+    // ------------- Menu Bar Toggle (Consolidated from your original JS) -------------
+    function initMenuBarToggle() {
+        const menu = document.querySelector(".nav-menu");
+        const menuBtn = document.querySelector("#open-menu-btn");
+        const closeBtn = document.querySelector("#close-menu-btn");
 
-// --- END OF NEW SUPABASE INTEGRATION CODE ---
+        if (!menu || !menuBtn || !closeBtn) return; // Prevent errors if elements don't exist
 
-// ----------------------------------------------------------------------
-// --- YOUR EXISTING JAVASCRIPT FOLLOWS ---
-// ----------------------------------------------------------------------
+        const closeNav = () => {
+            menu.style.display = "none";
+            closeBtn.style.display = "none";
+            menuBtn.style.display = "inline-block";
+        }
 
-// Corasel
-// The original DOMContentLoaded block for the Corasel needs to be replaced
-// by the new `initCorasel` function and the `loadDynamicContent` call.
-// ... (The original Corasel block is now handled by loadDynamicContent and initCorasel)
+        menuBtn.addEventListener('click', () => {
+            menu.style.display = "flex";
+            closeBtn.style.display = "inline-block";
+            menuBtn.style.display = "none";
+        })
 
-// ... (Your other existing functions like NAV SCROLL, SWIPER, etc.)
-</script>
+        closeBtn.addEventListener('click', closeNav);
+    }
 
- 
+
+    // ------------- Scrool Animation (Consolidated from your original JS) -------------
+    function initScrollAnimation() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                } else {
+                    entry.target.classList.remove('show');
+                }
+            });
+        });
+
+        document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.observe(el));
+    }
+
+
+    // ------------- Count Animation Code (Consolidated and simplified) -------------
+    function animateCount(id, plusId, targetCount, interval) {
+        const countElement = document.getElementById(id);
+        const plusElement = document.getElementById(plusId);
+
+        if (!countElement) return;
+
+        function animatePlusSign() {
+            if (plusElement) {
+                plusElement.style.opacity = "1";
+                plusElement.style.transform = "scale(1)";
+            }
+        }
+
+        let count = 0;
+        const counterInterval = setInterval(() => {
+            count++;
+            countElement.textContent = count;
+
+            if (count === targetCount) {
+                clearInterval(counterInterval);
+                setTimeout(animatePlusSign, 500);
+            }
+        }, interval);
+    }
+    
+    function initCountAnimations() {
+        // Only run if the elements exist
+        if (document.getElementById("count")) animateCount("count", "plus", 75, 75);
+        if (document.getElementById("coun")) animateCount("coun", "plu", 1000, 5.5);
+        if (document.getElementById("cou")) animateCount("cou", "pl", 25, 250);
+    }
+
+    // --- FINAL INITIALIZATION CALL ---
+    // This will now trigger all data fetching and rendering after the DOM is ready.
+    document.addEventListener('DOMContentLoaded', loadDynamicContent);
+    </script>
 </body>
 </html>
+
 
 
 
