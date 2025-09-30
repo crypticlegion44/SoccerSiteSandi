@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Control Panel</title>
+    <link rel="icon" type="image/png" href="The_Cryptic_Legion_Logo__1_-removebg-preview.png" sizes="32x32">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Your Admin Panel CSS (Copied from original source code) */
+        :root { --montserrat: "Montserrat", sans-serif; --main: #ebd978; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--montserrat); line-height: 1.7; color: var(--white); background: var(--main4); }
+        .container { width: var(--container-width-lg); margin: 0 auto; }
+        h1, h2, h3 { line-height: 1.2; margin-bottom: 1rem; color: var(--Vwhite); }
+        h1 { font-size: 2.5rem; text-align: center; margin: 2rem 0; padding-bottom: 1rem; border-bottom: 2px solid var(--bg1); }
+        h2 { margin-top: 2.5rem; color: var(--main); }
+        .btn { display: inline-block; padding: 12px 24px; margin-top: 1rem; color: var(--white); background: var(--main3); border-radius: 5px; cursor: pointer; text-align: center; border: none; font-size: 1rem; font-family: var(--montserrat); transition: var(--trensition); }
+        .btn:hover { background: var(--bg1); }
+        .btn-danger { background: #f75842; margin-left: 10px; }
+        .btn-danger:hover { background: #e0432d; }
+        .admin-section { background: var(--main5); padding: 2rem; margin-bottom: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .management-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .item-card { background: var(--main3); border-radius: 8px; overflow: hidden; text-align: center; padding: 1rem; transition: var(--trensition); display: flex; flex-direction: column; justify-content: space-between; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .item-card img, .item-card video { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 1rem; }
+        .item-card p { font-size: 0.9rem; color: var(--dwhite); margin-bottom: 1rem; flex-grow: 1; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--Vwhite); }
+        .form-group input[type="file"], .form-group input[type="text"], .form-group textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--bg1); background: var(--main4); color: var(--white); font-family: var(--montserrat); }
+        .back-link { display: inline-block; margin: 2rem 0 0 2rem; color: var(--main); text-decoration: none; font-weight: 500; }
+        .back-link i { margin-right: 8px; }
+        @media screen and (max-width: 600px) {
+            .management-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="IndexNews.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
+    <div class="container">
+        <h1>News Control Panel</h1>
+
+        <section class="admin-section">
+            <h2>Manage News Articles</h2>
+            <div id="news-articles-grid" class="management-grid">
+                </div>
+            
+            <hr style="border: 1px solid var(--bg1); margin: 2rem 0;">
+
+            <h3>Add New Article</h3>
+            <div class="form-group">
+                <label for="new-news-title">Article Title</label>
+                <input type="text" id="new-news-title" placeholder="Enter article headline" required>
+            </div>
+            <div class="form-group">
+                <label for="new-news-body">Article Summary/Body</label>
+                <textarea id="new-news-body" rows="4" placeholder="Enter a short summary or the main body of the news article" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="new-news-media-upload">Upload Article Image (or Video)</label>
+                <input type="file" id="new-news-media-upload" accept="image/*,video/mp4">
+                <p style="font-size: 0.8rem; color: var(--dwhite); margin-top: 0.5rem;">Accepted: Images (JPG/PNG) or MP4 video. Only one will be used.</p>
+                <p id="news-upload-status" style="display: none; color: #ebd978; margin-top: 0.5rem;">Uploading...</p>
+            </div>
+
+            <button class="btn" onclick="addNewsArticle()">Publish Article</button>
+        </section>
+
+        <section class="admin-section">
+            <h2>Manage Header Images</h2>
+            <div id="header-images-grid" class="management-grid"></div>
+            <div class="form-group">
+                <label for="new-image-upload">Upload New Header Image</label>
+                <input type="file" id="new-image-upload" accept="image/*">
+                <p id="image-upload-status" style="display: none; color: #ebd978;">Uploading...</p>
+                <button class="btn" onclick="addImage()">Add Image</button>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // --- SUPABASE CONFIGURATION ---
+        const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- BUCKET NAMES ---
+        const MEDIA_BUCKET = 'images'; // Used for both Header Images and News Media
+        const VIDEO_BUCKET = 'videos'; // Used for Highlight Videos
+
+        // --- TABLE NAMES (Ensure these match your Supabase tables) ---
+        const NEWS_TABLE = 'crypticLegionNews'; 
+        const IMAGE_TABLE = 'crypticLegionHighlightImages';
+        const VIDEO_TABLE = 'crypticLegionHighlightVideos';
+
+        // Helper to upload file to Supabase Storage
+        const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
+            statusElement.style.display = 'block';
+            statusElement.textContent = `Uploading ${file.name}...`;
+
+            const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+
+            const { data, error } = await supabase.storage
+                .from(bucket)
+                .upload(filePath, file);
+
+            statusElement.style.display = 'none';
+
+            if (error) {
+                console.error("Supabase Upload Error:", error);
+                throw new Error('Supabase upload failed: ' + error.message);
+            }
+
+            const { data: publicURLData } = supabase.storage
+                .from(bucket)
+                .getPublicUrl(filePath);
+
+            return publicURLData.publicUrl;
+        };
+
+        // Helper to fetch all data from a table and render
+        const fetchAndRender = async (tableName, renderFunc) => {
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Fetch Error:', error);
+                alert('Fetch Error: Check RLS policies and table names! ' + error.message);
+                return [];
+            }
+            renderFunc(data);
+            return data;
+        };
+
+        // --- RENDER FUNCTIONS ---
+        
+        // RENDER NEWS ARTICLES
+        const renderNews = (articles) => {
+            const newsGrid = document.getElementById('news-articles-grid');
+            newsGrid.innerHTML = '';
+            articles.forEach(article => {
+                const isVideo = article.image_src && (article.image_src.endsWith('.mp4') || article.image_src.includes('video'));
+                
+                // Show media only if image_src exists
+                const mediaTag = article.image_src ? (isVideo 
+                    ? `<video src="${article.image_src}" controls loop style="max-height: 150px;"></video>`
+                    : `<img src="${article.image_src}" alt="Article Image" style="max-height: 150px;">`)
+                    : '<p style="color: grey;">No Media</p>';
+
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    ${mediaTag}
+                    <p style="font-weight: 600; color: var(--main);">${article.title}</p>
+                    <p>${article.body.substring(0, 50)}...</p>
+                    <button class="btn btn-danger" onclick="deleteItem('${NEWS_TABLE}', ${article.id}, 'news')">Delete</button>
+                `;
+                newsGrid.appendChild(card);
+            });
+        };
+
+        // RENDER HEADER IMAGES
+        const renderImages = (images) => {
+            const imageGrid = document.getElementById('header-images-grid');
+            imageGrid.innerHTML = '';
+            images.forEach(image => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <img src="${image.src}" alt="Header Image">
+                    <p>Image ID: ${image.id}</p>
+                    <button class="btn btn-danger" onclick="deleteItem('${IMAGE_TABLE}', ${image.id}, 'image')">Delete</button>
+                `;
+                imageGrid.appendChild(card);
+            });
+        };
+
+        // RENDER HIGHLIGHT VIDEOS
+        const renderVideos = (videos) => {
+            const videosGrid = document.getElementById('highlight-videos-grid');
+            videosGrid.innerHTML = '';
+            videos.forEach(video => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <video src="${video.src}" controls loop style="max-height: 150px;"></video>
+                    <p>${video.description}</p>
+                    <button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video')">Delete</button>
+                `;
+                videosGrid.appendChild(card);
+            });
+        };
+
+        // --- DELETE FUNCTION ---
+        window.deleteItem = async (tableName, id, type) => {
+            if (confirm('Are you sure you want to delete this item?')) {
+                const { error } = await supabase
+                    .from(tableName)
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    alert(`Deletion Failed: ${error.message}`);
+                    console.error('Deletion Error:', error);
+                } else {
+                    alert('Item deleted successfully!');
+                    // Re-render the correct grid after deletion
+                    if (type === 'news') await fetchAndRender(NEWS_TABLE, renderNews);
+                    else if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
+                    else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
+                }
+            }
+        };
+
+
+        // --- ADD FUNCTIONS ---
+
+        // ADD NEWS ARTICLE (NEW)
+        window.addNewsArticle = async () => {
+            const titleInput = document.getElementById('new-news-title');
+            const bodyInput = document.getElementById('new-news-body');
+            const mediaInput = document.getElementById('new-news-media-upload');
+            const statusElement = document.getElementById('news-upload-status');
+
+            const title = titleInput.value.trim();
+            const body = bodyInput.value.trim();
+            const file = mediaInput.files[0];
+
+            if (!title || !body) { alert('Please provide a title and body for the news article.'); return; }
+
+            try {
+                statusElement.textContent = 'Processing article...';
+                statusElement.style.display = 'block';
+
+                let mediaURL = '';
+
+                // 1. Upload media if a file is selected
+                if (file) {
+                    // Use MEDIA_BUCKET for news images/videos
+                    mediaURL = await uploadFileToSupabaseStorage(file, MEDIA_BUCKET, statusElement);
+                }
+
+                // 2. Insert into the news table
+                const { error } = await supabase.from(NEWS_TABLE).insert([
+                    { 
+                        title: title, 
+                        body: body, 
+                        image_src: mediaURL // Stores the URL of the image or video
+                    }
+                ]);
+
+                statusElement.style.display = 'none';
+
+                if (error) throw new Error(error.message);
+
+                // 3. Cleanup and refresh
+                titleInput.value = '';
+                bodyInput.value = '';
+                mediaInput.value = '';
+                alert('News article published successfully!');
+                await fetchAndRender(NEWS_TABLE, renderNews);
+
+            } catch (error) {
+                statusElement.style.display = 'none';
+                alert('News article operation failed: ' + error.message);
+            }
+        };
+
+        // ADD HEADER IMAGE (EXISTING LOGIC)
+        window.addImage = async () => {
+            const imageInput = document.getElementById('new-image-upload');
+            const file = imageInput.files[0];
+            if (!file) { alert('Please select an image file.'); return; }
+
+            try {
+                const imageUploadStatus = document.getElementById('image-upload-status');
+                // Use MEDIA_BUCKET for header images
+                const downloadURL = await uploadFileToSupabaseStorage(file, MEDIA_BUCKET, imageUploadStatus); 
+                const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
+
+                if (error) throw new Error(error.message);
+
+                imageInput.value = '';
+                alert('Image uploaded and saved successfully!');
+                await fetchAndRender(IMAGE_TABLE, renderImages);
+
+            } catch (error) {
+                alert('Image operation failed: ' + error.message);
+            }
+        };
+
+        // ADD HIGHLIGHT VIDEO (EXISTING LOGIC)
+        window.addHighlightVideo = async () => {
+            const videoInput = document.getElementById('new-highlight-video-upload');
+            const descInput = document.getElementById('new-highlight-video-description');
+            const statusElement = document.getElementById('highlight-video-upload-status');
+
+            const file = videoInput.files[0];
+
+            if (!file || !descInput.value.trim()) {
+                alert('Please select a video file and provide a description.');
+                return;
+            }
+
+            try {
+                // Use VIDEO_BUCKET for highlight videos
+                const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, statusElement);
+
+                const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+
+                if (error) throw new Error(error.message);
+
+                videoInput.value = '';
+                descInput.value = '';
+                alert('Video uploaded and saved successfully!');
+                await fetchAndRender(VIDEO_TABLE, renderVideos);
+
+            } catch (error) {
+                alert('Video operation failed: ' + error.message);
+            }
+        };
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- INITIAL RENDER ON PAGE LOAD ---
+            fetchAndRender(NEWS_TABLE, renderNews); // NEW: Fetch and render news articles
+            fetchAndRender(IMAGE_TABLE, renderImages);
+            fetchAndRender(VIDEO_TABLE, renderVideos);
+        });
+    </script>
+</body>
+</html>
