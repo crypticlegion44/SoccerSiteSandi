@@ -1250,11 +1250,144 @@ document.addEventListener("DOMContentLoaded", function () {
   // Start the counting animation when the page loads
   startCounting();
 });
+
+    // --- SUPABASE CONFIGURATION ---
+// *NOTE: Use the same Supabase URL and ANON KEY from your Admin Panel.*
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// --- TABLES MANAGED BY ADMIN PANEL ---
+// *CRITICAL: These names must match the table names in your Supabase DB.*
+const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos';
+const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages';
+
+// --- ELEMENT TARGETS (Update these IDs in your HTML if they don't exist) ---
+const HIGHLIGHT_VIDEOS_CONTAINER_ID = 'highlight-videos-section'; // The element where videos will be inserted
+const HEADER_IMAGES_CONTAINER_ID = 'slider'; // The existing Corasel/Slider element
+
+// ----------------------------------------------------------------------
+// --- CORE FETCHING LOGIC ---
+// ----------------------------------------------------------------------
+
+// 1. Helper to Fetch Data from Supabase
+const fetchSupabaseData = async (tableName) => {
+    const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .order('id', { ascending: false }); // Fetch newest items first
+
+    if (error) {
+        console.error(`Error fetching data from ${tableName}:`, error);
+        return [];
+    }
+    return data;
+};
+
+// 2. Rendering function for Header Images (Updates the Corasel/Slider)
+const renderHeaderImages = (images) => {
+    const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
+    if (!slider) return console.error(`Slider element #${HEADER_IMAGES_CONTAINER_ID} not found.`);
+
+    // Clear existing placeholder images (if any)
+    slider.innerHTML = '';
+    
+    images.forEach((image, index) => {
+        const img = document.createElement('img');
+        img.src = image.src;
+        img.alt = `Header Image ${image.id}`;
+        // If this is the first image, add the 'active' class
+        if (index === 0) {
+            img.classList.add('active');
+        }
+        slider.appendChild(img);
+    });
+    
+    // Re-initialize the Corasel function to use the new images
+    initCorasel(); 
+};
+
+// 3. Rendering function for Highlight Videos
+const renderHighlightVideos = (videos) => {
+    const container = document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID);
+    if (!container) return console.error(`Video container element #${HIGHLIGHT_VIDEOS_CONTAINER_ID} not found.`);
+
+    container.innerHTML = ''; // Clear existing videos
+
+    videos.forEach(video => {
+        const videoElement = document.createElement('div');
+        videoElement.className = 'highlight-video-item'; // Use a class relevant to your styling
+        videoElement.innerHTML = `
+            <video src="${video.src}" controls poster="/assets/video-poster.jpg"></video>
+            <p>${video.description}</p>
+        `;
+        container.appendChild(videoElement);
+    });
+};
+
+// 4. Initialization function to load all dynamic content
+const loadDynamicContent = async () => {
+    // Load Header Images
+    const images = await fetchSupabaseData(HIGHLIGHT_IMAGE_TABLE);
+    if (images.length > 0) {
+        renderHeaderImages(images);
+    }
+
+    // Load Highlight Videos
+    const videos = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
+    if (videos.length > 0) {
+        renderHighlightVideos(videos);
+    }
+};
+
+// 5. Modify the Corasel function to support re-initialization
+function initCorasel() {
+    const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
+    if (!slider) return;
+    const images = slider.querySelectorAll('img');
+    let currentImageIndex = 0;
+  
+    function showNextImage() {
+      images[currentImageIndex].classList.remove('active');
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+      images[currentImageIndex].classList.add('active');
+    }
+    
+    // Clear previous interval if re-initializing
+    if (slider.hasAttribute('data-interval')) {
+        clearInterval(parseInt(slider.getAttribute('data-interval')));
+    }
+
+    if (images.length > 0) {
+        images[currentImageIndex].classList.add('active');
+        const newInterval = setInterval(showNextImage, 5000);
+        slider.setAttribute('data-interval', newInterval); // Store interval ID for clearing
+    }
+}
+
+
+// 6. Call the initialization function when the DOM is ready (Place inside or right after one of your existing DOMContentLoaded listeners)
+document.addEventListener('DOMContentLoaded', loadDynamicContent);
+
+// --- END OF NEW SUPABASE INTEGRATION CODE ---
+
+// ----------------------------------------------------------------------
+// --- YOUR EXISTING JAVASCRIPT FOLLOWS ---
+// ----------------------------------------------------------------------
+
+// Corasel
+// The original DOMContentLoaded block for the Corasel needs to be replaced
+// by the new `initCorasel` function and the `loadDynamicContent` call.
+// ... (The original Corasel block is now handled by loadDynamicContent and initCorasel)
+
+// ... (Your other existing functions like NAV SCROLL, SWIPER, etc.)
 </script>
 
  
 </body>
 </html>
+
 
 
 
