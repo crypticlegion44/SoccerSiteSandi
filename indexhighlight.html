@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Cryptic Legion</title>
 
-    <link rel="icon" type="image/png" href="The_Cryptic_Legion_Logo__1_-removebg-preview.png" sizes="32x32">
-
 
 
     <!-- Swiper CSS -->
@@ -756,7 +754,7 @@ pro:nth-child(4) {
     margin: 0;
   }
   .Logo-name {
-    margin-left: -40px;
+    margin-left: -70px;
     margin-top: 9px;
     padding: -50px;
     color: #fff;
@@ -780,7 +778,7 @@ pro:nth-child(4) {
   
   /* HEADER */
   header {
-      height: 65.9vh;
+      height: 82.3vh;
   }
   .header-container {
     grid-template-columns: 1fr;
@@ -894,7 +892,7 @@ Every match, every moment, every heartbeat captured here</p>
         </p>
     </div>
 
-<section class="team highlight-videos-section">
+<section class="team">
     <h2 class="team-head">Highlights</h2>
     <div class="container team-container">
     <article class="team-member">
@@ -906,6 +904,88 @@ Every match, every moment, every heartbeat captured here</p>
         <p>Teacher</p>
       </div>
     </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    <article class="team-member">
+      <div class="team-member-video">
+        <video src="snKnSKdCma8lIvHs.mp4" controls width="100%" height="200"></video>
+      </div>
+      <div class="team-member-info">
+        <h4>Jason Target</h4>
+        <p>Teacher</p>
+      </div>
+    </article>
+
+    </div>
 </section>
 
 
@@ -922,7 +1002,7 @@ Every match, every moment, every heartbeat captured here</p>
                 <ul class="permalinks">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="indexhighlight.html">Highlights</a></li>
-                    <li><a href="IndexNews.html">News<a href="indexhighlightadmin.html">.</a></a></li>
+                    <li><a href="IndexNews.html">News</a></li>
                 </ul>
             </div>
 
@@ -1137,6 +1217,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
 /////       03
 document.addEventListener("DOMContentLoaded", function () {
   const countElement = document.getElementById("cou");
@@ -1168,83 +1249,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Start the counting animation when the page loads
   startCounting();
 });
-
-    // indexhighlight.html script
-const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos';
-
-// ... (Your Supabase configuration) ...
-
-async function loadHighlightVideos() {
-    const { data, error } = await supabase
-        .from(HIGHLIGHT_VIDEO_TABLE) // <-- Must use the correct table name
-        .select('*');
-
-    if (error) {
-        console.error('Error fetching highlight videos:', error);
-        return;
-    }
-    
-    // Logic to insert 'data' into the correct HTML container
-    // on your indexhighlight.html page.
-}
-
-loadHighlightVideos();
-
-    
-    // --- SUPABASE CONFIGURATION (Must match your admin page) ---
-    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    // *** CRITICAL: The page must target the new table ***
-    const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos'; 
-
-    const highlightGrid = document.getElementById('highlight-content-grid');
-
-    async function loadHighlightVideos() {
-        // 1. Fetch data from the new table
-        const { data: videos, error } = await supabase
-            .from(HIGHLIGHT_VIDEO_TABLE)
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) {
-            console.error('Error fetching highlight videos:', error);
-            // Optional: display a user-friendly error message
-            highlightGrid.innerHTML = '<p>Could not load videos. Please check Supabase policies.</p>';
-            return;
-        }
-
-        // 2. Render the videos
-        if (videos.length === 0) {
-            highlightGrid.innerHTML = '<p>No highlight videos available yet.</p>';
-            return;
-        }
-
-        highlightGrid.innerHTML = ''; // Clear existing content
-        videos.forEach(video => {
-            const card = document.createElement('div');
-            card.className = 'highlight-video-card'; // Use your CSS class for video display
-            
-            // Ensure you use 'src' and 'description' keys from the database
-            card.innerHTML = `
-                <video src="${video.src}" controls loop></video>
-                <p class="video-description">${video.description}</p>
-            `;
-            highlightGrid.appendChild(card);
-        });
-    }
-
-    // Call the function when the page loads
-    document.addEventListener('DOMContentLoaded', loadHighlightVideos);
 </script>
 
  
 </body>
 </html>
-
-
-
-
-
