@@ -918,10 +918,6 @@ pro:nth-child(4) {
             <button id="close-menu-btn"><i class='bx bx-x'></i></button>
         </div>
     </nav>
-    <!--------------- CONTENT ------------------->
-
-
-
     <header>
         <div id="slider">
             <div class="slide">
@@ -935,56 +931,19 @@ Every match, every moment, every heartbeat captured here</p>
                     </div>
                 </div>
             </div>
-            <img src="Pics/1500x500.jpg" alt="Image 1">
-            <img src="Pics/wallpaperflare.com_wallpaper (2).jpg" alt="Image 2">
-            <img src="Pics/GsTqS4_XgAA242l.jpg" alt="Image 3">
-          </div>
+            </div>
     </header>
 
-<div class="container">
-        <div class="card-group">
-          <div class="card txt01">
-            <img class="card-img-top visible" src="PICS/G0yWojYWQAAclhS.jpg" alt="img" width="400" height="400" class="scrool">
-          </div>
-          <div class="card txt02">
-            <h1 class="hidden">🚨🔵 Enzo Maresca on Joao Pedro's best position:</h1>
-            <p class="hidden2">“I think it's when we face teams that are low block like tonight, I think having a proper No.9 and Joao in behind in the way we play West Ham with Liam [Delap] and Joao and in the way we start against Fulham with Liam and Joao is the perfect situation for Joao.”</p>
-          </div>
+    <div class="container" id="news-articles-container">
         </div>
-</div>
 
-<div class="container">
-        <div class="card-group">
-          <div class="card txt01">
-            <img class="card-img-top visible" src="Pics/Bounnonete.jpg" alt="img" width="400" height="400" class="scrool">
-          </div>
-          <div class="card txt02">
-            <h1 class="hidden">Chelsea Adds Buonanotte to UCL Squad After Essugo Injury</h1>
-            <p class="hidden2">Chelsea FC has added 20-year-old Argentine winger Facundo Buonanotte to its UEFA Champions League squad, replacing injured midfielder Dario Essugo, who underwent thigh surgery and faces a 12-week absence. The substitution leverages a new UEFA regulation allowing clubs to replace one outfield player sidelined for 60 days or more during the league phase. Buonanotte, on loan from Brighton & Hove Albion, now joins ahead of Chelsea's opener against Bayern Munich, providing added attacking depth amid the competition's expanded format.</p>
-          </div>
-        </div>
-</div>
-
-
-<div class="container">
-        <div class="card-group">
-          <div class="card txt01">
-            <img class="card-img-top visible" src="Pics/G0-dYKBXcAAUO91.jpg" alt="img" width="400" height="400" class="scrool">
-          </div>
-          <div class="card txt02">
-            <h1 class="hidden">🔴🏆 Van Dijk on Champions League season:</h1>
-            <p class="hidden2"> “In the start of this campaign, I am confident that we can show Europe that we are a fantastic team. We can do great things”.</p>
-          </div>
-        </div>
-</div>
-
-
-
-    
+     
     <footer>
         <div class="container footer-container">
             <div class="footer-1">
-                <a href="index.html" class="footer-logo"><h4>About Us</h4></a>
+                <a href="index.html" class="footer-logo">
+                    <h4>About Us</h4>
+                </a>
                 <p>The Cryptic Legion brings you football’s drama, passion, rivalries, transfers, and unforgettable stories where the beautiful game truly lives.</p>
             </div>
 
@@ -997,7 +956,6 @@ Every match, every moment, every heartbeat captured here</p>
                 </ul>
             </div>
 
-            
 
             <div class="footer-4">
                 <h4>Contact Us</h4>
@@ -1019,231 +977,224 @@ Every match, every moment, every heartbeat captured here</p>
     </footer>
 
 
-<!-- Swiper Js -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js">
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js">
+    </script>
 
-<script>
-                // Corasel
-// Wait for the DOM to load
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the slider element
-    const slider = document.getElementById('slider');
-  
-    // Get the images within the slider
-    const images = slider.querySelectorAll('img');
-    let currentImageIndex = 0;
-  
-    // Function to show the next image in the slider
-    function showNextImage() {
-      // Hide the current image
-      images[currentImageIndex].classList.remove('active');
-  
-      // Increment the image index
-      currentImageIndex = (currentImageIndex + 1) % images.length;
-  
-      // Show the next image
-      images[currentImageIndex].classList.add('active');
-    }
-  
-    // Initially show the first image
-    images[currentImageIndex].classList.add('active');
-  
-    // Set the interval for transitioning to the next image (15 seconds = 15000 milliseconds)
-    setInterval(showNextImage, 5000);
-  });
+    <script>
+        // --- SUPABASE CONFIGURATION ---
+        const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-//------------- NAV SCROLL ------------------//
-window.addEventListener('scroll', () => {
-  document.querySelector('nav').classList.toggle
-  ('window-scroll', window.scrollY > 0);
-})
-
-// SWIPER JS Code
-
-// var swiper = new Swiper(".mySwiper", {
-//   slidesPerView: 1,
-//   spaceBetween: 30,
-//   pagination: {
-//     el: ".swiper-pagination",
-//     clickable: true,
-//   },
-//   // when window width is >= 600px
-//   breakpoints: {
-//     600: {
-//       slidesPerView: 2
-//     }
-//   }
-// });
+        // --- SUPABASE TABLE NAMES ---
+        const NEWS_TABLE = 'crypticLegionNews';
+        const IMAGE_TABLE = 'crypticLegionHighlightImages';
 
 
-  var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    loop: true,
-    grabCursor: true,
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    autoplay: {
-      delay: 7000,
-      disableOnInteraction: false,
-    },
-    breakpoints: {
-      768: {
-        slidesPerView: 2, // 2 slides side by side on tablets
-      },
-      1024: {
-        slidesPerView: 3, // 3 slides side by side on desktops
-      }
-    }
-  });
+        // Helper function to fetch data from Supabase
+        const fetchSupabaseData = async (tableName) => {
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('id', { ascending: false }); // Show newest first
+
+            if (error) {
+                console.error(`Error fetching ${tableName}:`, error);
+                return [];
+            }
+            return data;
+        };
 
 
+        // Function to render header images and initialize the carousel
+        const renderHeaderImages = async () => {
+            const images = await fetchSupabaseData(IMAGE_TABLE);
+            const slider = document.getElementById('slider');
+            if (!slider) return;
 
-// Menu Bar Toggle
-const menu = document.querySelector(".nav-menu");
-const menuBtn = document.querySelector("#open-menu-btn");
-const closeBtn = document.querySelector("#close-menu-btn");
+            // Clear existing static images (leaving the first child, which is the .slide div)
+            Array.from(slider.children).slice(1).forEach(img => img.remove());
 
-menuBtn.addEventListener('click', () => {
-  menu.style.display = "flex";
-  closeBtn.style.display = "inline-block";
-  menuBtn.style.display = "none";
-})
+            // Add dynamic images AFTER the text slide
+            images.forEach((image, index) => {
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = `Header Image ${index + 1}`;
+                slider.appendChild(img);
+            });
 
-const closeNav = () => {
-  menu.style.display = "none";
-  closeBtn.style.display = "none";
-  menuBtn.style.display = "inline-block";
-}
+            // Re-initialize Image Carousel logic to include the new dynamic images
+            const allSlides = Array.from(slider.children).filter(el => el.tagName === 'DIV' || el.tagName === 'IMG');
 
-closeBtn.addEventListener('click', closeNav);
+            if (allSlides.length > 1) { // Check if we have the text slide + at least one image
+                let currentImageIndex = 0;
 
-// Scrool Animation
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    console.log(entry)
-    if (entry.isIntersecting) {
-      entry.target.classList.add('show');
-    } else {
-      entry.target.classList.remove('show');
-    }
-  });
-});
+                // Initially show the first slide (the DIV)
+                allSlides[currentImageIndex].classList.add('active');
 
-const scroolElements = document.querySelectorAll('.scrool');
-scroolElements.forEach((el) => observer.observe(el));
+                function showNextImage() {
+                    allSlides[currentImageIndex].classList.remove('active');
+                    currentImageIndex = (currentImageIndex + 1) % allSlides.length;
+                    allSlides[currentImageIndex].classList.add('active');
+                }
 
-const vibeElements = document.querySelectorAll('.vibe');
-vibeElements.forEach((el) => observer.observe(el));
-
-const popElements = document.querySelectorAll('.pop');
-popElements.forEach((el) => observer.observe(el));
-
-/////                 Count Animation Code
-document.addEventListener("DOMContentLoaded", function () {
-  const countElement = document.getElementById("count");
-  const plusElement = document.getElementById("plus");
-
-  // Function to animate the plus sign
-  function animatePlusSign() {
-      plusElement.style.opacity = "1";
-      plusElement.style.transform = "scale(1)";
-  }
-
-  // Function to start the counting animation
-  function startCounting() {
-      let count = 0;
-      const targetCount = 75;
-      const interval = 75; // milliseconds
-
-      const counterInterval = setInterval(() => {
-          count++;
-          countElement.textContent = count;
-
-          if (count === targetCount) {
-              clearInterval(counterInterval);
-              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
-          }
-      }, interval);
-  }
-
-  // Start the counting animation when the page loads
-  startCounting();
-});
+                // Clear old interval if it exists
+                if (slider.hasAttribute('data-interval')) {
+                    clearInterval(parseInt(slider.getAttribute('data-interval')));
+                }
+                const newInterval = setInterval(showNextImage, 5000);
+                slider.setAttribute('data-interval', newInterval);
+            }
+        };
 
 
-/////       02
-document.addEventListener("DOMContentLoaded", function () {
-  const countElement = document.getElementById("coun");
-  const plusElement = document.getElementById("plu");
+        // Function to render dynamic news articles
+        const renderNewsArticles = async () => {
+            const articles = await fetchSupabaseData(NEWS_TABLE);
+            const container = document.getElementById('news-articles-container');
 
-  // Function to animate the plus sign
-  function animatePlusSign() {
-      plusElement.style.opacity = "1";
-      plusElement.style.transform = "scale(1)";
-  }
+            if (!container) return;
 
-  // Function to start the counting animation
-  function startCounting() {
-      let coun = 0;
-      const targetCount = 1000;
-      const interval = 5.5; // milliseconds
+            container.innerHTML = ''; // Clear the container
 
-      const counterInterval = setInterval(() => {
-          coun++;
-          countElement.textContent = coun;
+            if (articles.length === 0) {
+                container.innerHTML = '<p style="color: white; text-align: center;">No news articles available. Please add some from the admin panel!</p>';
+                return;
+            }
 
-          if (coun === targetCount) {
-              clearInterval(counterInterval);
-              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
-          }
-      }, interval);
-  }
+            articles.forEach(article => {
+                const articleDiv = document.createElement('div');
+                articleDiv.className = 'card-group';
+                articleDiv.innerHTML = `
+                <div class="card txt01">
+                    <img class="card-img-top visible scrool" src="${article.image_src}" alt="News Image" width="400" height="400">
+                </div>
+                <div class="card txt02">
+                    <h1 class="hidden">${article.title}</h1>
+                    <p class="hidden2">${article.body}</p>
+                </div>
+            `;
+                container.appendChild(articleDiv);
+            });
 
-  // Start the counting animation when the page loads
-  startCounting();
-});
+            // Re-run scroll animations on newly added elements
+            document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.observe(el));
+        };
 
 
+        // Helper for Count Animations (Consolidated)
+        function startCounter(countId, plusId, target, interval) {
+            const countElement = document.getElementById(countId);
+            const plusElement = document.getElementById(plusId);
 
-/////       03
-document.addEventListener("DOMContentLoaded", function () {
-  const countElement = document.getElementById("cou");
-  const plusElement = document.getElementById("pl");
+            if (!countElement) return;
 
-  // Function to animate the plus sign
-  function animatePlusSign() {
-      plusElement.style.opacity = "1";
-      plusElement.style.transform = "scale(1)";
-  }
+            function animatePlusSign() {
+                if (plusElement) {
+                    plusElement.style.opacity = "1";
+                    plusElement.style.transform = "scale(1)";
+                }
+            }
 
-  // Function to start the counting animation
-  function startCounting() {
-      let cou = 0;
-      const targetCount = 25;
-      const interval = 250; // milliseconds
+            let currentCount = 0;
+            const counterInterval = setInterval(() => {
+                currentCount++;
+                countElement.textContent = currentCount;
 
-      const counterInterval = setInterval(() => {
-          cou++;
-          countElement.textContent = cou;
+                if (currentCount === target) {
+                    clearInterval(counterInterval);
+                    setTimeout(animatePlusSign, 500);
+                }
+            }, interval);
+        }
 
-          if (cou === targetCount) {
-              clearInterval(counterInterval);
-              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
-          }
-      }, interval);
-  }
+        //------------- NAV SCROLL ------------------//
+        window.addEventListener('scroll', () => {
+            document.querySelector('nav').classList.toggle
+                ('window-scroll', window.scrollY > 0);
+        })
 
-  // Start the counting animation when the page loads
-  startCounting();
-});
-</script>
+        // SWIPER JS Code
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            grabCursor: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            autoplay: {
+                delay: 7000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                }
+            }
+        });
 
- 
+
+        // Menu Bar Toggle
+        const menu = document.querySelector(".nav-menu");
+        const menuBtn = document.querySelector("#open-menu-btn");
+        const closeBtn = document.querySelector("#close-menu-btn");
+
+        menuBtn.addEventListener('click', () => {
+            menu.style.display = "flex";
+            closeBtn.style.display = "inline-block";
+            menuBtn.style.display = "none";
+        })
+
+        const closeNav = () => {
+            menu.style.display = "none";
+            closeBtn.style.display = "none";
+            menuBtn.style.display = "inline-block";
+        }
+
+        closeBtn.addEventListener('click', closeNav);
+
+        // Scrool Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                console.log(entry)
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                } else {
+                    entry.target.classList.remove('show');
+                }
+            });
+        });
+
+        const scroolElements = document.querySelectorAll('.scrool');
+        scroolElements.forEach((el) => observer.observe(el));
+
+        const vibeElements = document.querySelectorAll('.vibe');
+        vibeElements.forEach((el) => observer.observe(el));
+
+        const popElements = document.querySelectorAll('.pop');
+        popElements.forEach((el) => observer.observe(el));
+
+
+        // --- MAIN INITIALIZATION BLOCK ---
+        // This block replaces and consolidates the previous DOMContentLoaded blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start dynamic data loading
+            renderHeaderImages();
+            renderNewsArticles();
+
+            // Start counting animations
+            startCounter("count", "plus", 75, 75);
+            startCounter("coun", "plu", 1000, 5.5);
+            startCounter("cou", "pl", 25, 250);
+        });
+    </script>
 </body>
 </html>
+
 
 
