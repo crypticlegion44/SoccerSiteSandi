@@ -74,185 +74,182 @@
 
     <script>
         // --- SUPABASE CONFIGURATION ---
-// !!! IMPORTANT: Replace with your actual Supabase details !!!
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+        const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const IMAGE_BUCKET = 'images'; // Bucket for header images
-const VIDEO_BUCKET = 'videos'; // Bucket for highlight videos
+        const IMAGE_BUCKET = 'images'; // Bucket for header images
+        const VIDEO_BUCKET = 'videos'; // Bucket for highlight videos
 
-// Helper to upload file to Supabase Storage
-const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
-    statusElement.style.display = 'block';
-    statusElement.textContent = 'Uploading...';
+        // Helper to upload file to Supabase Storage
+        const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
+            statusElement.style.display = 'block';
+            statusElement.textContent = 'Uploading...';
 
-    const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
-    
-    // Supabase upload call
-    const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(filePath, file);
+            const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+            
+            // Supabase upload call
+            const { data, error } = await supabase.storage
+                .from(bucket)
+                .upload(filePath, file);
 
-    statusElement.style.display = 'none';
-
-    if (error) {
-        console.error("Supabase Upload Error:", error);
-        throw new Error('Supabase upload failed: ' + error.message);
-    }
-
-    // Get the public URL for the file
-    const { data: publicURLData } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(filePath);
-    
-    return publicURLData.publicUrl;
-};
-
-// Helper to fetch all data from a table and render
-const fetchAndRender = async (tableName, renderFunc) => {
-    const { data, error } = await supabase
-        .from(tableName)
-        .select('*')
-        .order('id', { ascending: false });
-
-    if (error) {
-        console.error('Fetch Error:', error);
-        // CRITICAL: Use the alert to debug RLS/typo issues
-        alert('Fetch Error: Check RLS policies and table names! ' + error.message); 
-        return [];
-    }
-    renderFunc(data);
-    return data;
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    // --- ELEMENT TARGETS AND STATUS MESSAGES (Update IDs to match your HTML) ---
-    // If your HTML uses different IDs, update them here.
-    const imageGrid = document.getElementById('header-images-grid'); 
-    const videosGrid = document.getElementById('videos-grid');
-    const imageUploadStatus = document.getElementById('image-upload-status');
-    const videoUploadStatus = document.getElementById('video-upload-status');
-
-    // --- TABLE NAMES (CRITICAL: These must match your Supabase tables) ---
-    // Use the names that worked for uploading, which were without 'public.'
-    // NOTE: If you standardized to all lowercase, use: 'crypticlegionhighlightimages' etc.
-    const IMAGE_TABLE = 'crypticLegionHighlightImages'; 
-    const VIDEO_TABLE = 'crypticLegionHighlightVideos';
-    
-    // --- RENDER FUNCTIONS ---
-    const renderImages = (images) => {
-        imageGrid.innerHTML = '';
-        images.forEach(image => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            card.innerHTML = `
-                <img src="${image.src}" alt="Header Image">
-                <p>Image ID: ${image.id}</p>
-                <button class="btn btn-danger" onclick="deleteItem('${IMAGE_TABLE}', ${image.id}, 'image')">Delete</button>
-            `;
-            imageGrid.appendChild(card);
-        });
-    };
-
-    const renderVideos = (videos) => {
-        videosGrid.innerHTML = '';
-        videos.forEach(video => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            // The data structure relies on 'description' key:
-            card.innerHTML = `
-                <video src="${video.src}" controls loop></video>
-                <p>${video.description}</p>
-                <button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video')">Delete</button>
-            `;
-            videosGrid.appendChild(card);
-        });
-    };
-
-    // --- DELETE FUNCTION ---
-    window.deleteItem = async (tableName, id, type) => {
-        if (confirm('Are you sure you want to delete this item?')) {
-            const { error } = await supabase
-                .from(tableName)
-                .delete()
-                .eq('id', id);
+            statusElement.style.display = 'none';
 
             if (error) {
-                alert(`Deletion Failed: ${error.message}`);
-                console.error('Deletion Error:', error);
-            } else {
-                alert('Item deleted successfully!');
-                // Re-render the grid based on the table
-                if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
-                else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
+                console.error("Supabase Upload Error:", error);
+                throw new Error('Supabase upload failed: ' + error.message);
             }
-        }
-    };
 
-    // --- ADD FUNCTIONS ---
-    window.addImage = async () => {
-        const imageInput = document.getElementById('new-image-upload');
-        const file = imageInput.files[0];
-        if (!file) { alert('Please select an image file.'); return; }
-
-        try {
-            const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET, imageUploadStatus);
+            // Get the public URL for the file
+            const { data: publicURLData } = supabase.storage
+                .from(bucket)
+                .getPublicUrl(filePath);
             
-            // Insert into the highlights image table
-            const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
+            return publicURLData.publicUrl;
+        };
+
+        // Helper to fetch all data from a table and render
+        const fetchAndRender = async (tableName, renderFunc) => {
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) {
+                console.error('Fetch Error:', error);
+                // CRITICAL: Use the alert to debug RLS/typo issues
+                alert('Fetch Error: Check RLS policies and table names! ' + error.message); 
+                return [];
+            }
+            renderFunc(data);
+            return data;
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- ELEMENT TARGETS AND STATUS MESSAGES (FIXED IDs) ---
+            const imageGrid = document.getElementById('header-images-grid'); 
+            const videosGrid = document.getElementById('highlight-videos-grid'); // FIXED
+            const imageUploadStatus = document.getElementById('image-upload-status');
+            const videoUploadStatus = document.getElementById('highlight-video-upload-status'); // FIXED
+
+            // --- TABLE NAMES ---
+            const IMAGE_TABLE = 'crypticLegionHighlightImages'; 
+            const VIDEO_TABLE = 'crypticLegionHighlightVideos';
             
-            if (error) throw new Error(error.message);
+            // --- RENDER FUNCTIONS ---
+            const renderImages = (images) => {
+                imageGrid.innerHTML = '';
+                images.forEach(image => {
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    card.innerHTML = `
+                        <img src="${image.src}" alt="Header Image">
+                        <p>Image ID: ${image.id}</p>
+                        <button class="btn btn-danger" onclick="deleteItem('${IMAGE_TABLE}', ${image.id}, 'image')">Delete</button>
+                    `;
+                    imageGrid.appendChild(card);
+                });
+            };
 
-            imageInput.value = ''; 
-            alert('Image uploaded and saved successfully!');
-            await fetchAndRender(IMAGE_TABLE, renderImages);
+            const renderVideos = (videos) => {
+                videosGrid.innerHTML = '';
+                videos.forEach(video => {
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    // The data structure relies on 'description' key:
+                    card.innerHTML = `
+                        <video src="${video.src}" controls loop></video>
+                        <p>${video.description}</p>
+                        <button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video')">Delete</button>
+                    `;
+                    videosGrid.appendChild(card);
+                });
+            };
 
-        } catch (error) {
-            alert('Image operation failed: ' + error.message);
-        }
-    };
+            // --- DELETE FUNCTION ---
+            window.deleteItem = async (tableName, id, type) => {
+                if (confirm('Are you sure you want to delete this item?')) {
+                    const { error } = await supabase
+                        .from(tableName)
+                        .delete()
+                        .eq('id', id);
 
-    window.addVideo = async () => {
-        const videoInput = document.getElementById('new-video-upload');
-        // Check if you have a description input on the Admin page. If so, update the ID.
-        const descInput = document.getElementById('new-video-description'); 
-        const file = videoInput.files[0];
-        
-        // Validation check
-        if (!file || (descInput && !descInput.value.trim())) { 
-            alert('Please select a video file and provide a description.'); 
-            return; 
-        }
+                    if (error) {
+                        alert(`Deletion Failed: ${error.message}`);
+                        console.error('Deletion Error:', error);
+                    } else {
+                        alert('Item deleted successfully!');
+                        // Re-render the grid based on the table
+                        if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
+                        else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
+                    }
+                }
+            };
 
-        try {
-            const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, videoUploadStatus);
+            // --- ADD IMAGE FUNCTION ---
+            window.addImage = async () => {
+                const imageInput = document.getElementById('new-image-upload');
+                const file = imageInput.files[0];
+                if (!file) { alert('Please select an image file.'); return; }
 
-            // Insert into the highlights video table
-            const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+                try {
+                    const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET, imageUploadStatus);
+                    const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
+                    
+                    if (error) throw new Error(error.message);
+
+                    imageInput.value = ''; 
+                    alert('Image uploaded and saved successfully!');
+                    await fetchAndRender(IMAGE_TABLE, renderImages);
+
+                } catch (error) {
+                    alert('Image operation failed: ' + error.message);
+                }
+            };
+
+            // --- ADD HIGHLIGHT VIDEO FUNCTION (FIXED: Renamed and updated IDs) ---
+            window.addHighlightVideo = async () => {
+                // FIXED: Input IDs match HTML
+                const videoInput = document.getElementById('new-highlight-video-upload'); 
+                const descInput = document.getElementById('new-highlight-video-description'); 
+                const statusElement = document.getElementById('highlight-video-upload-status'); // FIXED
+                
+                const file = videoInput.files[0];
+                
+                // Validation check
+                if (!file || !descInput.value.trim()) { 
+                    alert('Please select a video file and provide a description.'); 
+                    return; 
+                }
+
+                try {
+                    // Pass the correct status element to the helper function
+                    const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, statusElement);
+
+                    // Insert into the highlights video table
+                    const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+                    
+                    if (error) throw new Error(error.message);
+
+                    videoInput.value = '';
+                    descInput.value = '';
+                    alert('Video uploaded and saved successfully!');
+                    await fetchAndRender(VIDEO_TABLE, renderVideos);
+
+                } catch (error) {
+                    alert('Video operation failed: ' + error.message);
+                }
+            };
             
-            if (error) throw new Error(error.message);
-
-            videoInput.value = '';
-            if(descInput) descInput.value = '';
-            alert('Video uploaded and saved successfully!');
-            await fetchAndRender(VIDEO_TABLE, renderVideos);
-
-        } catch (error) {
-            alert('Video operation failed: ' + error.message);
-        }
-    };
-    
-    // --- INITIAL RENDER ON PAGE LOAD ---
-    // Fetch and display existing items when the page loads
-    fetchAndRender(IMAGE_TABLE, renderImages);
-    fetchAndRender(VIDEO_TABLE, renderVideos);
-});
+            // --- INITIAL RENDER ON PAGE LOAD ---
+            fetchAndRender(IMAGE_TABLE, renderImages);
+            fetchAndRender(VIDEO_TABLE, renderVideos);
+        });
     </script>
 </body>
-
 </html>
+
 
 
 
