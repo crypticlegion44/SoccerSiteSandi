@@ -953,7 +953,6 @@ pro:nth-child(4) {
     // --- CORE FETCHING LOGIC ---
     // ----------------------------------------------------------------------
 
-    // 1. Helper to Fetch Data from Supabase
     const fetchSupabaseData = async (tableName) => {
         const { data, error } = await supabase
             .from(tableName)
@@ -972,19 +971,20 @@ pro:nth-child(4) {
         const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
         if (!slider) return;
 
-        // CRITICAL FIX: Only clear <img> tags, keep the text slide content
+        // CRITICAL FIX: Find the static text slide content
         const textSlide = slider.querySelector('.slide');
-        slider.innerHTML = '';
-        if (textSlide) slider.appendChild(textSlide);
         
+        // 1. Clear the slider entirely (removing any old images)
+        slider.innerHTML = ''; 
+        
+        // 2. Insert the static text slide back first
+        if (textSlide) slider.appendChild(textSlide);
+
+        // 3. Insert the dynamic images from Supabase
         images.forEach((image, index) => {
             const img = document.createElement('img');
             img.src = image.src;
             img.alt = `Header Image ${image.id}`;
-            // If this is the first image, add the 'active' class (after the text slide)
-            if (index === 0) {
-                img.classList.add('active');
-            }
             slider.appendChild(img);
         });
         
@@ -997,7 +997,7 @@ pro:nth-child(4) {
         const container = document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID);
         if (!container) return;
 
-        container.innerHTML = ''; // Clear the entire container (including the loading message)
+        container.innerHTML = ''; 
 
         if (videos.length === 0) {
             container.innerHTML = '<p>No highlights available yet. Check back soon!</p>';
@@ -1006,9 +1006,8 @@ pro:nth-child(4) {
 
         videos.forEach(video => {
             const article = document.createElement('article');
-            article.className = 'team-member'; // Re-use your existing class for styling
+            article.className = 'team-member'; 
 
-            // The inner HTML uses the structure from your original HTML
             article.innerHTML = `
                 <div class="team-member-video">
                     <video src="${video.src}" controls width="100%" height="200" loop></video>
@@ -1023,8 +1022,9 @@ pro:nth-child(4) {
     };
 
     // 4. Initialization function to load all dynamic content
+    // This is called by the DOMContentLoaded listener.
     const loadDynamicContent = async () => {
-        // Load Highlight Videos (Show loading state while fetching)
+        // Load Highlight Videos 
         const videos = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
         renderHighlightVideos(videos);
 
@@ -1032,33 +1032,34 @@ pro:nth-child(4) {
         const images = await fetchSupabaseData(HIGHLIGHT_IMAGE_TABLE);
         renderHeaderImages(images); 
         
-        // Initialize other features that don't depend on Supabase data
+        // Initialize other static features after content loading
         initNavScroll();
         initMenuBarToggle();
         initScrollAnimation();
         initCountAnimations(); 
-        initSwiper(); // Swiper relies on its container being present
+        initSwiper(); 
     };
 
-    // 5. Modified Corasel function (consolidated with your original JS)
+    // 5. Modified Corasel function to handle dynamic images
     function initCorasel() {
         const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
         if (!slider) return;
+        
+        // CRITICAL FIX: Select all <img> elements (which were dynamically loaded)
         const images = slider.querySelectorAll('img');
         let currentImageIndex = 0;
         
-        // Ensure images exist before setting up the slider
         if (images.length === 0) {
             console.warn("No header images found to start the carousel.");
             return;
         }
 
-        // 1. Clear previous interval if re-initializing
+        // 1. Clear previous interval (stop the old one)
         if (slider.hasAttribute('data-interval')) {
             clearInterval(parseInt(slider.getAttribute('data-interval')));
         }
         
-        // 2. Remove 'active' from all images (in case of re-render)
+        // 2. Remove 'active' from all images 
         images.forEach(img => img.classList.remove('active'));
 
         // 3. Set the first image as active
@@ -1073,10 +1074,10 @@ pro:nth-child(4) {
 
         // 5. Start the new interval
         const newInterval = setInterval(showNextImage, 5000);
-        slider.setAttribute('data-interval', newInterval); // Store interval ID for clearing
+        slider.setAttribute('data-interval', newInterval); 
     }
 
-    // ------------- NAV SCROLL (Consolidated from your original JS) -------------
+    // ------------- NAV SCROLL (Consolidated) -------------
     function initNavScroll() {
         window.addEventListener('scroll', () => {
             document.querySelector('nav').classList.toggle(
@@ -1084,7 +1085,7 @@ pro:nth-child(4) {
         });
     }
 
-    // ------------- SWIPER JS Code (Consolidated from your original JS) -------------
+    // ------------- SWIPER JS Code (Consolidated) -------------
     function initSwiper() {
         new Swiper(".mySwiper", {
             slidesPerView: 1,
@@ -1100,24 +1101,20 @@ pro:nth-child(4) {
                 disableOnInteraction: false,
             },
             breakpoints: {
-                768: {
-                    slidesPerView: 2, 
-                },
-                1024: {
-                    slidesPerView: 3, 
-                }
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
             }
         });
     }
 
 
-    // ------------- Menu Bar Toggle (Consolidated from your original JS) -------------
+    // ------------- Menu Bar Toggle (Consolidated) -------------
     function initMenuBarToggle() {
         const menu = document.querySelector(".nav-menu");
         const menuBtn = document.querySelector("#open-menu-btn");
         const closeBtn = document.querySelector("#close-menu-btn");
 
-        if (!menu || !menuBtn || !closeBtn) return; // Prevent errors if elements don't exist
+        if (!menu || !menuBtn || !closeBtn) return; 
 
         const closeNav = () => {
             menu.style.display = "none";
@@ -1135,7 +1132,7 @@ pro:nth-child(4) {
     }
 
 
-    // ------------- Scrool Animation (Consolidated from your original JS) -------------
+    // ------------- Scrool Animation (Consolidated) -------------
     function initScrollAnimation() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
@@ -1151,7 +1148,7 @@ pro:nth-child(4) {
     }
 
 
-    // ------------- Count Animation Code (Consolidated and simplified) -------------
+    // ------------- Count Animation Code (Consolidated) -------------
     function animateCount(id, plusId, targetCount, interval) {
         const countElement = document.getElementById(id);
         const plusElement = document.getElementById(plusId);
@@ -1178,18 +1175,17 @@ pro:nth-child(4) {
     }
     
     function initCountAnimations() {
-        // Only run if the elements exist
         if (document.getElementById("count")) animateCount("count", "plus", 75, 75);
         if (document.getElementById("coun")) animateCount("coun", "plu", 1000, 5.5);
         if (document.getElementById("cou")) animateCount("cou", "pl", 25, 250);
     }
 
     // --- FINAL INITIALIZATION CALL ---
-    // This will now trigger all data fetching and rendering after the DOM is ready.
     document.addEventListener('DOMContentLoaded', loadDynamicContent);
     </script>
 </body>
 </html>
+
 
 
 
