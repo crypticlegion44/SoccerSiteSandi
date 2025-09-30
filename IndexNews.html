@@ -981,220 +981,226 @@ Every match, every moment, every heartbeat captured here</p>
     </script>
 
     <script>
-        // --- SUPABASE CONFIGURATION ---
-        const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                // Corasel
+// Wait for the DOM to load
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the slider element
+    const slider = document.getElementById('slider');
+  
+    // Get the images within the slider
+    const images = slider.querySelectorAll('img');
+    let currentImageIndex = 0;
+  
+    // Function to show the next image in the slider
+    function showNextImage() {
+      // Hide the current image
+      images[currentImageIndex].classList.remove('active');
+  
+      // Increment the image index
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+  
+      // Show the next image
+      images[currentImageIndex].classList.add('active');
+    }
+  
+    // Initially show the first image
+    images[currentImageIndex].classList.add('active');
+  
+    // Set the interval for transitioning to the next image (15 seconds = 15000 milliseconds)
+    setInterval(showNextImage, 5000);
+  });
 
-        // --- SUPABASE TABLE NAMES ---
-        const NEWS_TABLE = 'crypticLegionNews';
-        const IMAGE_TABLE = 'crypticLegionHighlightImages';
+//------------- NAV SCROLL ------------------//
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').classList.toggle
+  ('window-scroll', window.scrollY > 0);
+})
 
+// SWIPER JS Code
 
-        // Helper function to fetch data from Supabase
-        const fetchSupabaseData = async (tableName) => {
-            const { data, error } = await supabase
-                .from(tableName)
-                .select('*')
-                .order('id', { ascending: false }); // Show newest first
-
-            if (error) {
-                console.error(`Error fetching ${tableName}:`, error);
-                return [];
-            }
-            return data;
-        };
-
-
-        // Function to render header images and initialize the carousel
-        const renderHeaderImages = async () => {
-            const images = await fetchSupabaseData(IMAGE_TABLE);
-            const slider = document.getElementById('slider');
-            if (!slider) return;
-
-            // Clear existing static images (leaving the first child, which is the .slide div)
-            Array.from(slider.children).slice(1).forEach(img => img.remove());
-
-            // Add dynamic images AFTER the text slide
-            images.forEach((image, index) => {
-                const img = document.createElement('img');
-                img.src = image.src;
-                img.alt = `Header Image ${index + 1}`;
-                slider.appendChild(img);
-            });
-
-            // Re-initialize Image Carousel logic to include the new dynamic images
-            const allSlides = Array.from(slider.children).filter(el => el.tagName === 'DIV' || el.tagName === 'IMG');
-
-            if (allSlides.length > 1) { // Check if we have the text slide + at least one image
-                let currentImageIndex = 0;
-
-                // Initially show the first slide (the DIV)
-                allSlides[currentImageIndex].classList.add('active');
-
-                function showNextImage() {
-                    allSlides[currentImageIndex].classList.remove('active');
-                    currentImageIndex = (currentImageIndex + 1) % allSlides.length;
-                    allSlides[currentImageIndex].classList.add('active');
-                }
-
-                // Clear old interval if it exists
-                if (slider.hasAttribute('data-interval')) {
-                    clearInterval(parseInt(slider.getAttribute('data-interval')));
-                }
-                const newInterval = setInterval(showNextImage, 5000);
-                slider.setAttribute('data-interval', newInterval);
-            }
-        };
+// var swiper = new Swiper(".mySwiper", {
+//   slidesPerView: 1,
+//   spaceBetween: 30,
+//   pagination: {
+//     el: ".swiper-pagination",
+//     clickable: true,
+//   },
+//   // when window width is >= 600px
+//   breakpoints: {
+//     600: {
+//       slidesPerView: 2
+//     }
+//   }
+// });
 
 
-        // Function to render dynamic news articles
-        const renderNewsArticles = async () => {
-            const articles = await fetchSupabaseData(NEWS_TABLE);
-            const container = document.getElementById('news-articles-container');
-
-            if (!container) return;
-
-            container.innerHTML = ''; // Clear the container
-
-            if (articles.length === 0) {
-                container.innerHTML = '<p style="color: white; text-align: center;">No news articles available. Please add some from the admin panel!</p>';
-                return;
-            }
-
-            articles.forEach(article => {
-                const articleDiv = document.createElement('div');
-                articleDiv.className = 'card-group';
-                articleDiv.innerHTML = `
-                <div class="card txt01">
-                    <img class="card-img-top visible scrool" src="${article.image_src}" alt="News Image" width="400" height="400">
-                </div>
-                <div class="card txt02">
-                    <h1 class="hidden">${article.title}</h1>
-                    <p class="hidden2">${article.body}</p>
-                </div>
-            `;
-                container.appendChild(articleDiv);
-            });
-
-            // Re-run scroll animations on newly added elements
-            document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.observe(el));
-        };
+  var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    grabCursor: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    autoplay: {
+      delay: 7000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: 2, // 2 slides side by side on tablets
+      },
+      1024: {
+        slidesPerView: 3, // 3 slides side by side on desktops
+      }
+    }
+  });
 
 
-        // Helper for Count Animations (Consolidated)
-        function startCounter(countId, plusId, target, interval) {
-            const countElement = document.getElementById(countId);
-            const plusElement = document.getElementById(plusId);
 
-            if (!countElement) return;
+// Menu Bar Toggle
+const menu = document.querySelector(".nav-menu");
+const menuBtn = document.querySelector("#open-menu-btn");
+const closeBtn = document.querySelector("#close-menu-btn");
 
-            function animatePlusSign() {
-                if (plusElement) {
-                    plusElement.style.opacity = "1";
-                    plusElement.style.transform = "scale(1)";
-                }
-            }
+menuBtn.addEventListener('click', () => {
+  menu.style.display = "flex";
+  closeBtn.style.display = "inline-block";
+  menuBtn.style.display = "none";
+})
 
-            let currentCount = 0;
-            const counterInterval = setInterval(() => {
-                currentCount++;
-                countElement.textContent = currentCount;
+const closeNav = () => {
+  menu.style.display = "none";
+  closeBtn.style.display = "none";
+  menuBtn.style.display = "inline-block";
+}
 
-                if (currentCount === target) {
-                    clearInterval(counterInterval);
-                    setTimeout(animatePlusSign, 500);
-                }
-            }, interval);
-        }
+closeBtn.addEventListener('click', closeNav);
 
-        //------------- NAV SCROLL ------------------//
-        window.addEventListener('scroll', () => {
-            document.querySelector('nav').classList.toggle
-                ('window-scroll', window.scrollY > 0);
-        })
+// Scrool Animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    console.log(entry)
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    } else {
+      entry.target.classList.remove('show');
+    }
+  });
+});
 
-        // SWIPER JS Code
-        var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            grabCursor: true,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            autoplay: {
-                delay: 7000,
-                disableOnInteraction: false,
-            },
-            breakpoints: {
-                768: {
-                    slidesPerView: 2,
-                },
-                1024: {
-                    slidesPerView: 3,
-                }
-            }
-        });
+const scroolElements = document.querySelectorAll('.scrool');
+scroolElements.forEach((el) => observer.observe(el));
 
+const vibeElements = document.querySelectorAll('.vibe');
+vibeElements.forEach((el) => observer.observe(el));
 
-        // Menu Bar Toggle
-        const menu = document.querySelector(".nav-menu");
-        const menuBtn = document.querySelector("#open-menu-btn");
-        const closeBtn = document.querySelector("#close-menu-btn");
+const popElements = document.querySelectorAll('.pop');
+popElements.forEach((el) => observer.observe(el));
 
-        menuBtn.addEventListener('click', () => {
-            menu.style.display = "flex";
-            closeBtn.style.display = "inline-block";
-            menuBtn.style.display = "none";
-        })
+/////                 Count Animation Code
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("count");
+  const plusElement = document.getElementById("plus");
 
-        const closeNav = () => {
-            menu.style.display = "none";
-            closeBtn.style.display = "none";
-            menuBtn.style.display = "inline-block";
-        }
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
 
-        closeBtn.addEventListener('click', closeNav);
+  // Function to start the counting animation
+  function startCounting() {
+      let count = 0;
+      const targetCount = 75;
+      const interval = 75; // milliseconds
 
-        // Scrool Animation
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                console.log(entry)
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                } else {
-                    entry.target.classList.remove('show');
-                }
-            });
-        });
+      const counterInterval = setInterval(() => {
+          count++;
+          countElement.textContent = count;
 
-        const scroolElements = document.querySelectorAll('.scrool');
-        scroolElements.forEach((el) => observer.observe(el));
+          if (count === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
 
-        const vibeElements = document.querySelectorAll('.vibe');
-        vibeElements.forEach((el) => observer.observe(el));
-
-        const popElements = document.querySelectorAll('.pop');
-        popElements.forEach((el) => observer.observe(el));
+  // Start the counting animation when the page loads
+  startCounting();
+});
 
 
-        // --- MAIN INITIALIZATION BLOCK ---
-        // This block replaces and consolidates the previous DOMContentLoaded blocks
-        document.addEventListener('DOMContentLoaded', function() {
-            // Start dynamic data loading
-            renderHeaderImages();
-            renderNewsArticles();
+/////       02
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("coun");
+  const plusElement = document.getElementById("plu");
 
-            // Start counting animations
-            startCounter("count", "plus", 75, 75);
-            startCounter("coun", "plu", 1000, 5.5);
-            startCounter("cou", "pl", 25, 250);
-        });
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let coun = 0;
+      const targetCount = 1000;
+      const interval = 5.5; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          coun++;
+          countElement.textContent = coun;
+
+          if (coun === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
+
+
+
+/////       03
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("cou");
+  const plusElement = document.getElementById("pl");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let cou = 0;
+      const targetCount = 25;
+      const interval = 250; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          cou++;
+          countElement.textContent = cou;
+
+          if (cou === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
     </script>
 </body>
 </html>
+
 
 
 
