@@ -934,257 +934,461 @@ pro:nth-child(4) {
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <script>
-    // --- SUPABASE CONFIGURATION ---
-    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDAzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+    <script>// --- SUPABASE CONFIGURATION ---
+
+    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDAzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+
+
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // --- TABLES MANAGED BY ADMIN PANEL ---
+
+
+    // --- TABLES AND IDS ---
+
     const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos';
+
     const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages';
 
-    // --- ELEMENT TARGETS ---
-    const HIGHLIGHT_VIDEOS_CONTAINER_ID = 'highlight-videos-section'; 
     const HEADER_IMAGES_CONTAINER_ID = 'slider'; 
 
-    // ----------------------------------------------------------------------
+    const HIGHLIGHT_VIDEOS_CONTAINER_ID = 'highlight-videos-section'; 
+
+
+
     // --- CORE FETCHING LOGIC ---
-    // ----------------------------------------------------------------------
 
     const fetchSupabaseData = async (tableName) => {
+
         const { data, error } = await supabase
+
             .from(tableName)
+
             .select('*')
+
             .order('id', { ascending: false }); 
 
+
+
         if (error) {
+
             console.error(`Error fetching data from ${tableName}:`, error);
+
             return [];
+
         }
+
         return data;
+
     };
 
-    // 2. Rendering function for Header Images (Updates the Corasel/Slider)
+
+
+    // ----------------------------------------------------------------------
+
+    // --- RENDERING FUNCTIONS ---
+
+    // ----------------------------------------------------------------------
+
+
+
+    // Renders the Corasel/Header Images
+
     const renderHeaderImages = (images) => {
+
         const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
+
         if (!slider) return;
 
-        // CRITICAL FIX: Find the static text slide content
+
+
+        // 1. Get the static text slide (the content you want to keep)
+
         const textSlide = slider.querySelector('.slide');
+
         
-        // 1. Clear the slider entirely (removing any old images)
+
+        // 2. Clear the entire slider content
+
         slider.innerHTML = ''; 
+
         
-        // 2. Insert the static text slide back first
+
+        // 3. Re-insert the static text slide
+
         if (textSlide) slider.appendChild(textSlide);
 
-        // 3. Insert the dynamic images from Supabase
-        images.forEach((image, index) => {
+
+
+        // 4. Insert the dynamic images from Supabase
+
+        images.forEach((image) => {
+
             const img = document.createElement('img');
+
             img.src = image.src;
+
             img.alt = `Header Image ${image.id}`;
+
             slider.appendChild(img);
+
         });
+
         
-        // CRITICAL: Must re-initialize the Corasel function after adding new images
+
+        // 5. Initialize the Corasel with the new images
+
         initCorasel(); 
+
     };
 
-    // 3. Rendering function for Highlight Videos
+
+
+    // Renders the Highlight Videos
+
     const renderHighlightVideos = (videos) => {
+
         const container = document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID);
+
         if (!container) return;
+
+
 
         container.innerHTML = ''; 
 
+
+
         if (videos.length === 0) {
+
             container.innerHTML = '<p>No highlights available yet. Check back soon!</p>';
+
             return;
+
         }
+
+
 
         videos.forEach(video => {
+
             const article = document.createElement('article');
+
             article.className = 'team-member'; 
 
+
+
             article.innerHTML = `
+
                 <div class="team-member-video">
+
                     <video src="${video.src}" controls width="100%" height="200" loop></video>
+
                 </div>
+
                 <div class="team-member-info">
+
                     <h4>Highlight</h4>
+
                     <p>${video.description || 'Footage from the Legion'}</p>
+
                 </div>
+
             `;
+
             container.appendChild(article);
+
         });
+
     };
 
-    // 4. Initialization function to load all dynamic content
-    // This is called by the DOMContentLoaded listener.
-    const loadDynamicContent = async () => {
-        // Load Highlight Videos 
-        const videos = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
-        renderHighlightVideos(videos);
 
-        // Load Header Images
-        const images = await fetchSupabaseData(HIGHLIGHT_IMAGE_TABLE);
-        renderHeaderImages(images); 
-        
-        // Initialize other static features after content loading
-        initNavScroll();
-        initMenuBarToggle();
-        initScrollAnimation();
-        initCountAnimations(); 
-        initSwiper(); 
-    };
 
-    // 5. Modified Corasel function to handle dynamic images
+    // ----------------------------------------------------------------------
+
+    // --- INITIALIZATION FUNCTIONS (YOUR ORIGINAL CODE REFACTORED) ---
+
+    // ----------------------------------------------------------------------
+
+
+
+    // Handles the Image Carousel functionality
+
     function initCorasel() {
+
         const slider = document.getElementById(HEADER_IMAGES_CONTAINER_ID);
+
         if (!slider) return;
+
         
-        // CRITICAL FIX: Select all <img> elements (which were dynamically loaded)
+
         const images = slider.querySelectorAll('img');
+
         let currentImageIndex = 0;
+
         
-        if (images.length === 0) {
-            console.warn("No header images found to start the carousel.");
-            return;
+
+        if (images.length === 0) return;
+
+
+
+        // Clear previous interval
+
+        if (slider.hasAttribute('data-interval')) {
+
+            clearInterval(parseInt(slider.getAttribute('data-interval')));
+
         }
 
-        // 1. Clear previous interval (stop the old one)
-        if (slider.hasAttribute('data-interval')) {
-            clearInterval(parseInt(slider.getAttribute('data-interval')));
-        }
         
-        // 2. Remove 'active' from all images 
+
+        // Ensure only one image is active at the start
+
         images.forEach(img => img.classList.remove('active'));
 
-        // 3. Set the first image as active
         images[currentImageIndex].classList.add('active');
 
-        // 4. Define showNextImage function
+
+
         function showNextImage() {
+
             images[currentImageIndex].classList.remove('active');
+
             currentImageIndex = (currentImageIndex + 1) % images.length;
+
             images[currentImageIndex].classList.add('active');
+
         }
 
-        // 5. Start the new interval
+
+
         const newInterval = setInterval(showNextImage, 5000);
+
         slider.setAttribute('data-interval', newInterval); 
+
     }
 
-    // ------------- NAV SCROLL (Consolidated) -------------
+    
+
+    // Handles Nav Scroll
+
     function initNavScroll() {
+
         window.addEventListener('scroll', () => {
-            document.querySelector('nav').classList.toggle(
-            'window-scroll', window.scrollY > 0);
+
+            document.querySelector('nav').classList.toggle('window-scroll', window.scrollY > 0);
+
         });
+
     }
 
-    // ------------- SWIPER JS Code (Consolidated) -------------
+
+
+    // Handles Swiper
+
     function initSwiper() {
+
         new Swiper(".mySwiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            grabCursor: true,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            autoplay: {
-                delay: 7000,
-                disableOnInteraction: false,
-            },
-            breakpoints: {
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
-            }
+
+            slidesPerView: 1, spaceBetween: 20, loop: true, grabCursor: true,
+
+            pagination: { el: ".swiper-pagination", clickable: true },
+
+            autoplay: { delay: 7000, disableOnInteraction: false },
+
+            breakpoints: { 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }
+
         });
+
     }
 
 
-    // ------------- Menu Bar Toggle (Consolidated) -------------
+
+    // Handles Menu Bar Toggle
+
     function initMenuBarToggle() {
+
         const menu = document.querySelector(".nav-menu");
+
         const menuBtn = document.querySelector("#open-menu-btn");
+
         const closeBtn = document.querySelector("#close-menu-btn");
 
-        if (!menu || !menuBtn || !closeBtn) return; 
+
+
+        if (!menu || !menuBtn || !closeBtn) return;
+
+
 
         const closeNav = () => {
+
             menu.style.display = "none";
+
             closeBtn.style.display = "none";
+
             menuBtn.style.display = "inline-block";
+
         }
 
+
+
         menuBtn.addEventListener('click', () => {
+
             menu.style.display = "flex";
+
             closeBtn.style.display = "inline-block";
+
             menuBtn.style.display = "none";
+
         })
 
+
+
         closeBtn.addEventListener('click', closeNav);
+
     }
 
 
-    // ------------- Scrool Animation (Consolidated) -------------
+
+    // Handles Scroll Animation
+
     function initScrollAnimation() {
+
         const observer = new IntersectionObserver((entries) => {
+
             entries.forEach((entry) => {
+
                 if (entry.isIntersecting) {
+
                     entry.target.classList.add('show');
+
                 } else {
+
                     entry.target.classList.remove('show');
+
                 }
+
             });
+
         });
 
         document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.observe(el));
+
     }
 
 
-    // ------------- Count Animation Code (Consolidated) -------------
+
+    // Handles Count Animations
+
     function animateCount(id, plusId, targetCount, interval) {
+
         const countElement = document.getElementById(id);
+
         const plusElement = document.getElementById(plusId);
 
         if (!countElement) return;
 
+
+
         function animatePlusSign() {
+
             if (plusElement) {
+
                 plusElement.style.opacity = "1";
+
                 plusElement.style.transform = "scale(1)";
+
             }
+
         }
 
         let count = 0;
+
         const counterInterval = setInterval(() => {
+
             count++;
+
             countElement.textContent = count;
 
             if (count === targetCount) {
+
                 clearInterval(counterInterval);
+
                 setTimeout(animatePlusSign, 500);
+
             }
+
         }, interval);
-    }
-    
-    function initCountAnimations() {
-        if (document.getElementById("count")) animateCount("count", "plus", 75, 75);
-        if (document.getElementById("coun")) animateCount("coun", "plu", 1000, 5.5);
-        if (document.getElementById("cou")) animateCount("cou", "pl", 25, 250);
+
     }
 
-    // --- FINAL INITIALIZATION CALL ---
+
+
+    function initCountAnimations() {
+
+        if (document.getElementById("count")) animateCount("count", "plus", 75, 75);
+
+        if (document.getElementById("coun")) animateCount("coun", "plu", 1000, 5.5);
+
+        if (document.getElementById("cou")) animateCount("cou", "pl", 25, 250);
+
+    }
+
+
+
+    // ----------------------------------------------------------------------
+
+    // --- MASTER INITIALIZATION FUNCTION ---
+
+    // ----------------------------------------------------------------------
+
+
+
+    const loadDynamicContent = async () => {
+
+        // 1. Load data from Supabase
+
+        const videoData = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
+
+        const imageData = await fetchSupabaseData(HIGHLIGHT_IMAGE_TABLE);
+
+        
+
+        // 2. Render dynamic content first
+
+        renderHighlightVideos(videoData);
+
+        renderHeaderImages(imageData); // Calls initCorasel() inside
+
+        
+
+        // 3. Initialize all static functionality
+
+        initNavScroll();
+
+        initMenuBarToggle();
+
+        initScrollAnimation();
+
+        initCountAnimations(); 
+
+        initSwiper(); 
+
+    };
+
+
+
+    // This ensures everything runs only once after the entire page is loaded
+
     document.addEventListener('DOMContentLoaded', loadDynamicContent);
+
+
+
+
     </script>
 </body>
 </html>
+
 
 
 
