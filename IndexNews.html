@@ -1053,9 +1053,226 @@ document.addEventListener('DOMContentLoaded', async () => {
     const newsData = await fetchNews();
     renderNewsForViewer(newsData);
 });
+                        // Corasel
+// Wait for the DOM to load
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the slider element
+    const slider = document.getElementById('slider');
+  
+    // Get the images within the slider
+    const images = slider.querySelectorAll('img');
+    let currentImageIndex = 0;
+  
+    // Function to show the next image in the slider
+    function showNextImage() {
+      // Hide the current image
+      images[currentImageIndex].classList.remove('active');
+  
+      // Increment the image index
+      currentImageIndex = (currentImageIndex + 1) % images.length;
+  
+      // Show the next image
+      images[currentImageIndex].classList.add('active');
+    }
+  
+    // Initially show the first image
+    images[currentImageIndex].classList.add('active');
+  
+    // Set the interval for transitioning to the next image (15 seconds = 15000 milliseconds)
+    setInterval(showNextImage, 5000);
+  });
+
+//------------- NAV SCROLL ------------------//
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').classList.toggle
+  ('window-scroll', window.scrollY > 0);
+})
+
+// SWIPER JS Code
+
+// var swiper = new Swiper(".mySwiper", {
+//   slidesPerView: 1,
+//   spaceBetween: 30,
+//   pagination: {
+//     el: ".swiper-pagination",
+//     clickable: true,
+//   },
+//   // when window width is >= 600px
+//   breakpoints: {
+//     600: {
+//       slidesPerView: 2
+//     }
+//   }
+// });
+
+
+  var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    grabCursor: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    autoplay: {
+      delay: 7000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: 2, // 2 slides side by side on tablets
+      },
+      1024: {
+        slidesPerView: 3, // 3 slides side by side on desktops
+      }
+    }
+  });
+
+
+
+// Menu Bar Toggle
+const menu = document.querySelector(".nav-menu");
+const menuBtn = document.querySelector("#open-menu-btn");
+const closeBtn = document.querySelector("#close-menu-btn");
+
+menuBtn.addEventListener('click', () => {
+  menu.style.display = "flex";
+  closeBtn.style.display = "inline-block";
+  menuBtn.style.display = "none";
+})
+
+const closeNav = () => {
+  menu.style.display = "none";
+  closeBtn.style.display = "none";
+  menuBtn.style.display = "inline-block";
+}
+
+closeBtn.addEventListener('click', closeNav);
+
+// Scrool Animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    console.log(entry)
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    } else {
+      entry.target.classList.remove('show');
+    }
+  });
+});
+
+const scroolElements = document.querySelectorAll('.scrool');
+scroolElements.forEach((el) => observer.observe(el));
+
+const vibeElements = document.querySelectorAll('.vibe');
+vibeElements.forEach((el) => observer.observe(el));
+
+const popElements = document.querySelectorAll('.pop');
+popElements.forEach((el) => observer.observe(el));
+
+/////                 Count Animation Code
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("count");
+  const plusElement = document.getElementById("plus");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let count = 0;
+      const targetCount = 75;
+      const interval = 75; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          count++;
+          countElement.textContent = count;
+
+          if (count === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
+
+
+/////       02
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("coun");
+  const plusElement = document.getElementById("plu");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let coun = 0;
+      const targetCount = 1000;
+      const interval = 5.5; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          coun++;
+          countElement.textContent = coun;
+
+          if (coun === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
+
+
+
+/////       03
+document.addEventListener("DOMContentLoaded", function () {
+  const countElement = document.getElementById("cou");
+  const plusElement = document.getElementById("pl");
+
+  // Function to animate the plus sign
+  function animatePlusSign() {
+      plusElement.style.opacity = "1";
+      plusElement.style.transform = "scale(1)";
+  }
+
+  // Function to start the counting animation
+  function startCounting() {
+      let cou = 0;
+      const targetCount = 25;
+      const interval = 250; // milliseconds
+
+      const counterInterval = setInterval(() => {
+          cou++;
+          countElement.textContent = cou;
+
+          if (cou === targetCount) {
+              clearInterval(counterInterval);
+              setTimeout(animatePlusSign, 500); // Wait for 0.5 seconds before showing the plus sign
+          }
+      }, interval);
+  }
+
+  // Start the counting animation when the page loads
+  startCounting();
+});
     </script>
 </body>
 </html>
+
 
 
 
