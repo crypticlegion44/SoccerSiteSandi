@@ -628,80 +628,105 @@ pro:nth-child(4) {
 }
 /* --- NEWS ARTICLES STYLES (indexNew.html) --- */
 
-/* 1. Container for all articles (The area where they sit) */
-#news-articles-container {
-    max-width: 1000px; /* Limit the width of the whole news section */
-    margin: 3rem auto; /* Center the container on the page */
-    padding: 0 1rem;
-    display: flex; /* Use flexbox to arrange articles (if multiple are displayed) */
-    flex-direction: column; /* Stack articles vertically */
-    gap: 2rem; /* Space between each article */
+/* --- Custom Variables (Adjust these to match your site's theme) --- */
+:root {
+    --color-text-dark: #1f2641; /* Primary dark text color for headers */
+    --color-text-body: #4a4a4a; /* Slightly lighter for body text */
+    --color-text-light: #777;   /* Faded text for dates/details */
+    --color-bg-light: #fefefe;  /* White or off-white background for the card */
+    --color-border: #e0e0e0;    /* Light gray border */
+    /* Assuming you have a main theme color, use it here if needed */
+    /* --color-primary: #007bff; */ 
 }
 
+
+/* 1. Container for all articles */
+#news-articles-container {
+    max-width: 800px; /* Adjusted width to match the centered, single-column look */
+    margin: 3rem auto; /* Center the container on the page */
+    padding: 0 1rem;
+    display: flex; 
+    flex-direction: column; 
+    gap: 3rem; /* Space between each article if multiple are loaded */
+}
+
+/* Optional: Style for the "Latest News" heading */
 #news-articles-container h2 {
     text-align: center;
     margin-bottom: 2rem;
-    color: var(--color-primary); /* Use your primary color variable */
+    font-size: 2.5rem;
+    color: var(--color-text-dark); 
 }
 
-/* 2. Style for each individual article card (like the one in the image) */
+/* 2. Style for each individual article card */
 .news-article-card {
-    background: var(--color-bg-light); /* A slightly lighter background than the body, or white */
-    padding: 2rem;
+    background: var(--color-bg-light); 
+    padding: 0; /* Important: The padding is mostly handled internally */
     border-radius: 1rem;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    transition: transform 0.3s ease;
-    border: 1px solid var(--color-border); /* A light border */
-}
-
-.news-article-card:hover {
-    transform: translateY(-5px); /* Lift card slightly on hover */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
+    overflow: hidden; /* Ensures media border-radius works */
 }
 
 /* 3. Media (Image/Video) styling */
 .news-media {
-    width: 100%; /* Make the image/video fill the card width */
-    max-height: 450px; /* Ensure media doesn't get too tall */
-    object-fit: cover; /* Crop/fit the image nicely */
-    border-radius: 0.5rem;
-    margin-bottom: 1.5rem;
+    width: 100%; /* Make the media fill the card width */
+    max-height: 400px; /* Limits max height for a uniform look */
+    object-fit: cover; 
+    display: block; /* Removes any baseline spacing issues */
+    /* No border-radius here since the image should meet the card's edge */
 }
 
-/* 4. Article Header (Title) */
+/* 4. Content Block (Text area below the media) */
+.article-header,
+.article-body,
+.article-date {
+    padding: 0 2rem; /* Add padding to the text block for breathing room */
+}
+
+/* 5. Article Header (Title) */
 .article-header h3 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     line-height: 1.3;
-    margin-bottom: 0.8rem;
-    text-align: center; /* Center the title like in the image */
-    color: var(--color-text-dark); /* Dark text for title */
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center; /* Centered title like in the image */
+    color: var(--color-text-dark);
 }
 
-/* 5. Article Body (Paragraphs) */
+/* 6. Article Body (Paragraphs) */
 .article-body p {
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.7;
     margin-top: 1rem;
-    color: var(--color-text-body); /* Slightly greyed body text */
+    margin-bottom: 0;
+    text-align: justify; /* Justify text for a clean block look */
+    color: var(--color-text-body);
 }
 
-/* 6. Date/Timestamp */
+/* 7. Date/Timestamp (Optional: You might want to remove this if not needed) */
 .article-date {
     display: block;
     margin-top: 1.5rem;
-    color: var(--color-text-light); /* Faded text for date */
-    font-size: 0.85rem;
-    font-style: italic;
+    padding-bottom: 2rem;
+    color: var(--color-text-light); 
+    font-size: 0.9rem;
+    text-align: right;
 }
 
 /* --- Responsive Adjustments --- */
 @media screen and (max-width: 600px) {
-    .news-article-card {
-        padding: 1rem;
+    #news-articles-container {
+        padding: 0 0.5rem;
+        gap: 2rem;
     }
     .article-header h3 {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+    }
+    .article-header,
+    .article-body,
+    .article-date {
+        padding: 0 1rem;
     }
 }
 
@@ -1346,6 +1371,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </script>
 </body>
 </html>
+
 
 
 
