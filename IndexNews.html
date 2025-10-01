@@ -980,80 +980,8 @@ Every match, every moment, every heartbeat captured here</p>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js">
     </script>
 
-    <script> // --- SUPABASE CONFIGURATION (Must match the Admin Panel config) ---
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// --- TABLE NAME ---
-// Must exactly match the table where news is being inserted
-const NEWS_TABLE = 'crypticLegionNews'; 
-
-// Helper to fetch all data from a table
-const fetchNews = async () => {
-    // Select all columns, order by ID descending (newest first)
-    const { data, error } = await supabase
-        .from(NEWS_TABLE)
-        .select('*')
-        .order('id', { ascending: false });
-
-    if (error) {
-        console.error('Error fetching news:', error);
-        // Display an error message to the user or log it
-        document.getElementById('news-articles-container').innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
-        return [];
-    }
-    return data;
-};
-
-// --- RENDER FUNCTION for the Viewer Page ---
-const renderNewsForViewer = (articles) => {
-    const container = document.getElementById('news-articles-container');
-    if (!container) {
-        console.error("News container element 'news-articles-container' not found in HTML.");
-        return;
-    }
-    container.innerHTML = ''; // Clear existing content
-
-    if (articles.length === 0) {
-        container.innerHTML = '<p>No news articles published yet.</p>';
-        return;
-    }
-
-    articles.forEach(article => {
-        const mediaURL = article.image_src;
-        const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
-
-        // Determine if media is an image or video, or if no media exists
-        const mediaTag = mediaURL
-            ? isVideo
-                ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
-                : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
-            : ''; // No media tag if image_src is empty
-
-        const articleHTML = document.createElement('article');
-        articleHTML.className = 'news-article-card';
-        articleHTML.innerHTML = `
-            <div class="article-header">
-                <h3>${article.title}</h3>
-            </div>
-            ${mediaTag}
-            <div class="article-body">
-                <p>${article.body}</p>
-            </div>
-            <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
-        `;
-        container.appendChild(articleHTML);
-    });
-};
-
-// --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', async () => {
-    const newsData = await fetchNews();
-    renderNewsForViewer(newsData);
-});
-                        // Corasel
+    <script> 
+                         // Corasel
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     // Get the slider element
@@ -1269,9 +1197,83 @@ document.addEventListener("DOMContentLoaded", function () {
   // Start the counting animation when the page loads
   startCounting();
 });
+        // --- SUPABASE CONFIGURATION (Must match the Admin Panel config) ---
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// --- TABLE NAME ---
+// Must exactly match the table where news is being inserted
+const NEWS_TABLE = 'crypticLegionNews'; 
+
+// Helper to fetch all data from a table
+const fetchNews = async () => {
+    // Select all columns, order by ID descending (newest first)
+    const { data, error } = await supabase
+        .from(NEWS_TABLE)
+        .select('*')
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching news:', error);
+        // Display an error message to the user or log it
+        document.getElementById('news-articles-container').innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
+        return [];
+    }
+    return data;
+};
+
+// --- RENDER FUNCTION for the Viewer Page ---
+const renderNewsForViewer = (articles) => {
+    const container = document.getElementById('news-articles-container');
+    if (!container) {
+        console.error("News container element 'news-articles-container' not found in HTML.");
+        return;
+    }
+    container.innerHTML = ''; // Clear existing content
+
+    if (articles.length === 0) {
+        container.innerHTML = '<p>No news articles published yet.</p>';
+        return;
+    }
+
+    articles.forEach(article => {
+        const mediaURL = article.image_src;
+        const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
+
+        // Determine if media is an image or video, or if no media exists
+        const mediaTag = mediaURL
+            ? isVideo
+                ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
+                : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
+            : ''; // No media tag if image_src is empty
+
+        const articleHTML = document.createElement('article');
+        articleHTML.className = 'news-article-card';
+        articleHTML.innerHTML = `
+            <div class="article-header">
+                <h3>${article.title}</h3>
+            </div>
+            ${mediaTag}
+            <div class="article-body">
+                <p>${article.body}</p>
+            </div>
+            <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
+        `;
+        container.appendChild(articleHTML);
+    });
+};
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', async () => {
+    const newsData = await fetchNews();
+    renderNewsForViewer(newsData);
+});
     </script>
 </body>
 </html>
+
 
 
 
