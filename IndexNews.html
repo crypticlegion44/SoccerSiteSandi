@@ -1082,299 +1082,574 @@ Every match, every moment, every heartbeat captured here</p>
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>// Corasel
-// Wait for the DOM to load
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the slider element
-    const slider = document.getElementById('slider');
-    // Check if the slider element exists before proceeding
-    if (slider) {
-        // Get the images within the slider
-        const images = slider.querySelectorAll('img');
-        let currentImageIndex = 0;
-    
-        // Function to show the next image in the slider
-        function showNextImage() {
-            // Check if there are images
-            if (images.length === 0) return;
+    <script>
+        // Corasel
 
-            // Hide the current image
-            images[currentImageIndex].classList.remove('active');
-    
-            // Increment the image index
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-    
-            // Show the next image
-            images[currentImageIndex].classList.add('active');
-        }
-    
-        // Initially show the first image
-        if (images.length > 0) {
-            images[currentImageIndex].classList.add('active');
-            // Set the interval for transitioning to the next image (5 seconds = 5000 milliseconds)
-            setInterval(showNextImage, 5000);
-        }
-    }
+// Wait for the DOM to load
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Get the slider element
+
+    const slider = document.getElementById('slider');
+
+    // Check if the slider element exists before proceeding
+
+    if (slider) {
+
+        // Get the images within the slider
+
+        const images = slider.querySelectorAll('img');
+
+        let currentImageIndex = 0;
+
+    
+
+        // Function to show the next image in the slider
+
+        function showNextImage() {
+
+            // Check if there are images
+
+            if (images.length === 0) return;
+
+
+
+            // Hide the current image
+
+            images[currentImageIndex].classList.remove('active');
+
+    
+
+            // Increment the image index
+
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+
+    
+
+            // Show the next image
+
+            images[currentImageIndex].classList.add('active');
+
+        }
+
+    
+
+        // Initially show the first image
+
+        if (images.length > 0) {
+
+            images[currentImageIndex].classList.add('active');
+
+            // Set the interval for transitioning to the next image (5 seconds = 5000 milliseconds)
+
+            setInterval(showNextImage, 5000);
+
+        }
+
+    }
+
 });
+
+
 
 //------------- NAV SCROLL ------------------//
+
 window.addEventListener('scroll', () => {
-    document.querySelector('nav').classList.toggle
-    ('window-scroll', window.scrollY > 0);
+
+    document.querySelector('nav').classList.toggle
+
+    ('window-scroll', window.scrollY > 0);
+
 })
 
+
+
 // SWIPER JS Code
+
 var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    loop: true,
-    grabCursor: true,
-    pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-    },
-    autoplay: {
-        delay: 7000,
-        disableOnInteraction: false,
-    },
-    breakpoints: {
-        768: {
-            slidesPerView: 2, // 2 slides side by side on tablets
-        },
-        1024: {
-            slidesPerView: 3, // 3 slides side by side on desktops
-        }
-    }
+
+    slidesPerView: 1,
+
+    spaceBetween: 20,
+
+    loop: true,
+
+    grabCursor: true,
+
+    pagination: {
+
+        el: ".swiper-pagination",
+
+        clickable: true,
+
+    },
+
+    autoplay: {
+
+        delay: 7000,
+
+        disableOnInteraction: false,
+
+    },
+
+    breakpoints: {
+
+        768: {
+
+            slidesPerView: 2, // 2 slides side by side on tablets
+
+        },
+
+        1024: {
+
+            slidesPerView: 3, // 3 slides side by side on desktops
+
+        }
+
+    }
+
 });
 
+
+
 // Menu Bar Toggle
+
 const menu = document.querySelector(".nav-menu");
+
 const menuBtn = document.querySelector("#open-menu-btn");
+
 const closeBtn = document.querySelector("#close-menu-btn");
 
+
+
 if (menu && menuBtn && closeBtn) {
-    menuBtn.addEventListener('click', () => {
-        menu.style.display = "flex";
-        closeBtn.style.display = "inline-block";
-        menuBtn.style.display = "none";
-    })
 
-    const closeNav = () => {
-        menu.style.display = "none";
-        closeBtn.style.display = "none";
-        menuBtn.style.display = "inline-block";
-    }
+    menuBtn.addEventListener('click', () => {
 
-    closeBtn.addEventListener('click', closeNav);
+        menu.style.display = "flex";
+
+        closeBtn.style.display = "inline-block";
+
+        menuBtn.style.display = "none";
+
+    })
+
+
+
+    const closeNav = () => {
+
+        menu.style.display = "none";
+
+        closeBtn.style.display = "none";
+
+        menuBtn.style.display = "inline-block";
+
+    }
+
+
+
+    closeBtn.addEventListener('click', closeNav);
+
 }
 
 
+
+
+
 // Scrool Animation
+
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        // console.log(entry) 
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        } else {
-            entry.target.classList.remove('show');
-        }
-    });
+
+    entries.forEach((entry) => {
+
+        // console.log(entry) // Commented out to reduce console spam
+
+        if (entry.isIntersecting) {
+
+            entry.target.classList.add('show');
+
+        } else {
+
+            entry.target.classList.remove('show');
+
+        }
+
+    });
+
 });
 
+
+
 // Safely observe elements
+
 document.querySelectorAll('.scrool').forEach((el) => observer.observe(el));
+
 document.querySelectorAll('.vibe').forEach((el) => observer.observe(el));
+
 document.querySelectorAll('.pop').forEach((el) => observer.observe(el));
 
 
+
+
+
 ///// Count Animation Code (01)
+
 document.addEventListener("DOMContentLoaded", function () {
-    const countElement = document.getElementById("count");
-    const plusElement = document.getElementById("plus");
 
-    // Only run if both elements exist (prevents TypeError: Cannot set properties of null)
-    if (!countElement || !plusElement) return;
+    const countElement = document.getElementById("count");
 
-    function animatePlusSign() {
-        plusElement.style.opacity = "1";
-        plusElement.style.transform = "scale(1)";
-    }
+    const plusElement = document.getElementById("plus");
 
-    function startCounting() {
-        let count = 0;
-        const targetCount = 75;
-        const interval = 75; // milliseconds
 
-        const counterInterval = setInterval(() => {
-            count++;
-            countElement.textContent = count;
 
-            if (count === targetCount) {
-                clearInterval(counterInterval);
-                setTimeout(animatePlusSign, 500);
-            }
-        }, interval);
-    }
+    // Only run if both elements exist (prevents TypeError: Cannot set properties of null)
 
-    startCounting();
+    if (!countElement || !plusElement) return;
+
+
+
+    function animatePlusSign() {
+
+        plusElement.style.opacity = "1";
+
+        plusElement.style.transform = "scale(1)";
+
+    }
+
+
+
+    function startCounting() {
+
+        let count = 0;
+
+        const targetCount = 75;
+
+        const interval = 75; // milliseconds
+
+
+
+        const counterInterval = setInterval(() => {
+
+            count++;
+
+            countElement.textContent = count;
+
+
+
+            if (count === targetCount) {
+
+                clearInterval(counterInterval);
+
+                setTimeout(animatePlusSign, 500);
+
+            }
+
+        }, interval);
+
+    }
+
+
+
+    startCounting();
+
 });
+
+
+
 
 
 ///// Count Animation Code (02)
+
 document.addEventListener("DOMContentLoaded", function () {
-    const countElement = document.getElementById("coun");
-    const plusElement = document.getElementById("plu");
 
-    // Only run if both elements exist
-    if (!countElement || !plusElement) return;
+    const countElement = document.getElementById("coun");
 
-    function animatePlusSign() {
-        plusElement.style.opacity = "1";
-        plusElement.style.transform = "scale(1)";
-    }
+    const plusElement = document.getElementById("plu");
 
-    function startCounting() {
-        let coun = 0;
-        const targetCount = 1000;
-        const interval = 5.5; // milliseconds
 
-        const counterInterval = setInterval(() => {
-            coun++;
-            countElement.textContent = coun;
 
-            if (coun === targetCount) {
-                clearInterval(counterInterval);
-                setTimeout(animatePlusSign, 500);
-            }
-        }, interval);
-    }
+    // Only run if both elements exist
 
-    startCounting();
+    if (!countElement || !plusElement) return;
+
+
+
+    function animatePlusSign() {
+
+        plusElement.style.opacity = "1";
+
+        plusElement.style.transform = "scale(1)";
+
+    }
+
+
+
+    function startCounting() {
+
+        let coun = 0;
+
+        const targetCount = 1000;
+
+        const interval = 5.5; // milliseconds
+
+
+
+        const counterInterval = setInterval(() => {
+
+            coun++;
+
+            countElement.textContent = coun;
+
+
+
+            if (coun === targetCount) {
+
+                clearInterval(counterInterval);
+
+                setTimeout(animatePlusSign, 500);
+
+            }
+
+        }, interval);
+
+    }
+
+
+
+    startCounting();
+
 });
+
+
+
 
 
 ///// Count Animation Code (03)
+
 document.addEventListener("DOMContentLoaded", function () {
-    const countElement = document.getElementById("cou");
-    const plusElement = document.getElementById("pl");
 
-    // Only run if both elements exist
-    if (!countElement || !plusElement) return;
+    const countElement = document.getElementById("cou");
 
-    function animatePlusSign() {
-        plusElement.style.opacity = "1";
-        plusElement.style.transform = "scale(1)";
-    }
+    const plusElement = document.getElementById("pl");
 
-    function startCounting() {
-        let cou = 0;
-        const targetCount = 25;
-        const interval = 250; // milliseconds
 
-        const counterInterval = setInterval(() => {
-            cou++;
-            countElement.textContent = cou;
 
-            if (cou === targetCount) {
-                clearInterval(counterInterval);
-                setTimeout(animatePlusSign, 500);
-            }
-        }, interval);
-    }
+    // Only run if both elements exist
 
-    startCounting();
+    if (!countElement || !plusElement) return;
+
+
+
+    function animatePlusSign() {
+
+        plusElement.style.opacity = "1";
+
+        plusElement.style.transform = "scale(1)";
+
+    }
+
+
+
+    function startCounting() {
+
+        let cou = 0;
+
+        const targetCount = 25;
+
+        const interval = 250; // milliseconds
+
+
+
+        const counterInterval = setInterval(() => {
+
+            cou++;
+
+            countElement.textContent = cou;
+
+
+
+            if (cou === targetCount) {
+
+                clearInterval(counterInterval);
+
+                setTimeout(animatePlusSign, 500);
+
+            }
+
+        }, interval);
+
+    }
+
+
+
+    startCounting();
+
 });
 
 
+
+
+
 // --- SUPABASE NEWS INTEGRATION ---
+
 (function() {
-    // --- SUPABASE CONFIGURATION ---
-    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
-    // This requires the Supabase library script tag in your HTML.
-    if (!window.supabase) {
-        console.error("Supabase client library not loaded. Add <script src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'></script> to your HTML.");
-        return;
-    }
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // --- SUPABASE CONFIGURATION ---
 
-    // --- TABLE NAME ---
-    const NEWS_TABLE = 'crypticLegionNews'; 
+    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
 
-    // Helper to fetch all data from a table
-    const fetchNews = async () => {
-        const { data, error } = await supabase
-            .from(NEWS_TABLE)
-            .select('*')
-            .order('id', { ascending: false });
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
-        if (error) {
-            console.error('Error fetching news:', error);
-            // Display error if container exists
-            const container = document.getElementById('news-articles-container');
-            if (container) {
-                container.innerHTML = '<p style="color: red;">Failed to load news articles. (Check RLS Select Policy)</p>';
-            }
-            return [];
-        }
-        return data;
-    };
 
-    // --- RENDER FUNCTION for the Viewer Page (FINAL STRUCTURE) ---
-    const renderNewsForViewer = (articles) => {
-        const container = document.getElementById('news-articles-container');
-        if (!container) {
-            console.error("CRITICAL ERROR: News container element 'news-articles-container' not found in HTML.");
-            return;
-        }
-        container.innerHTML = ''; // Clear existing content
 
-        if (articles.length === 0) {
-            container.innerHTML = '<p>No news articles published yet.</p>';
-            return;
-        }
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        articles.forEach(article => {
-            const mediaURL = article.image_src;
-            const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
 
-            const mediaTag = mediaURL
-                ? isVideo
-                    ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
-                    : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
-                : ''; 
 
-            const articleHTML = document.createElement('article');
-            articleHTML.className = 'news-article-card';
-            
-            // --- CORRECTED ORDER: Media first, Title second ---
-            articleHTML.innerHTML = `
-                ${mediaTag} 
-                <div class="article-header">
-                    <h3>${article.title}</h3>
-                </div>
-                <div class="article-body">
-                    <p>${article.body}</p>
-                </div>
-                <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
-            `;
-            // --- END CORRECTED ORDER ---
+    // --- TABLE NAME ---
 
-            container.appendChild(articleHTML);
-        });
-    };
+    const NEWS_TABLE = 'crypticLegionNews'; 
 
-    // --- INITIALIZATION ---
-    document.addEventListener('DOMContentLoaded', async () => {
-        const newsData = await fetchNews();
-        renderNewsForViewer(newsData);
-    });
 
-})();
+
+    // Helper to fetch all data from a table
+
+    const fetchNews = async () => {
+
+        const { data, error } = await supabase
+
+            .from(NEWS_TABLE)
+
+            .select('*')
+
+            .order('id', { ascending: false });
+
+
+
+        if (error) {
+
+            console.error('Error fetching news:', error);
+
+            // Display error if container exists
+
+            const container = document.getElementById('news-articles-container');
+
+            if (container) {
+
+                container.innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
+
+            }
+
+            return [];
+
+        }
+
+        return data;
+
+    };
+
+
+
+    // --- RENDER FUNCTION for the Viewer Page ---
+
+    const renderNewsForViewer = (articles) => {
+
+        const container = document.getElementById('news-articles-container');
+
+        if (!container) {
+
+            console.error("CRITICAL ERROR: News container element 'news-articles-container' not found in HTML.");
+
+            return;
+
+        }
+
+        container.innerHTML = ''; // Clear existing content
+
+
+
+        if (articles.length === 0) {
+
+            container.innerHTML = '<p>No news articles published yet.</p>';
+
+            return;
+
+        }
+
+
+
+        articles.forEach(article => {
+
+            const mediaURL = article.image_src;
+
+            const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
+
+
+
+            const mediaTag = mediaURL
+
+                ? isVideo
+
+                    ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
+
+                    : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
+
+                : ''; 
+
+
+
+            const articleHTML = document.createElement('article');
+
+            articleHTML.className = 'news-article-card';
+
+            articleHTML.innerHTML = `
+
+                <div class="article-header">
+
+                    <h3>${article.title}</h3>
+
+                </div>
+
+                ${mediaTag}
+
+                <div class="article-body">
+
+                    <p>${article.body}</p>
+
+                </div>
+
+                <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
+
+            `;
+
+            container.appendChild(articleHTML);
+
+        });
+
+    };
+
+
+
+    // --- INITIALIZATION ---
+
+    // Use a separate DOMContentLoaded listener just for the Supabase code
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        const newsData = await fetchNews();
+
+        renderNewsForViewer(newsData);
+
+    });
+
+
+
+})(); // End of Supabase integration IIFE
     </script>
 </body>
 </html>
+
 
 
 
