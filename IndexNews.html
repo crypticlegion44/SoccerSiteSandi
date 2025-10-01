@@ -626,28 +626,26 @@ pro:nth-child(4) {
     margin-top: 50px;
     margin-bottom: 30px;
 }
-/* --- NEWS ARTICLES STYLES (indexNew.html) --- */
+/* --- NEWS ARTICLES STYLES (Your Stylesheet) --- */
 
-/* --- Custom Variables (Adjust these to match your site's theme) --- */
+/* --- Custom Variables (Adjust these if needed) --- */
 :root {
-    --color-text-dark: #1f2641; /* Primary dark text color for headers */
-    --color-text-body: #4a4a4a; /* Slightly lighter for body text */
-    --color-text-light: #777;   /* Faded text for dates/details */
-    --color-bg-light: #fefefe;  /* White or off-white background for the card */
-    --color-border: #e0e0e0;    /* Light gray border */
-    /* Assuming you have a main theme color, use it here if needed */
-    /* --color-primary: #007bff; */ 
+    --color-text-dark: #1f2641; 
+    --color-text-body: #4a4a4a;
+    --color-text-light: #777;   
+    --color-bg-light: #fefefe;  
+    --color-border: #e0e0e0;    
 }
 
 
 /* 1. Container for all articles */
 #news-articles-container {
-    max-width: 800px; /* Adjusted width to match the centered, single-column look */
-    margin: 3rem auto; /* Center the container on the page */
+    max-width: 800px; 
+    margin: 3rem auto; 
     padding: 0 1rem;
     display: flex; 
     flex-direction: column; 
-    gap: 3rem; /* Space between each article if multiple are loaded */
+    gap: 3rem; 
 }
 
 /* Optional: Style for the "Latest News" heading */
@@ -661,19 +659,18 @@ pro:nth-child(4) {
 /* 2. Style for each individual article card */
 .news-article-card {
     background: var(--color-bg-light); 
-    padding: 0; /* Important: The padding is mostly handled internally */
+    padding: 0; 
     border-radius: 1rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
-    overflow: hidden; /* Ensures media border-radius works */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
+    overflow: hidden; 
 }
 
 /* 3. Media (Image/Video) styling */
 .news-media {
-    width: 100%; /* Make the media fill the card width */
-    max-height: 400px; /* Limits max height for a uniform look */
+    width: 100%; 
+    max-height: 400px; 
     object-fit: cover; 
-    display: block; /* Removes any baseline spacing issues */
-    /* No border-radius here since the image should meet the card's edge */
+    display: block; 
 }
 
 /* 4. Content Block (Text area below the media) */
@@ -683,14 +680,14 @@ pro:nth-child(4) {
     padding: 0 2rem; /* Add padding to the text block for breathing room */
 }
 
-/* 5. Article Header (Title) */
+/* 5. Article Header (Title) - Now below the media */
 .article-header h3 {
     font-size: 2rem;
     font-weight: 700;
     line-height: 1.3;
-    margin-top: 1.5rem;
+    margin-top: 1.5rem; /* Space below the media */
     margin-bottom: 0.5rem;
-    text-align: center; /* Centered title like in the image */
+    text-align: center; 
     color: var(--color-text-dark);
 }
 
@@ -700,11 +697,11 @@ pro:nth-child(4) {
     line-height: 1.7;
     margin-top: 1rem;
     margin-bottom: 0;
-    text-align: justify; /* Justify text for a clean block look */
+    text-align: justify; 
     color: var(--color-text-body);
 }
 
-/* 7. Date/Timestamp (Optional: You might want to remove this if not needed) */
+/* 7. Date/Timestamp */
 .article-date {
     display: block;
     margin-top: 1.5rem;
@@ -1085,8 +1082,7 @@ Every match, every moment, every heartbeat captured here</p>
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        // Corasel
+    <script>// Corasel
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
     // Get the slider element
@@ -1176,7 +1172,7 @@ if (menu && menuBtn && closeBtn) {
 // Scrool Animation
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-        // console.log(entry) // Commented out to reduce console spam
+        // console.log(entry) 
         if (entry.isIntersecting) {
             entry.target.classList.add('show');
         } else {
@@ -1296,6 +1292,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
+    // This requires the Supabase library script tag in your HTML.
+    if (!window.supabase) {
+        console.error("Supabase client library not loaded. Add <script src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'></script> to your HTML.");
+        return;
+    }
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // --- TABLE NAME ---
@@ -1313,14 +1314,14 @@ document.addEventListener("DOMContentLoaded", function () {
             // Display error if container exists
             const container = document.getElementById('news-articles-container');
             if (container) {
-                container.innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
+                container.innerHTML = '<p style="color: red;">Failed to load news articles. (Check RLS Select Policy)</p>';
             }
             return [];
         }
         return data;
     };
 
-    // --- RENDER FUNCTION for the Viewer Page ---
+    // --- RENDER FUNCTION for the Viewer Page (FINAL STRUCTURE) ---
     const renderNewsForViewer = (articles) => {
         const container = document.getElementById('news-articles-container');
         if (!container) {
@@ -1346,31 +1347,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const articleHTML = document.createElement('article');
             articleHTML.className = 'news-article-card';
+            
+            // --- CORRECTED ORDER: Media first, Title second ---
             articleHTML.innerHTML = `
+                ${mediaTag} 
                 <div class="article-header">
                     <h3>${article.title}</h3>
                 </div>
-                ${mediaTag}
                 <div class="article-body">
                     <p>${article.body}</p>
                 </div>
                 <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
             `;
+            // --- END CORRECTED ORDER ---
+
             container.appendChild(articleHTML);
         });
     };
 
     // --- INITIALIZATION ---
-    // Use a separate DOMContentLoaded listener just for the Supabase code
     document.addEventListener('DOMContentLoaded', async () => {
         const newsData = await fetchNews();
         renderNewsForViewer(newsData);
     });
 
-})(); // End of Supabase integration IIFE
+})();
     </script>
 </body>
 </html>
+
 
 
 
