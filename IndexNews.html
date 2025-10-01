@@ -1497,160 +1497,187 @@ document.addEventListener("DOMContentLoaded", function () {
 
 (function() {
 
-    // --- SUPABASE CONFIGURATION ---
-
-    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
-
-
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-
-
-    // --- TABLE NAME ---
-
-    const NEWS_TABLE = 'crypticLegionNews'; 
-
-
-
-    // Helper to fetch all data from a table
-
-    const fetchNews = async () => {
-
-        const { data, error } = await supabase
-
-            .from(NEWS_TABLE)
-
-            .select('*')
-
-            .order('id', { ascending: false });
-
-
-
-        if (error) {
-
-            console.error('Error fetching news:', error);
-
-            // Display error if container exists
-
-            const container = document.getElementById('news-articles-container');
-
-            if (container) {
-
-                container.innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
-
-            }
-
-            return [];
-
-        }
-
-        return data;
-
-    };
-
-
-
-    // --- RENDER FUNCTION for the Viewer Page ---
-
-    const renderNewsForViewer = (articles) => {
-
-        const container = document.getElementById('news-articles-container');
-
-        if (!container) {
-
-            console.error("CRITICAL ERROR: News container element 'news-articles-container' not found in HTML.");
-
-            return;
-
-        }
-
-        container.innerHTML = ''; // Clear existing content
-
-
-
-        if (articles.length === 0) {
-
-            container.innerHTML = '<p>No news articles published yet.</p>';
-
-            return;
-
-        }
-
-
-
-        articles.forEach(article => {
-
-            const mediaURL = article.image_src;
-
-            const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
-
-
-
-            const mediaTag = mediaURL
-
-                ? isVideo
-
-                    ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
-
-                    : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
-
-                : ''; 
-
-
-
-            const articleHTML = document.createElement('article');
-
-            articleHTML.className = 'news-article-card';
-
-            articleHTML.innerHTML = `
-
-                <div class="article-header">
-
-                    <h3>${article.title}</h3>
-
-                </div>
-
-                ${mediaTag}
-
-                <div class="article-body">
-
-                    <p>${article.body}</p>
-
-                </div>
-
-                <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
-
-            `;
-
-            container.appendChild(articleHTML);
-
-        });
-
-    };
-
-
-
-    // --- INITIALIZATION ---
-
-    // Use a separate DOMContentLoaded listener just for the Supabase code
-
-    document.addEventListener('DOMContentLoaded', async () => {
-
-        const newsData = await fetchNews();
-
-        renderNewsForViewer(newsData);
-
-    });
-
-
+    // --- SUPABASE CONFIGURATION ---
+
+    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+
+    // Ensure the Supabase client is available before creating it
+    if (!window.supabase) {
+        console.error("Supabase client library not found. Please ensure the script tag is included.");
+        return;
+    }
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+    // --- TABLE NAMES ---
+    const NEWS_TABLE = 'crypticLegionNews'; 
+    // **CORRECTED TABLE NAME for header images**
+    const HIGHLIGHT_TABLE = 'crypticLegionNewsImage'; 
+
+
+    // ----------------------------------------------------------------------
+    // --- NEWS ARTICLE LOGIC (Kept for completeness) ---
+    // ----------------------------------------------------------------------
+
+    const fetchNews = async () => {
+        const { data, error } = await supabase
+            .from(NEWS_TABLE)
+            .select('*')
+            .order('id', { ascending: false });
+
+        if (error) {
+            console.error('Error fetching news:', error);
+            const container = document.getElementById('news-articles-container');
+            if (container) {
+                container.innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
+            }
+            return [];
+        }
+        return data;
+    };
+
+    const renderNewsForViewer = (articles) => {
+        const container = document.getElementById('news-articles-container');
+        if (!container) {
+            console.error("CRITICAL ERROR: News container element 'news-articles-container' not found in HTML.");
+            return;
+        }
+        container.innerHTML = '';
+
+        if (articles.length === 0) {
+            container.innerHTML = '<p>No news articles published yet.</p>';
+            return;
+        }
+
+        articles.forEach(article => {
+            const mediaURL = article.image_src;
+            const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
+
+            const mediaTag = mediaURL
+                ? isVideo
+                    ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
+                    : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
+                : ''; 
+
+            const articleHTML = document.createElement('article');
+            articleHTML.className = 'news-article-card';
+            articleHTML.innerHTML = `
+                ${mediaTag} 
+                <div class="article-header">
+                    <h3>${article.title}</h3>
+                </div>
+                <div class="article-body">
+                    <p>${article.body}</p>
+                </div>
+                <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
+            `;
+            container.appendChild(articleHTML);
+        });
+    };
+
+
+    // ----------------------------------------------------------------------
+    // --- HEADER IMAGE (CAROUSEL) LOGIC ---
+    // ----------------------------------------------------------------------
+
+    /**
+     * Fetches image URLs from the header image table, injects them, and returns success status.
+     * @returns {boolean} True if new images were injected, false otherwise.
+     */
+    const fetchAndRenderHighlightImages = async () => {
+        const slider = document.getElementById('slider');
+        if (!slider) {
+            console.error("CRITICAL ERROR: Slider element not found.");
+            return false;
+        }
+        
+        // 1. Fetch images from Supabase
+        const { data, error } = await supabase
+            .from(HIGHLIGHT_TABLE)
+            .select('src') 
+            .order('id', { ascending: false }); 
+
+        if (error) {
+            // Note the updated table name in the error message for easy debugging
+            console.error('Error fetching highlight images (Check RLS Select Policy for ' + HIGHLIGHT_TABLE + '):', error);
+            return false;
+        }
+
+        if (!data || data.length === 0) {
+            console.log("No header images found in Supabase. Using static images.");
+            return false; 
+        }
+        
+        // 2. Clear existing static <img> tags inside the slider
+        const staticImages = slider.querySelectorAll('img');
+        staticImages.forEach(img => img.remove());
+
+        // 3. Inject new dynamic images
+        let imagesInjected = 0;
+        data.forEach((item, index) => {
+            if (item.src) {
+                const imgTag = document.createElement('img');
+                imgTag.src = item.src;
+                imgTag.alt = `Header Image ${index + 1}`;
+                
+                slider.appendChild(imgTag);
+                imagesInjected++;
+            }
+        });
+        
+        return imagesInjected > 0;
+    };
+
+
+    /**
+     * Initializes the carousel (slider) using the dynamically injected images.
+     */
+    const initializeDynamicCarousel = () => {
+        const slider = document.getElementById('slider');
+        if (!slider) return;
+        
+        const images = slider.querySelectorAll('img');
+        let currentImageIndex = 0;
+        
+        if (images.length === 0) return;
+
+        function showNextImage() {
+            images[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].classList.add('active');
+        }
+        
+        // Initial setup
+        images[currentImageIndex].classList.add('active');
+        setInterval(showNextImage, 5000);
+    };
+
+
+    // ----------------------------------------------------------------------
+    // --- INITIALIZATION (MASTER RUNNER) ---
+    // ----------------------------------------------------------------------
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // 1. Fetch and inject Header Images
+        const imagesWereInjected = await fetchAndRenderHighlightImages(); 
+
+        // 2. Only initialize the carousel if images were successfully loaded/injected
+        if (imagesWereInjected) {
+            initializeDynamicCarousel(); 
+        }
+        
+        // 3. Fetch and render News Articles
+        const newsData = await fetchNews();
+        renderNewsForViewer(newsData);
+    });
 
 })(); // End of Supabase integration IIFE
     </script>
 </body>
 </html>
+
 
 
 
