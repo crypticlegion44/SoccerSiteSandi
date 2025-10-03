@@ -734,6 +734,12 @@ pro:nth-child(4) {
   .container {
     width: var(--container-width-md);
   }
+  img {
+    width: 100%;    /* Take up the full width of its container */
+    height: 100%;   /* Take up the full height of its container */
+    /* This is the crucial property */
+    object-fit: cover; /* or 'contain' */
+  }
 
   /* NavBar */
   nav button {
@@ -850,6 +856,12 @@ pro:nth-child(4) {
     width: var(--container-width-sm);
     margin: 0 auto;
     padding: 0 1rem; /* safe side spacing */
+  }
+  img {
+    width: 100%;    /* Take up the full width of its container */
+    height: 100%;   /* Take up the full height of its container */
+    /* This is the crucial property */
+    object-fit: cover; /* or 'contain' */
   }
   
   /* 🔹 NAVBAR */
@@ -1677,6 +1689,7 @@ document.addEventListener("DOMContentLoaded", function () {
     </script>
 </body>
 </html>
+
 
 
 
