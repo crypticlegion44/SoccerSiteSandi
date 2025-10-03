@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* Your Admin Panel CSS (Copied from original source code) */
+        /* Base Styles */
         :root { --montserrat: "Montserrat", sans-serif; --main: #ebd978; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--montserrat); line-height: 1.7; color: var(--white); background: var(--main4); }
@@ -32,15 +32,158 @@
         .item-card p { font-size: 0.9rem; color: var(--dwhite); margin-bottom: 1rem; flex-grow: 1; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--Vwhite); }
-        .form-group input[type="file"], .form-group input[type="text"], .form-group textarea { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--bg1); background: var(--main4); color: var(--white); font-family: var(--montserrat); }
+        .form-group input[type="file"], .form-group input[type="text"], .form-group textarea, .form-group input[type="password"] { 
+            width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--bg1); background: var(--main4); color: var(--white); font-family: var(--montserrat); 
+        }
         .back-link { display: inline-block; margin: 2rem 0 0 2rem; color: var(--main); text-decoration: none; font-weight: 500; }
         .back-link i { margin-right: 8px; }
         @media screen and (max-width: 600px) {
             .management-grid { grid-template-columns: 1fr; }
         }
+
+        /* --- LOGIN POPUP STYLES --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #login-popup {
+            background: var(--main5);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #login-popup h2 {
+            color: var(--main);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* --- PASSWORD TOGGLE STYLES (Peek Feature) --- */
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input[type="password"],
+        .password-container input[type="text"] {
+            padding-right: 40px; 
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--dwhite);
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            z-index: 10;
+            margin-top: 0.2rem;
+        }
+        
+        .toggle-password:hover {
+            color: var(--main);
+        }
+
+        /* ---------------------------------- */
+        /* --- ANIMATION POPUP STYLES --- */
+        /* ---------------------------------- */
+
+        #status-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--main5);
+            color: var(--white);
+            padding: 2rem 3rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            display: none; /* Initially hidden */
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            color: var(--white);
+        }
+
+        /* Success Styles (Green Check) */
+        .icon-box.success { background: #00a87a; }
+        .icon-box.success i { 
+            animation: bounceIn 0.5s ease-out; 
+        }
+
+        /* Failure Styles (Red X) */
+        .icon-box.failure { background: #f75842; }
+        .icon-box.failure i { 
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+        
+        /* Keyframe Animations */
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
     </style>
 </head>
 <body>
+    <div id="login-overlay">
+        <div id="login-popup">
+            <h2>Admin Login Required</h2>
+            <div class="form-group">
+                <label for="login-name">Name</label>
+                <input type="text" id="login-name" placeholder="Enter Name" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="login-password" placeholder="Enter Password" required>
+                    <i class='bx bx-show toggle-password' id="toggle-password" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
+            <button class="btn" id="login-button" onclick="handleLogin()">Login</button>
+            <p id="login-error" style="display: none; color: #f75842; margin-top: 1rem; font-weight: 600;"></p>
+        </div>
+    </div>
+    <div id="status-popup">
+        <div id="status-icon-box" class="icon-box">
+            <i id="status-icon" class='bx'></i>
+        </div>
+        <p id="status-message" style="font-size: 1.1rem; font-weight: 600;"></p>
+    </div>
     <a href="IndexNews.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
     <div class="container">
         <h1>News Control Panel</h1>
@@ -66,54 +209,133 @@
                 <label for="new-news-media-upload">Upload Article Image (or Video)</label>
                 <input type="file" id="new-news-media-upload" accept="image/*,video/mp4">
                 <p style="font-size: 0.8rem; color: var(--dwhite); margin-top: 0.5rem;">Accepted: Images (JPG/PNG) or MP4 video. Only one will be used.</p>
-                <p id="news-upload-status" style="display: none; color: #ebd978; margin-top: 0.5rem;">Uploading...</p>
-            </div>
+                </div>
 
             <button class="btn" onclick="addNewsArticle()">Publish Article</button>
         </section>
 
         <section class="admin-section">
             <h2>Manage Header Images</h2>
-            <div id="header-images-grid" class="management-grid"></div>
+            <div id="header-images-grid" class="management-grid">
+                </div>
             <div class="form-group">
                 <label for="new-image-upload">Upload New Header Image</label>
                 <input type="file" id="new-image-upload" accept="image/*">
-                <p id="image-upload-status" style="display: none; color: #ebd978;">Uploading...</p>
                 <button class="btn" onclick="addImage()">Add Image</button>
             </div>
         </section>
 
     </div>
 
-    <script>// --- SUPABASE CONFIGURATION ---
+    <script>
+// --- SUPABASE CONFIGURATION ---
 const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // --- BUCKET NAMES ---
-// Assuming these are the exact names of your storage buckets
-const MEDIA_BUCKET = 'images'; // Used for both Header Images and News Media
-const VIDEO_BUCKET = 'videos'; // Used for Highlight Videos
+const MEDIA_BUCKET = 'images'; 
+const VIDEO_BUCKET = 'videos'; // Assuming videos bucket holds the news videos, using the one from the previous admin panel.
 
 // --- TABLE NAMES (Ensure these match your Supabase tables) ---
-// Note: These use the exact mixed casing from your database screenshots
 const NEWS_TABLE = 'crypticLegionNews';
 const IMAGE_TABLE = 'crypticLegionNewsImage';
-const VIDEO_TABLE = 'crypticLegionNewsVideos';
+// Note: VIDEO_TABLE is not directly used for the news page, but kept for consistency with previous scripts
+const VIDEO_TABLE = 'crypticLegionNewsVideos'; 
 
-// Helper to upload file to Supabase Storage
-const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
-    statusElement.style.display = 'block';
-    statusElement.textContent = `Uploading ${file.name}...`;
+// --- ANIMATION/STATUS POPUP LOGIC (Re-implemented) ---
+const statusPopup = document.getElementById('status-popup');
+const statusIconBox = document.getElementById('status-icon-box');
+const statusIcon = document.getElementById('status-icon');
+const statusMessage = document.getElementById('status-message');
 
+/**
+ * Displays an animated status popup (success or failure).
+ * @param {boolean} success - True for success (check), false for failure (X). Null for 'transferring'.
+ * @param {string} message - The message to display.
+ */
+const showStatusPopup = (success, message) => {
+    if (!statusPopup) {
+        console.warn(`STATUS: ${message}`); 
+        return; 
+    }
+
+    statusIconBox.className = 'icon-box'; // Reset classes
+    statusIcon.className = 'bx'; // Reset icon class
+    statusIconBox.style.backgroundColor = ''; // Clear custom transfer color
+
+    if (success === true) {
+        statusIconBox.classList.add('success');
+        statusIcon.classList.add('bx-check');
+    } else if (success === false) {
+        statusIconBox.classList.add('failure');
+        statusIcon.classList.add('bx-x');
+    } else {
+        // Yellow Transfer Sign (Transferring/Loading state)
+        statusIconBox.style.backgroundColor = '#ebd978'; // yellow/main color
+        statusIcon.classList.add('bx-loader-alt', 'bx-spin'); // Spinning icon
+    }
+
+    statusMessage.textContent = message;
+    statusPopup.style.display = 'block';
+
+    // Auto-hide the popup only for final success/failure states
+    if (success !== null) {
+        setTimeout(() => {
+            statusPopup.style.display = 'none';
+        }, 3000);
+    }
+};
+
+// --- PASSWORD TOGGLE FUNCTION (Peek Feature) ---
+window.togglePasswordVisibility = () => {
+    const passwordInput = document.getElementById('login-password');
+    const toggleIcon = document.getElementById('toggle-password');
+    
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+
+    toggleIcon.className = isPassword ? 'bx bx-hide toggle-password' : 'bx bx-show toggle-password';
+};
+
+
+// --- LOGIN HANDLING (Re-implemented) ---
+const CORRECT_NAME = 'Slogan';
+const CORRECT_PASSWORD = 'Wintersolider44';
+const overlay = document.getElementById('login-overlay');
+const errorDisplay = document.getElementById('login-error');
+
+window.handleLogin = () => {
+    const nameInput = document.getElementById('login-name').value;
+    const passwordInput = document.getElementById('login-password').value;
+
+    if (nameInput === CORRECT_NAME && passwordInput === CORRECT_PASSWORD) {
+        overlay.style.display = 'none'; 
+        errorDisplay.style.display = 'none';
+        
+        showStatusPopup(true, 'Login Successful! Welcome.');
+        
+        // Fetch and render data upon successful login
+        fetchAndRender(NEWS_TABLE, renderNews);
+        fetchAndRender(IMAGE_TABLE, renderImages);
+
+    } else {
+        showStatusPopup(false, 'Login Failed. Check credentials.');
+        errorDisplay.textContent = 'Invalid Name or Password. Please try again.';
+        errorDisplay.style.display = 'block';
+    }
+};
+
+
+// Helper to upload file to Supabase Storage (Updated to use animated popup)
+const uploadFileToSupabaseStorage = async (file, bucket) => {
+    showStatusPopup(null, 'Uploading file...'); 
     const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
 
     const { data, error } = await supabase.storage
         .from(bucket)
         .upload(filePath, file);
-
-    statusElement.style.display = 'none';
 
     if (error) {
         console.error("Supabase Upload Error:", error);
@@ -127,7 +349,7 @@ const uploadFileToSupabaseStorage = async (file, bucket, statusElement) => {
     return publicURLData.publicUrl;
 };
 
-// Helper to fetch all data from a table and render
+// Helper to fetch all data from a table and render (Uses animated popup for errors)
 const fetchAndRender = async (tableName, renderFunc) => {
     const { data, error } = await supabase
         .from(tableName)
@@ -136,25 +358,25 @@ const fetchAndRender = async (tableName, renderFunc) => {
 
     if (error) {
         console.error('Fetch Error:', error);
-        alert('Fetch Error: Check RLS policies and table names! ' + error.message);
+        showStatusPopup(false, `Fetch Error on ${tableName}: ${error.message}`);
         return [];
     }
     renderFunc(data);
     return data;
 };
 
-// --- RENDER FUNCTIONS ---
+
+// --- RENDER FUNCTIONS (Kept as is, only fetchAndRender calls them) ---
 
 // RENDER NEWS ARTICLES
 const renderNews = (articles) => {
     const newsGrid = document.getElementById('news-articles-grid');
     newsGrid.innerHTML = '';
     articles.forEach(article => {
-        // Assume article.image_src stores the public URL to the media file.
         const mediaURL = article.image_src;
-        const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
+        // Check for common video extensions or type markers
+        const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video') || mediaURL.includes(VIDEO_BUCKET));
 
-        // Show media only if image_src exists
         const mediaTag = mediaURL ? (isVideo
             ? `<video src="${mediaURL}" controls loop muted style="max-height: 150px;"></video>`
             : `<img src="${mediaURL}" alt="Article Image" style="max-height: 150px;">`)
@@ -188,25 +410,12 @@ const renderImages = (images) => {
     });
 };
 
-// RENDER HIGHLIGHT VIDEOS
-const renderVideos = (videos) => {
-    const videosGrid = document.getElementById('highlight-videos-grid');
-    videosGrid.innerHTML = '';
-    videos.forEach(video => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.innerHTML = `
-            <video src="${video.src}" controls loop muted style="max-height: 150px;"></video>
-            <p>${video.description}</p>
-            <button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video', '${video.src}')">Delete</button>
-        `;
-        videosGrid.appendChild(card);
-    });
-};
 
-// --- DELETE FUNCTION (FIXED) ---
+// --- DELETE FUNCTION (FIXED and enhanced with storage removal using animated popup) ---
 window.deleteItem = async (tableName, id, type, mediaUrl) => {
     if (!confirm('Are you sure you want to delete this item?')) return;
+
+    showStatusPopup(null, 'Processing deletion...');
 
     try {
         // 1. Delete the row from the database
@@ -220,67 +429,64 @@ window.deleteItem = async (tableName, id, type, mediaUrl) => {
         // 2. Delete the file from Supabase Storage (if a URL exists)
         if (mediaUrl) {
             let bucketName;
-            if (type === 'video') {
-                bucketName = VIDEO_BUCKET;
-            } else { // 'news' or 'image'
-                bucketName = MEDIA_BUCKET;
-            }
-
+            // News media is assumed to be in the 'images' bucket (MEDIA_BUCKET) based on the upload logic below.
+            // Header images are also in 'images' bucket (MEDIA_BUCKET).
+            bucketName = MEDIA_BUCKET; 
+            
             // Extract the path/key from the full public URL
             const urlParts = mediaUrl.split(`${bucketName}/`);
             if (urlParts.length > 1) {
-                const filePath = urlParts[1];
+                const filePath = urlParts[1].split('?')[0]; // Ensure we strip off query parameters
                 const { error: storageError } = await supabase.storage
                     .from(bucketName)
                     .remove([filePath]);
 
-                if (storageError) {
+                if (storageError && storageError.statusCode !== '404') {
                     // Log error but don't stop execution, DB row is already gone
                     console.error(`Storage Deletion Failed (File: ${filePath}):`, storageError);
+                    showStatusPopup(false, `Item Deleted, but file removal error: ${storageError.message}`);
+                    return; // Return early after showing error popup
                 }
             }
         }
 
-        alert('Item deleted successfully! (And file removed from storage)');
+        showStatusPopup(true, 'Item and media deleted successfully! 🗑️');
 
     } catch (error) {
-        alert(`Operation Failed: ${error.message}. Check DELETE RLS Policy.`);
+        showStatusPopup(false, `Operation Failed: ${error.message}. Check RLS.`);
         console.error('Operation Error:', error);
-
     } finally {
         // Re-render the correct grid after operation
         if (type === 'news') await fetchAndRender(NEWS_TABLE, renderNews);
         else if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
-        else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
     }
 };
 
 
-// --- ADD FUNCTIONS ---
+// --- ADD FUNCTIONS (Updated to use animated popup) ---
 
 // ADD NEWS ARTICLE
 window.addNewsArticle = async () => {
     const titleInput = document.getElementById('new-news-title');
     const bodyInput = document.getElementById('new-news-body');
     const mediaInput = document.getElementById('new-news-media-upload');
-    const statusElement = document.getElementById('news-upload-status');
 
     const title = titleInput.value.trim();
     const body = bodyInput.value.trim();
     const file = mediaInput.files[0];
 
-    if (!title || !body) { alert('Please provide a title and body for the news article.'); return; }
+    if (!title || !body) { showStatusPopup(false, 'Provide a title and body for the article.'); return; }
 
     try {
-        statusElement.textContent = 'Processing article...';
-        statusElement.style.display = 'block';
-
         let mediaURL = '';
 
         // 1. Upload media if a file is selected
         if (file) {
-            mediaURL = await uploadFileToSupabaseStorage(file, MEDIA_BUCKET, statusElement);
+            // All news media (images and videos) are uploaded to the MEDIA_BUCKET ('images')
+            mediaURL = await uploadFileToSupabaseStorage(file, MEDIA_BUCKET);
         }
+        
+        showStatusPopup(null, 'Saving article details...');
 
         // 2. Insert into the news table
         const { error } = await supabase.from(NEWS_TABLE).insert([
@@ -291,20 +497,17 @@ window.addNewsArticle = async () => {
             }
         ]);
 
-        statusElement.style.display = 'none';
-
         if (error) throw new Error(error.message);
 
         // 3. Cleanup and refresh
         titleInput.value = '';
         bodyInput.value = '';
         mediaInput.value = '';
-        alert('News article published successfully!');
+        showStatusPopup(true, 'News article published successfully! 📰');
         await fetchAndRender(NEWS_TABLE, renderNews);
 
     } catch (error) {
-        statusElement.style.display = 'none';
-        alert('News article operation failed: ' + error.message);
+        showStatusPopup(false, 'News article failed: ' + error.message + ' ❌');
     }
 };
 
@@ -312,62 +515,32 @@ window.addNewsArticle = async () => {
 window.addImage = async () => {
     const imageInput = document.getElementById('new-image-upload');
     const file = imageInput.files[0];
-    if (!file) { alert('Please select an image file.'); return; }
+    if (!file) { showStatusPopup(false, 'Please select an image file.'); return; }
 
     try {
-        const imageUploadStatus = document.getElementById('image-upload-status');
-        const downloadURL = await uploadFileToSupabaseStorage(file, MEDIA_BUCKET, imageUploadStatus);
+        // 1. Upload will show the yellow transfer sign
+        const downloadURL = await uploadFileToSupabaseStorage(file, MEDIA_BUCKET);
+        
+        showStatusPopup(null, 'Saving header image URL...');
+
+        // 2. Insert into the image table
         const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
 
         if (error) throw new Error(error.message);
 
         imageInput.value = '';
-        alert('Image uploaded and saved successfully!');
+        showStatusPopup(true, 'Header image uploaded successfully! 🖼️');
         await fetchAndRender(IMAGE_TABLE, renderImages);
 
     } catch (error) {
-        alert('Image operation failed: ' + error.message);
-    }
-};
-
-// ADD HIGHLIGHT VIDEO
-window.addHighlightVideo = async () => {
-    const videoInput = document.getElementById('new-highlight-video-upload');
-    const descInput = document.getElementById('new-highlight-video-description');
-    const statusElement = document.getElementById('highlight-video-upload-status');
-
-    const file = videoInput.files[0];
-
-    if (!file || !descInput.value.trim()) {
-        alert('Please select a video file and provide a description.');
-        return;
-    }
-
-    try {
-        const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET, statusElement);
-
-        const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
-
-        if (error) throw new Error(error.message);
-
-        videoInput.value = '';
-        descInput.value = '';
-        alert('Video uploaded and saved successfully!');
-        await fetchAndRender(VIDEO_TABLE, renderVideos);
-
-    } catch (error) {
-        alert('Video operation failed: ' + error.message);
+        showStatusPopup(false, 'Image operation failed: ' + error.message + ' ❌');
     }
 };
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    // --- INITIAL RENDER ON PAGE LOAD ---
-    fetchAndRender(NEWS_TABLE, renderNews);
-    fetchAndRender(IMAGE_TABLE, renderImages);
-    fetchAndRender(VIDEO_TABLE, renderVideos);
+    // Note: Initial render is now handled inside handleLogin() upon success.
 });
     </script>
 </body>
-
 </html>
