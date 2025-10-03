@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* Your Admin Panel CSS (Unchanged for brevity) */
+        /* Base Styles */
         :root { --montserrat: "Montserrat", sans-serif; --main: #ebd978; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--montserrat); line-height: 1.7; color: var(--white); background: var(--main4); }
@@ -69,22 +69,15 @@
             color: var(--main);
             margin-bottom: 1.5rem;
         }
-
-        #login-error {
-            color: #f75842;
-            margin-top: 1rem;
-            font-weight: 600;
-        }
-        /* ---------------------------------- */
-        /* --- PASSWORD TOGGLE STYLES --- */
-        /* ---------------------------------- */
+        
+        /* --- PASSWORD TOGGLE STYLES (Peek Feature) --- */
         .password-container {
             position: relative;
         }
 
         .password-container input[type="password"],
         .password-container input[type="text"] {
-            padding-right: 40px; /* Make space for the icon */
+            padding-right: 40px; 
         }
 
         .toggle-password {
@@ -97,7 +90,7 @@
             font-size: 1.2rem;
             transition: color 0.2s;
             z-index: 10;
-            margin-top: 0.2rem; /* Minor alignment adjustment */
+            margin-top: 0.2rem;
         }
         
         .toggle-password:hover {
@@ -150,7 +143,7 @@
             backface-visibility: hidden;
             perspective: 1000px;
         }
-
+        
         /* Keyframe Animations */
         @keyframes bounceIn {
             0% { transform: scale(0); opacity: 0; }
@@ -182,7 +175,7 @@
                 </div>
             </div>
             <button class="btn" id="login-button" onclick="handleLogin()">Login</button>
-            <p id="login-error" style="display: none;"></p>
+            <p id="login-error" style="display: none; color: #f75842; margin-top: 1rem; font-weight: 600;"></p>
         </div>
     </div>
     <div id="status-popup">
@@ -216,7 +209,7 @@
                 <label for="new-video-description">Video Description</label>
                 <input type="text" id="new-video-description" placeholder="e.g., Enzo Fernandez funny moment...">
             </div>
-            <button class="btn" onclick="addVideo()">Add Video</button>
+             <button class="btn" onclick="addVideo()">Add Video</button>
         </section>
         
         <section class="admin-section">
@@ -245,12 +238,12 @@
     <script>
 // --- SUPABASE CONFIGURATION ---
 // !!! IMPORTANT: Replace with your actual Supabase details !!!
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; // e.g., 'https://xyz.supabase.co'
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const IMAGE_BUCKET = 'images'; 
+const IMAGE_BUCKET = 'images'; // Define your Supabase storage bucket names
 const VIDEO_BUCKET = 'videos';
 const AVATAR_BUCKET = 'avatars';
 
@@ -262,44 +255,56 @@ const statusMessage = document.getElementById('status-message');
 
 /**
  * Displays an animated status popup (success or failure).
- * @param {boolean} success - True for success (check), false for failure (X).
+ * @param {boolean} success - True for success (check), false for failure (X). Null for 'transferring'.
  * @param {string} message - The message to display.
  */
 const showStatusPopup = (success, message) => {
-    statusIconBox.className = 'icon-box'; 
-    statusIcon.className = 'bx'; 
+    // Basic check to prevent errors if the elements are somehow missing
+    if (!statusPopup) {
+        console.warn(`STATUS: ${message}`); 
+        return; 
+    }
 
-    if (success) {
+    statusIconBox.className = 'icon-box'; // Reset classes
+    statusIcon.className = 'bx'; // Reset icon class
+    statusIconBox.style.backgroundColor = ''; // Clear custom transfer color
+
+    if (success === true) {
         statusIconBox.classList.add('success');
         statusIcon.classList.add('bx-check');
-    } else {
+    } else if (success === false) {
         statusIconBox.classList.add('failure');
         statusIcon.classList.add('bx-x');
+    } else {
+        // Yellow Transfer Sign (Transferring/Loading state)
+        statusIconBox.style.backgroundColor = '#ebd978'; // yellow/main color
+        statusIcon.classList.add('bx-loader-alt', 'bx-spin'); // Spinning icon
     }
 
     statusMessage.textContent = message;
     statusPopup.style.display = 'block';
 
-    setTimeout(() => {
-        statusPopup.style.display = 'none';
-    }, 3000);
+    // Auto-hide the popup only for final success/failure states
+    if (success !== null) {
+        setTimeout(() => {
+            statusPopup.style.display = 'none';
+        }, 3000);
+    }
 };
 
-// --- PASSWORD TOGGLE FUNCTION ADDED ---
+// --- PASSWORD TOGGLE FUNCTION RE-ADDED (Peek Feature) ---
 window.togglePasswordVisibility = () => {
     const passwordInput = document.getElementById('login-password');
     const toggleIcon = document.getElementById('toggle-password');
     
-    // Toggle the type attribute
     const isPassword = passwordInput.type === 'password';
     passwordInput.type = isPassword ? 'text' : 'password';
 
-    // Toggle the icon
     toggleIcon.className = isPassword ? 'bx bx-hide toggle-password' : 'bx bx-show toggle-password';
 };
 
 
-// --- LOGIN HANDLING ---
+// --- LOGIN HANDLING RE-ADDED ---
 const CORRECT_NAME = 'Slogan';
 const CORRECT_PASSWORD = 'Wintersolider44';
 const overlay = document.getElementById('login-overlay');
@@ -315,22 +320,22 @@ window.handleLogin = () => {
         
         showStatusPopup(true, 'Login Successful! Welcome.');
         
-        // Immediately fetch data once logged in
+        // Fetch and render data upon successful login
         fetchAndRender(IMAGE_TABLE, renderImages);
         fetchAndRender(VIDEO_TABLE, renderVideos);
         fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
 
     } else {
-        // Use the new status popup for failed login 
         showStatusPopup(false, 'Login Failed. Check credentials.');
         errorDisplay.textContent = 'Invalid Name or Password. Please try again.';
         errorDisplay.style.display = 'block';
     }
 };
 
+
 // Helper to upload file to Supabase Storage
 const uploadFileToSupabaseStorage = async (file, bucket) => {
-    // Show a temporary message for in-progress upload
+    // Show yellow "transfer" sign during upload (Set success to null)
     showStatusPopup(null, 'Uploading file...'); 
 
     const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
@@ -339,6 +344,9 @@ const uploadFileToSupabaseStorage = async (file, bucket) => {
     const { data, error } = await supabase.storage
         .from(bucket)
         .upload(filePath, file);
+
+    // After upload attempt, we hide the status popup, the next call will re-show it
+    if (statusPopup) statusPopup.style.display = 'none'; 
 
     if (error) {
         console.error("Supabase Upload Error:", error);
@@ -358,7 +366,7 @@ const fetchAndRender = async (tableName, renderFunc) => {
     const { data, error } = await supabase
         .from(tableName)
         .select('*')
-        .order('id', { ascending: false }); 
+        .order('id', { ascending: false }); // Show newest first
 
     if (error) {
         console.error('Fetch Error:', error);
@@ -369,17 +377,17 @@ const fetchAndRender = async (tableName, renderFunc) => {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements & Status Messages 
+    // DOM Elements
     const imagesGrid = document.getElementById('header-images-grid');
     const videosGrid = document.getElementById('videos-grid');
     const testimonialsGrid = document.getElementById('testimonials-grid');
-    
+
     // Table Names
     const IMAGE_TABLE = 'crypticLegionImages';
     const VIDEO_TABLE = 'crypticLegionVideos';
     const TESTIMONIAL_TABLE = 'crypticLegionTestimonials';
     
-    // --- RENDER FUNCTIONS (No changes needed) ---
+    // --- RENDER FUNCTIONS (No changes needed here, they use the correct keys) ---
     const renderImages = (images) => {
         imagesGrid.innerHTML = '';
         images.forEach(image => {
@@ -417,20 +425,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    // --- DELETE FUNCTION (Uses new popup) ---
+    // --- DELETE FUNCTION (Uses animated popup) ---
     window.deleteItem = async (tableName, id, type) => {
         if (confirm('Are you sure you want to delete this item? This will be removed from Supabase.')) {
+            showStatusPopup(null, 'Deleting item...'); // Yellow transfer sign for deleting
+
             const { error } = await supabase
                 .from(tableName)
                 .delete()
                 .eq('id', id);
 
             if (error) {
-                showStatusPopup(false, 'Deletion Failed: ' + error.message);
+                showStatusPopup(false, `Deletion Failed: ${error.message}`);
                 console.error('Deletion Error:', error);
             } else {
                 showStatusPopup(true, 'Item deleted successfully!');
-                // Re-render the grid based on the table
                 if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
                 else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
                 else if (type === 'testimonial') await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
@@ -438,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // --- ADD FUNCTIONS (Uses new popup) ---
+    // --- ADD IMAGE FUNCTION (Uses animated popup) ---
     window.addImage = async () => {
         const imageInput = document.getElementById('new-image-upload');
         const file = imageInput.files[0];
@@ -452,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (error) throw new Error(error.message);
 
             imageInput.value = ''; 
-            showStatusPopup(true, 'Image uploaded and saved!');
+            showStatusPopup(true, 'Image uploaded and saved successfully!');
             await fetchAndRender(IMAGE_TABLE, renderImages);
 
         } catch (error) {
@@ -460,6 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // --- ADD VIDEO FUNCTION (Uses animated popup) ---
     window.addVideo = async () => {
         const videoInput = document.getElementById('new-video-upload');
         const descInput = document.getElementById('new-video-description');
@@ -475,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             videoInput.value = ''; 
             descInput.value = ''; 
-            showStatusPopup(true, 'Video uploaded and saved!');
+            showStatusPopup(true, 'Video uploaded and saved successfully!');
             await fetchAndRender(VIDEO_TABLE, renderVideos);
 
         } catch (error) {
@@ -483,6 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // --- ADD TESTIMONIAL FUNCTION (Uses animated popup) ---
     window.addTestimonial = async () => {
         const avatarInput = document.getElementById('new-testimonial-avatar');
         const nameInput = document.getElementById('new-testimonial-name');
@@ -491,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = avatarInput.files[0];
 
         if (!file || !nameInput.value.trim() || !roleInput.value.trim() || !bodyInput.value.trim()) {
-            showStatusPopup(false, 'Please fill all fields.'); return;
+            showStatusPopup(false, 'Please fill out all testimonial fields and select an avatar.'); return;
         }
 
         try {
@@ -507,15 +518,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (error) throw new Error(error.message);
             
-            // Clear form fields
             avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
-            showStatusPopup(true, 'Testimonial added successfully!');
+            showStatusPopup(true, 'Testimonial added and saved successfully!');
             await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
 
         } catch (error) {
             showStatusPopup(false, 'Testimonial operation failed: ' + error.message);
         }
     };
+    
+    // No initial data fetching on DOMContentLoaded since the login screen covers everything.
+    // The data will be fetched upon successful login inside handleLogin().
 });
     </script>
 </body>
