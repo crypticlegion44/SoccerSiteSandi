@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - The Cryptic Legion</title>
+    <title>Unified Cryptic Legion Admin Dashboard</title>
     <link rel="icon" type="image/png" href="The_Cryptic_Legion_Logo__1_-removebg-preview.png" sizes="32x32">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
         :root { --montserrat: "Montserrat", sans-serif; --main: #ebd978; --main3: #101c32; --main4: #0c1525; --main5: #060b14; --white: #fff; --Vwhite: #e9e7e7; --dwhite: #cccccc; --bg1: #2e3267; --container-width-lg: 80%; --trensition: all 400ms ease; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--montserrat); line-height: 1.7; color: var(--white); background: var(--main4); }
-        .container { width: var(--container-width-lg); margin: 0 auto; }
+        .container { width: var(--container-width-lg); margin: 0 auto; padding-bottom: 5rem; }
         h1, h2, h3 { line-height: 1.2; margin-bottom: 1rem; color: var(--Vwhite); }
         h1 { font-size: 2.5rem; text-align: center; margin: 2rem 0; padding-bottom: 1rem; border-bottom: 2px solid var(--bg1); }
         h2 { margin-top: 2.5rem; color: var(--main); }
@@ -41,125 +41,62 @@
             .management-grid { grid-template-columns: 1fr; }
         }
 
-        /* --- LOGIN POPUP STYLES --- */
-        #login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+        /* --- NAVIGATION TABS --- */
+        #admin-tabs {
             display: flex;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            margin: 2rem 0;
+            border-bottom: 2px solid var(--bg1);
         }
-
-        #login-popup {
-            background: var(--main5);
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        #login-popup h2 {
-            color: var(--main);
-            margin-bottom: 1.5rem;
-        }
-        
-        /* --- PASSWORD TOGGLE STYLES (Peek Feature) --- */
-        .password-container {
-            position: relative;
-        }
-
-        .password-container input[type="password"],
-        .password-container input[type="text"] {
-            padding-right: 40px; 
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
+        .tab-button {
+            padding: 15px 30px;
             cursor: pointer;
             color: var(--dwhite);
-            font-size: 1.2rem;
-            transition: color 0.2s;
-            z-index: 10;
-            margin-top: 0.2rem;
+            background: var(--main3);
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: var(--trensition);
         }
-        
-        .toggle-password:hover {
+        .tab-button:hover {
             color: var(--main);
-        }
-
-        /* ---------------------------------- */
-        /* --- ANIMATION POPUP STYLES --- */
-        /* ---------------------------------- */
-
-        #status-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             background: var(--main5);
-            color: var(--white);
-            padding: 2rem 3rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
-            z-index: 1001;
-            display: none; /* Initially hidden */
-            text-align: center;
-            min-width: 200px;
+        }
+        .tab-button.active {
+            color: var(--main);
+            border-bottom: 3px solid var(--main);
+            background: var(--main5);
+        }
+        .tab-content {
+            display: none; /* Hide all content initially */
+        }
+        .tab-content.active {
+            display: block; /* Show active content */
         }
 
-        .icon-box {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            color: var(--white);
-        }
+        /* --- LOGIN POPUP STYLES (Merged) --- */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        #login-popup { background: var(--main5); padding: 2.5rem; border-radius: 10px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.7); width: 90%; max-width: 400px; text-align: center; }
+        #login-popup h2 { color: var(--main); margin-bottom: 1.5rem; }
+        .password-container { position: relative; }
+        .password-container input[type="password"], .password-container input[type="text"] { padding-right: 40px; }
+        .toggle-password { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--dwhite); font-size: 1.2rem; transition: color 0.2s; z-index: 10; margin-top: 0.2rem; }
+        .toggle-password:hover { color: var(--main); }
 
-        /* Success Styles (Green Check) */
+        /* --- ANIMATION POPUP STYLES (Merged) --- */
+        #status-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--main5); color: var(--white); padding: 2rem 3rem; border-radius: 10px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5); z-index: 1001; display: none; text-align: center; min-width: 200px; }
+        .icon-box { width: 60px; height: 60px; margin: 0 auto 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; color: var(--white); }
         .icon-box.success { background: #00a87a; }
-        .icon-box.success i { 
-            animation: bounceIn 0.5s ease-out; 
-        }
-
-        /* Failure Styles (Red X) */
+        .icon-box.success i { animation: bounceIn 0.5s ease-out; }
         .icon-box.failure { background: #f75842; }
-        .icon-box.failure i { 
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            perspective: 1000px;
-        }
-        
-        /* Keyframe Animations */
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            60% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
+        .icon-box.failure i { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; }
+        @keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
 <body>
+    
     <div id="login-overlay">
         <div id="login-popup">
             <h2>Admin Login Required</h2>
@@ -184,90 +121,166 @@
         </div>
         <p id="status-message" style="font-size: 1.1rem; font-weight: 600;"></p>
     </div>
+    
     <a href="index.html" class="back-link"><i class='bx bx-arrow-back'></i>Back to Home</a>
+    
     <div class="container">
-        <h1>Admin Control Panel</h1>
+        <h1>Unified Cryptic Legion Admin Dashboard</h1>
 
-        <section class="admin-section">
-            <h2>Manage Header Images</h2>
-            <div id="header-images-grid" class="management-grid"></div>
-            <div class="form-group">
-                <label for="new-image-upload">Upload New Header Image</label>
-                <input type="file" id="new-image-upload" accept="image/*">
-                <button class="btn" onclick="addImage()">Add Image</button>
-            </div>
-        </section>
-
-        <section class="admin-section">
-            <h2>Manage Highlight Videos</h2>
-            <div id="videos-grid" class="management-grid"></div>
-            <div class="form-group">
-                <label for="new-video-upload">Upload New Video</label>
-                <input type="file" id="new-video-upload" accept="video/*">
-            </div>
-            <div class="form-group">
-                <label for="new-video-description">Video Description</label>
-                <input type="text" id="new-video-description" placeholder="e.g., Enzo Fernandez funny moment...">
-            </div>
-             <button class="btn" onclick="addVideo()">Add Video</button>
-        </section>
+        <div id="admin-tabs">
+            <button class="tab-button active" onclick="switchTab('landing-management')">Landing Page Management</button>
+            <button class="tab-button" onclick="switchTab('highlight-videos-panel')">Highlight Videos Panel</button>
+            <button class="tab-button" onclick="switchTab('news-panel')">News Panel</button>
+        </div>
         
-        <section class="admin-section">
-            <h2>Manage Live Reports / Testimonials</h2>
-            <div id="testimonials-grid" class="management-grid"></div>
-            <div class="form-group">
-                <label for="new-testimonial-avatar">Avatar Image</label>
-                <input type="file" id="new-testimonial-avatar" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label for="new-testimonial-name">Person's Name</label>
-                <input type="text" id="new-testimonial-name" placeholder="e.g., David Okereke">
-            </div>
-            <div class="form-group">
-                <label for="new-testimonial-role">Role</label>
-                <input type="text" id="new-testimonial-role" placeholder="e.g., Football Analyst">
-            </div>
-            <div class="form-group">
-                <label for="new-testimonial-body">Quote / Message</label>
-                <textarea id="new-testimonial-body" rows="4" placeholder="Enter the testimonial message here..."></textarea>
-            </div>
-            <button class="btn" onclick="addTestimonial()">Add Testimonial</button>
-        </section>
+        <div id="landing-management" class="tab-content active">
+            
+            <section class="admin-section">
+                <h2>Manage Main Header Images</h2>
+                <div id="main-header-images-grid" class="management-grid"></div>
+                <div class="form-group">
+                    <label for="new-main-image-upload">Upload New Header Image</label>
+                    <input type="file" id="new-main-image-upload" accept="image/*">
+                    <button class="btn" onclick="addMainImage()">Add Image</button>
+                </div>
+            </section>
+
+            <section class="admin-section">
+                <h2>Manage Landing Page Videos</h2>
+                <div id="landing-videos-grid" class="management-grid"></div>
+                <div class="form-group">
+                    <label for="new-landing-video-upload">Upload New Video</label>
+                    <input type="file" id="new-landing-video-upload" accept="video/*">
+                </div>
+                <div class="form-group">
+                    <label for="new-landing-video-description">Video Description</label>
+                    <input type="text" id="new-landing-video-description" placeholder="e.g., Enzo Fernandez funny moment...">
+                </div>
+                <button class="btn" onclick="addLandingVideo()">Add Video</button>
+            </section>
+            
+            <section class="admin-section">
+                <h2>Manage Testimonials / Reports</h2>
+                <div id="testimonials-grid" class="management-grid"></div>
+                <div class="form-group">
+                    <label for="new-testimonial-avatar">Avatar Image</label>
+                    <input type="file" id="new-testimonial-avatar" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="new-testimonial-name">Person's Name</label>
+                    <input type="text" id="new-testimonial-name" placeholder="e.g., David Okereke">
+                </div>
+                <div class="form-group">
+                    <label for="new-testimonial-role">Role</label>
+                    <input type="text" id="new-testimonial-role" placeholder="e.g., Football Analyst">
+                </div>
+                <div class="form-group">
+                    <label for="new-testimonial-body">Quote / Message</label>
+                    <textarea id="new-testimonial-body" rows="4" placeholder="Enter the testimonial message here..."></textarea>
+                </div>
+                <button class="btn" onclick="addTestimonial()">Add Testimonial</button>
+            </section>
+
+        </div>
+        
+        <div id="highlight-videos-panel" class="tab-content">
+            <section class="admin-section">
+                <h2>Manage Highlight Videos (Dedicated Page)</h2>
+                <div id="highlight-videos-grid" class="management-grid"></div>
+                <div class="form-group">
+                    <label for="new-highlight-video-upload">Upload New Highlight Video</label>
+                    <input type="file" id="new-highlight-video-upload" accept="video/*">
+                </div>
+                <div class="form-group">
+                    <label for="new-highlight-video-description">Highlight Video Description</label>
+                    <input type="text" id="new-highlight-video-description" placeholder="e.g., Match Highlights 2024 (Highlight)">
+                </div>
+                <button class="btn" onclick="addHighlightVideo()">Add Highlight Video</button>
+            </section>
+            <section class="admin-section">
+                <h2>Manage Highlight Header Images (Dedicated Page)</h2>
+                <div id="highlight-header-images-grid" class="management-grid"></div>
+                <div class="form-group">
+                    <label for="new-highlight-image-upload">Upload New Header Image</label>
+                    <input type="file" id="new-highlight-image-upload" accept="image/*">
+                    <button class="btn" onclick="addHighlightImage()">Add Image</button>
+                </div>
+            </section>
+        </div>
+
+        <div id="news-panel" class="tab-content">
+            <section class="admin-section">
+                <h2>Manage News Articles</h2>
+                <div id="news-articles-grid" class="management-grid"></div>
+                
+                <hr style="border: 1px solid var(--bg1); margin: 2rem 0;">
+
+                <h3>Add New Article</h3>
+                <div class="form-group">
+                    <label for="new-news-title">Article Title</label>
+                    <input type="text" id="new-news-title" placeholder="Enter article headline" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-news-body">Article Summary/Body</label>
+                    <textarea id="new-news-body" rows="4" placeholder="Enter a short summary or the main body of the news article" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="new-news-media-upload">Upload Article Media (Image or Video)</label>
+                    <input type="file" id="new-news-media-upload" accept="image/*,video/mp4">
+                    <p style="font-size: 0.8rem; color: var(--dwhite); margin-top: 0.5rem;">Accepted: Images (JPG/PNG) or MP4 video. Only one will be used.</p>
+                </div>
+                <button class="btn" onclick="addNewsArticle()">Publish Article</button>
+            </section>
+
+            <section class="admin-section">
+                <h2>Manage News Header Images (Dedicated Page)</h2>
+                <div id="news-header-images-grid" class="management-grid"></div>
+                <div class="form-group">
+                    <label for="new-news-image-upload">Upload New Header Image</label>
+                    <input type="file" id="new-news-image-upload" accept="image/*">
+                    <button class="btn" onclick="addNewsImage()">Add Image</button>
+                </div>
+            </section>
+        </div>
+
     </div>
 
     <script>
-// --- SUPABASE CONFIGURATION ---
-// !!! IMPORTANT: Replace with your actual Supabase details !!!
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; // e.g., 'https://xyz.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+// --- SUPABASE CONFIGURATION (Unified) ---
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const IMAGE_BUCKET = 'images'; // Define your Supabase storage bucket names
-const VIDEO_BUCKET = 'videos';
-const AVATAR_BUCKET = 'avatars';
+// --- BUCKET NAMES (Unified) ---
+const IMAGE_BUCKET = 'images'; // Used for all general, highlight, and news images/media
+const VIDEO_BUCKET = 'videos'; // Used for all video uploads (landing and highlight)
+const AVATAR_BUCKET = 'avatars'; // Used for testimonial avatars
 
-// --- ANIMATION/STATUS POPUP LOGIC ---
+// --- DATABASE TABLE NAMES (Consolidated from all three panels, renamed for clarity) ---
+const MAIN_IMAGE_TABLE = 'crypticLegionImages'; // From original code
+const LANDING_VIDEO_TABLE = 'crypticLegionVideos'; // From original code
+const TESTIMONIAL_TABLE = 'crypticLegionTestimonials'; // From original code (Live Reports/Testimonials)
+
+const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos'; // From Panel 2
+const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages'; // From Panel 2
+
+const NEWS_TABLE = 'crypticLegionNews'; // From Panel 3 (Articles)
+const NEWS_IMAGE_TABLE = 'crypticLegionNewsImage'; // From Panel 3 (Header Images)
+
+
+// --- STATUS POPUP LOGIC (Shared) ---
 const statusPopup = document.getElementById('status-popup');
 const statusIconBox = document.getElementById('status-icon-box');
 const statusIcon = document.getElementById('status-icon');
 const statusMessage = document.getElementById('status-message');
 
-/**
- * Displays an animated status popup (success or failure).
- * @param {boolean} success - True for success (check), false for failure (X). Null for 'transferring'.
- * @param {string} message - The message to display.
- */
 const showStatusPopup = (success, message) => {
-    // Basic check to prevent errors if the elements are somehow missing
-    if (!statusPopup) {
-        console.warn(`STATUS: ${message}`); 
-        return; 
-    }
+    if (!statusPopup) { console.warn(`STATUS: ${message}`); return; }
 
-    statusIconBox.className = 'icon-box'; // Reset classes
-    statusIcon.className = 'bx'; // Reset icon class
-    statusIconBox.style.backgroundColor = ''; // Clear custom transfer color
+    statusIconBox.className = 'icon-box'; 
+    statusIcon.className = 'bx'; 
+    statusIconBox.style.backgroundColor = ''; 
 
     if (success === true) {
         statusIconBox.classList.add('success');
@@ -276,39 +289,31 @@ const showStatusPopup = (success, message) => {
         statusIconBox.classList.add('failure');
         statusIcon.classList.add('bx-x');
     } else {
-        // Yellow Transfer Sign (Transferring/Loading state)
-        statusIconBox.style.backgroundColor = '#ebd978'; // yellow/main color
-        statusIcon.classList.add('bx-loader-alt', 'bx-spin'); // Spinning icon
+        statusIconBox.style.backgroundColor = '#ebd978'; 
+        statusIcon.classList.add('bx-loader-alt', 'bx-spin'); 
     }
 
     statusMessage.textContent = message;
     statusPopup.style.display = 'block';
 
-    // Auto-hide the popup only for final success/failure states
     if (success !== null) {
-        setTimeout(() => {
-            statusPopup.style.display = 'none';
-        }, 3000);
+        setTimeout(() => { statusPopup.style.display = 'none'; }, 3000);
     }
 };
 
-// --- PASSWORD TOGGLE FUNCTION RE-ADDED (Peek Feature) ---
-window.togglePasswordVisibility = () => {
-    const passwordInput = document.getElementById('login-password');
-    const toggleIcon = document.getElementById('toggle-password');
-    
-    const isPassword = passwordInput.type === 'password';
-    passwordInput.type = isPassword ? 'text' : 'password';
-
-    toggleIcon.className = isPassword ? 'bx bx-hide toggle-password' : 'bx bx-show toggle-password';
-};
-
-
-// --- LOGIN HANDLING RE-ADDED ---
+// --- LOGIN & AUTHENTICATION (Shared) ---
 const CORRECT_NAME = 'Slogan';
 const CORRECT_PASSWORD = 'Wintersolider44';
 const overlay = document.getElementById('login-overlay');
 const errorDisplay = document.getElementById('login-error');
+
+window.togglePasswordVisibility = () => {
+    const passwordInput = document.getElementById('login-password');
+    const toggleIcon = document.getElementById('toggle-password');
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    toggleIcon.className = isPassword ? 'bx bx-hide toggle-password' : 'bx bx-show toggle-password';
+};
 
 window.handleLogin = () => {
     const nameInput = document.getElementById('login-name').value;
@@ -317,13 +322,10 @@ window.handleLogin = () => {
     if (nameInput === CORRECT_NAME && passwordInput === CORRECT_PASSWORD) {
         overlay.style.display = 'none'; 
         errorDisplay.style.display = 'none';
+        showStatusPopup(true, 'Login Successful! Welcome to the Unified Dashboard.');
         
-        showStatusPopup(true, 'Login Successful! Welcome.');
-        
-        // Fetch and render data upon successful login
-        fetchAndRender(IMAGE_TABLE, renderImages);
-        fetchAndRender(VIDEO_TABLE, renderVideos);
-        fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
+        initializeData();
+        switchTab('landing-management'); // Start on the newly named tab
 
     } else {
         showStatusPopup(false, 'Login Failed. Check credentials.');
@@ -332,28 +334,22 @@ window.handleLogin = () => {
     }
 };
 
+// --- GENERAL HELPERS (Shared) ---
 
-// Helper to upload file to Supabase Storage
+// File Upload Helper
 const uploadFileToSupabaseStorage = async (file, bucket) => {
-    // Show yellow "transfer" sign during upload (Set success to null)
     showStatusPopup(null, 'Uploading file...'); 
-
     const filePath = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
-    
-    // Supabase upload call
+
     const { data, error } = await supabase.storage
         .from(bucket)
         .upload(filePath, file);
-
-    // After upload attempt, we hide the status popup, the next call will re-show it
-    if (statusPopup) statusPopup.style.display = 'none'; 
 
     if (error) {
         console.error("Supabase Upload Error:", error);
         throw new Error('Supabase upload failed: ' + error.message);
     }
 
-    // Get the public URL for the file
     const { data: publicURLData } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
@@ -361,174 +357,422 @@ const uploadFileToSupabaseStorage = async (file, bucket) => {
     return publicURLData.publicUrl;
 };
 
-// Helper to fetch all data from a table and render
+// Data Fetch Helper
 const fetchAndRender = async (tableName, renderFunc) => {
     const { data, error } = await supabase
         .from(tableName)
         .select('*')
-        .order('id', { ascending: false }); // Show newest first
+        .order('id', { ascending: false });
 
     if (error) {
         console.error('Fetch Error:', error);
+        showStatusPopup(false, `Fetch Error on ${tableName}: ${error.message}`);
         return [];
     }
     renderFunc(data);
     return data;
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements
-    const imagesGrid = document.getElementById('header-images-grid');
-    const videosGrid = document.getElementById('videos-grid');
-    const testimonialsGrid = document.getElementById('testimonials-grid');
+// Unified Delete Item Helper
+window.deleteItem = async (tableName, id, type, mediaUrl = '') => {
+    if (!confirm('Are you sure you want to delete this item?')) return;
 
-    // Table Names
-    const IMAGE_TABLE = 'crypticLegionImages';
-    const VIDEO_TABLE = 'crypticLegionVideos';
-    const TESTIMONIAL_TABLE = 'crypticLegionTestimonials';
-    
-    // --- RENDER FUNCTIONS (No changes needed here, they use the correct keys) ---
-    const renderImages = (images) => {
-        imagesGrid.innerHTML = '';
-        images.forEach(image => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            card.innerHTML = `<img src="${image.src}" alt="Header Image"><button class="btn btn-danger" onclick="deleteItem('${IMAGE_TABLE}', ${image.id}, 'image')">Delete</button>`;
-            imagesGrid.appendChild(card);
-        });
-    };
+    showStatusPopup(null, 'Processing deletion...');
 
-    const renderVideos = (videos) => {
-        videosGrid.innerHTML = '';
-        videos.forEach(video => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            card.innerHTML = `<video src="${video.src}" controls loop></video><p>${video.description}</p><button class="btn btn-danger" onclick="deleteItem('${VIDEO_TABLE}', ${video.id}, 'video')">Delete</button>`;
-            videosGrid.appendChild(card);
-        });
-    };
+    try {
+        // 1. Delete the row from the database
+        const { error: dbError } = await supabase
+            .from(tableName)
+            .delete()
+            .eq('id', id);
 
-    const renderTestimonials = (testimonials) => {
-        testimonialsGrid.innerHTML = '';
-        testimonials.forEach(t => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            card.innerHTML = `
-                <div>
-                    <img src="${t.avatarSrc}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%;">
-                    <h5>${t.name}</h5>
-                    <small>${t.role}</small>
-                    <p style="font-size: 0.8rem; margin-top: 1rem;">"${t.body}"</p>
-                </div>
-                <button class="btn btn-danger" onclick="deleteItem('${TESTIMONIAL_TABLE}', ${t.id}, 'testimonial')">Delete</button>`;
-            testimonialsGrid.appendChild(card);
-        });
-    };
+        if (dbError) throw new Error(`DB Deletion Failed: ${dbError.message}`);
 
-    // --- DELETE FUNCTION (Uses animated popup) ---
-    window.deleteItem = async (tableName, id, type) => {
-        if (confirm('Are you sure you want to delete this item? This will be removed from Supabase.')) {
-            showStatusPopup(null, 'Deleting item...'); // Yellow transfer sign for deleting
+        // 2. Delete the file from Supabase Storage (if a URL exists)
+        if (mediaUrl) {
+            let bucketName = IMAGE_BUCKET; // Default to images
+            if (type === 'landing-video' || type === 'highlight-video') {
+                bucketName = VIDEO_BUCKET;
+            } else if (type === 'testimonial') {
+                bucketName = AVATAR_BUCKET;
+            }
 
-            const { error } = await supabase
-                .from(tableName)
-                .delete()
-                .eq('id', id);
+            const urlParts = mediaUrl.split(`${bucketName}/`);
+            if (urlParts.length > 1) {
+                const filePath = urlParts[1].split('?')[0];
+                const { error: storageError } = await supabase.storage
+                    .from(bucketName)
+                    .remove([filePath]);
 
-            if (error) {
-                showStatusPopup(false, `Deletion Failed: ${error.message}`);
-                console.error('Deletion Error:', error);
-            } else {
-                showStatusPopup(true, 'Item deleted successfully!');
-                if (type === 'image') await fetchAndRender(IMAGE_TABLE, renderImages);
-                else if (type === 'video') await fetchAndRender(VIDEO_TABLE, renderVideos);
-                else if (type === 'testimonial') await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
+                if (storageError && storageError.statusCode !== '404') {
+                    console.error(`Storage Deletion Failed (File: ${filePath}):`, storageError);
+                    showStatusPopup(false, `Item Deleted, but file removal error: ${storageError.message}`);
+                    return; 
+                }
             }
         }
-    };
 
-    // --- ADD IMAGE FUNCTION (Uses animated popup) ---
-    window.addImage = async () => {
-        const imageInput = document.getElementById('new-image-upload');
-        const file = imageInput.files[0];
-        if (!file) { showStatusPopup(false, 'Please select an image file.'); return; }
+        showStatusPopup(true, 'Item and media deleted successfully! 🗑️');
 
-        try {
-            const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET);
-            
-            const { error } = await supabase.from(IMAGE_TABLE).insert([{ src: downloadURL }]);
-            
-            if (error) throw new Error(error.message);
+    } catch (error) {
+        showStatusPopup(false, `Operation Failed: ${error.message}.`);
+        console.error('Operation Error:', error);
+    } finally {
+        // Re-render the correct grid after operation
+        if (tableName === MAIN_IMAGE_TABLE) await fetchAndRender(MAIN_IMAGE_TABLE, renderMainImages);
+        else if (tableName === LANDING_VIDEO_TABLE) await fetchAndRender(LANDING_VIDEO_TABLE, renderLandingVideos);
+        else if (tableName === TESTIMONIAL_TABLE) await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
+        else if (tableName === HIGHLIGHT_VIDEO_TABLE) await fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos);
+        else if (tableName === HIGHLIGHT_IMAGE_TABLE) await fetchAndRender(HIGHLIGHT_IMAGE_TABLE, renderHighlightImages);
+        else if (tableName === NEWS_TABLE) await fetchAndRender(NEWS_TABLE, renderNews);
+        else if (tableName === NEWS_IMAGE_TABLE) await fetchAndRender(NEWS_IMAGE_TABLE, renderNewsImages);
+    }
+};
 
-            imageInput.value = ''; 
-            showStatusPopup(true, 'Image uploaded and saved successfully!');
-            await fetchAndRender(IMAGE_TABLE, renderImages);
 
-        } catch (error) {
-            showStatusPopup(false, 'Image operation failed: ' + error.message);
-        }
-    };
+// --- RENDER FUNCTIONS (Adapted for Unified IDs) ---
 
-    // --- ADD VIDEO FUNCTION (Uses animated popup) ---
-    window.addVideo = async () => {
-        const videoInput = document.getElementById('new-video-upload');
-        const descInput = document.getElementById('new-video-description');
-        const file = videoInput.files[0];
-        if (!file || !descInput.value.trim()) { showStatusPopup(false, 'Select a video and add a description.'); return; }
+// LANDING MANAGEMENT - RENDER MAIN HEADER IMAGES
+const renderMainImages = (images) => {
+    const imageGrid = document.getElementById('main-header-images-grid');
+    imageGrid.innerHTML = '';
+    images.forEach(image => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            <img src="${image.src}" alt="Main Header Image">
+            <p>Image ID: ${image.id}</p>
+            <button class="btn btn-danger" onclick="deleteItem('${MAIN_IMAGE_TABLE}', ${image.id}, 'image', '${image.src}')">Delete</button>
+        `;
+        imageGrid.appendChild(card);
+    });
+};
 
-        try {
-            const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET);
+// LANDING MANAGEMENT - RENDER LANDING VIDEOS
+const renderLandingVideos = (videos) => {
+    const videosGrid = document.getElementById('landing-videos-grid');
+    videosGrid.innerHTML = '';
+    videos.forEach(video => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            <video src="${video.src}" controls loop muted></video>
+            <p>${video.description}</p>
+            <button class="btn btn-danger" onclick="deleteItem('${LANDING_VIDEO_TABLE}', ${video.id}, 'landing-video', '${video.src}')">Delete</button>
+        `;
+        videosGrid.appendChild(card);
+    });
+};
 
-            const { error } = await supabase.from(VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
-            
-            if (error) throw new Error(error.message);
+// LANDING MANAGEMENT - RENDER TESTIMONIALS
+const renderTestimonials = (testimonials) => {
+    const testimonialsGrid = document.getElementById('testimonials-grid');
+    testimonialsGrid.innerHTML = '';
+    testimonials.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            <div>
+                <img src="${t.avatarSrc}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%;">
+                <h5 style="color: var(--Vwhite); margin-top: 0.5rem;">${t.name}</h5>
+                <small style="color: var(--dwhite);">${t.role}</small>
+                <p style="font-size: 0.8rem; margin-top: 1rem;">"${t.body.substring(0, 50)}..."</p>
+            </div>
+            <button class="btn btn-danger" onclick="deleteItem('${TESTIMONIAL_TABLE}', ${t.id}, 'testimonial', '${t.avatarSrc || ''}')">Delete</button>`;
+        testimonialsGrid.appendChild(card);
+    });
+};
 
-            videoInput.value = ''; 
-            descInput.value = ''; 
-            showStatusPopup(true, 'Video uploaded and saved successfully!');
-            await fetchAndRender(VIDEO_TABLE, renderVideos);
 
-        } catch (error) {
-            showStatusPopup(false, 'Video operation failed: ' + error.message);
-        }
-    };
+// HIGHLIGHT VIDEOS PANEL - RENDER HIGHLIGHT VIDEOS
+const renderHighlightVideos = (videos) => {
+    const grid = document.getElementById('highlight-videos-grid');
+    grid.innerHTML = '';
+    videos.forEach(video => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            <video src="${video.src}" controls loop muted></video>
+            <p>${video.description}</p>
+            <button class="btn btn-danger" onclick="deleteItem('${HIGHLIGHT_VIDEO_TABLE}', ${video.id}, 'highlight-video', '${video.src}')">Delete</button>
+        `;
+        grid.appendChild(card);
+    });
+};
+
+// HIGHLIGHT VIDEOS PANEL - RENDER HIGHLIGHT HEADER IMAGES
+const renderHighlightImages = (images) => {
+    const grid = document.getElementById('highlight-header-images-grid');
+    grid.innerHTML = '';
+    images.forEach(image => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            <img src="${image.src}" alt="Header Image">
+            <p>Image ID: ${image.id}</p>
+            <button class="btn btn-danger" onclick="deleteItem('${HIGHLIGHT_IMAGE_TABLE}', ${image.id}, 'image', '${image.src}')">Delete</button>
+        `;
+        grid.appendChild(card);
+    });
+};
+
+// NEWS PANEL - RENDER NEWS ARTICLES
+const renderNews = (articles) => {
+    const newsGrid = document.getElementById('news-articles-grid');
+    newsGrid.innerHTML = '';
+    articles.forEach(article => {
+        const mediaURL = article.image_src;
+        const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video') || mediaURL.includes(IMAGE_BUCKET));
+        
+        const mediaTag = mediaURL ? (isVideo
+            ? `<video src="${mediaURL}" controls loop muted style="max-height: 150px;"></video>`
+            : `<img src="${mediaURL}" alt="Article Image" style="max-height: 150px;">`)
+            : '<p style="color: grey;">No Media</p>';
+
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            ${mediaTag}
+            <p style="font-weight: 600; color: var(--main);">${article.title}</p>
+            <p>${article.body.substring(0, 50)}...</p>
+            <button class="btn btn-danger" onclick="deleteItem('${NEWS_TABLE}', ${article.id}, 'news', '${mediaURL || ''}')">Delete</button>
+        `;
+        newsGrid.appendChild(card);
+    });
+};
+
+// NEWS PANEL - RENDER NEWS HEADER IMAGES
+const renderNewsImages = (images) => {
+    const imageGrid = document.getElementById('news-header-images-grid');
+    imageGrid.innerHTML = '';
+    images.forEach(image => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+            <img src="${image.src}" alt="Header Image">
+            <p>Image ID: ${image.id}</p>
+            <button class="btn btn-danger" onclick="deleteItem('${NEWS_IMAGE_TABLE}', ${image.id}, 'image', '${image.src}')">Delete</button>
+        `;
+        imageGrid.appendChild(card);
+    });
+};
+
+
+// --- ADD FUNCTIONS (Unified) ---
+
+// LANDING MANAGEMENT - ADD MAIN IMAGE
+window.addMainImage = async () => {
+    const imageInput = document.getElementById('new-main-image-upload');
+    const file = imageInput.files[0];
+    if (!file) { showStatusPopup(false, 'Please select an image file.'); return; }
+
+    try {
+        const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET);
+        const { error } = await supabase.from(MAIN_IMAGE_TABLE).insert([{ src: downloadURL }]);
+
+        if (error) throw new Error(error.message);
+
+        imageInput.value = '';
+        showStatusPopup(true, 'Main Header image uploaded successfully! 🖼️');
+        await fetchAndRender(MAIN_IMAGE_TABLE, renderMainImages);
+
+    } catch (error) {
+        showStatusPopup(false, 'Image operation failed: ' + error.message + ' ❌');
+    }
+};
+
+// LANDING MANAGEMENT - ADD LANDING VIDEO
+window.addLandingVideo = async () => {
+    const videoInput = document.getElementById('new-landing-video-upload');
+    const descInput = document.getElementById('new-landing-video-description');
+    const file = videoInput.files[0];
+    if (!file || !descInput.value.trim()) { showStatusPopup(false, 'Select a video and add a description.'); return; }
+
+    try {
+        const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET);
+        const { error } = await supabase.from(LANDING_VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+        
+        if (error) throw new Error(error.message);
+
+        videoInput.value = ''; descInput.value = '';
+        showStatusPopup(true, 'Landing Video uploaded and saved! 🎥');
+        await fetchAndRender(LANDING_VIDEO_TABLE, renderLandingVideos);
+
+    } catch (error) {
+        showStatusPopup(false, 'Video operation failed: ' + error.message + ' ❌');
+    }
+};
+
+// LANDING MANAGEMENT - ADD TESTIMONIAL
+window.addTestimonial = async () => {
+    const avatarInput = document.getElementById('new-testimonial-avatar');
+    const nameInput = document.getElementById('new-testimonial-name');
+    const roleInput = document.getElementById('new-testimonial-role');
+    const bodyInput = document.getElementById('new-testimonial-body');
+    const file = avatarInput.files[0];
+
+    if (!file || !nameInput.value.trim() || !roleInput.value.trim() || !bodyInput.value.trim()) {
+        showStatusPopup(false, 'Please fill out all testimonial fields and select an avatar.'); return;
+    }
+
+    try {
+        const avatarUrl = await uploadFileToSupabaseStorage(file, AVATAR_BUCKET);
+        const newItem = {
+            avatarSrc: avatarUrl,
+            name: nameInput.value.trim(),
+            role: roleInput.value.trim(),
+            body: bodyInput.value.trim()
+        };
+        const { error } = await supabase.from(TESTIMONIAL_TABLE).insert([newItem]);
+
+        if (error) throw new Error(error.message);
+        
+        avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
+        showStatusPopup(true, 'Testimonial added and saved successfully! 👍');
+        await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
+
+    } catch (error) {
+        showStatusPopup(false, 'Testimonial operation failed: ' + error.message + ' ❌');
+    }
+};
+
+// HIGHLIGHT VIDEOS PANEL - ADD VIDEO
+window.addHighlightVideo = async () => {
+    const videoInput = document.getElementById('new-highlight-video-upload'); 
+    const descInput = document.getElementById('new-highlight-video-description'); 
+    const file = videoInput.files[0];
     
-    // --- ADD TESTIMONIAL FUNCTION (Uses animated popup) ---
-    window.addTestimonial = async () => {
-        const avatarInput = document.getElementById('new-testimonial-avatar');
-        const nameInput = document.getElementById('new-testimonial-name');
-        const roleInput = document.getElementById('new-testimonial-role');
-        const bodyInput = document.getElementById('new-testimonial-body');
-        const file = avatarInput.files[0];
+    if (!file || !descInput.value.trim()) { 
+        showStatusPopup(false, 'Select a video file and add a description.'); 
+        return; 
+    }
 
-        if (!file || !nameInput.value.trim() || !roleInput.value.trim() || !bodyInput.value.trim()) {
-            showStatusPopup(false, 'Please fill out all testimonial fields and select an avatar.'); return;
+    try {
+        const downloadURL = await uploadFileToSupabaseStorage(file, VIDEO_BUCKET); 
+        const { error } = await supabase.from(HIGHLIGHT_VIDEO_TABLE).insert([{ src: downloadURL, description: descInput.value.trim() }]);
+        
+        if (error) throw new Error(error.message);
+
+        videoInput.value = ''; descInput.value = '';
+        showStatusPopup(true, 'Highlight Video uploaded and saved! 🎥');
+        await fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos);
+
+    } catch (error) {
+        showStatusPopup(false, 'Video operation failed: ' + error.message + ' ❌');
+    }
+};
+
+// HIGHLIGHT VIDEOS PANEL - ADD IMAGE
+window.addHighlightImage = async () => {
+    const imageInput = document.getElementById('new-highlight-image-upload');
+    const file = imageInput.files[0];
+    if (!file) { showStatusPopup(false, 'Please select an image file.'); return; }
+
+    try {
+        const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET); 
+        const { error } = await supabase.from(HIGHLIGHT_IMAGE_TABLE).insert([{ src: downloadURL }]);
+        
+        if (error) throw new Error(error.message);
+
+        imageInput.value = '';
+        showStatusPopup(true, 'Highlight Header image uploaded successfully! 🖼️');
+        await fetchAndRender(HIGHLIGHT_IMAGE_TABLE, renderHighlightImages);
+
+    } catch (error) {
+        showStatusPopup(false, 'Image operation failed: ' + error.message + ' ❌');
+    }
+};
+
+// NEWS PANEL - ADD ARTICLE
+window.addNewsArticle = async () => {
+    const titleInput = document.getElementById('new-news-title');
+    const bodyInput = document.getElementById('new-news-body');
+    const mediaInput = document.getElementById('new-news-media-upload');
+
+    const title = titleInput.value.trim();
+    const body = bodyInput.value.trim();
+    const file = mediaInput.files[0];
+
+    if (!title || !body) { showStatusPopup(false, 'Provide a title and body for the article.'); return; }
+
+    try {
+        let mediaURL = '';
+        if (file) {
+            mediaURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET);
         }
+        
+        const { error } = await supabase.from(NEWS_TABLE).insert([
+            { title: title, body: body, image_src: mediaURL } 
+        ]);
 
-        try {
-            const avatarUrl = await uploadFileToSupabaseStorage(file, AVATAR_BUCKET);
+        if (error) throw new Error(error.message);
 
-            const newItem = {
-                avatarSrc: avatarUrl,
-                name: nameInput.value.trim(),
-                role: roleInput.value.trim(),
-                body: bodyInput.value.trim()
-            };
-            const { error } = await supabase.from(TESTIMONIAL_TABLE).insert([newItem]);
+        titleInput.value = ''; bodyInput.value = ''; mediaInput.value = '';
+        showStatusPopup(true, 'News article published successfully! 📰');
+        await fetchAndRender(NEWS_TABLE, renderNews);
 
-            if (error) throw new Error(error.message);
-            
-            avatarInput.value = nameInput.value = roleInput.value = bodyInput.value = '';
-            showStatusPopup(true, 'Testimonial added and saved successfully!');
-            await fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
+    } catch (error) {
+        showStatusPopup(false, 'News article failed: ' + error.message + ' ❌');
+    }
+};
 
-        } catch (error) {
-            showStatusPopup(false, 'Testimonial operation failed: ' + error.message);
-        }
-    };
+// NEWS PANEL - ADD IMAGE
+window.addNewsImage = async () => {
+    const imageInput = document.getElementById('new-news-image-upload');
+    const file = imageInput.files[0];
+    if (!file) { showStatusPopup(false, 'Please select an image file.'); return; }
+
+    try {
+        const downloadURL = await uploadFileToSupabaseStorage(file, IMAGE_BUCKET);
+        const { error } = await supabase.from(NEWS_IMAGE_TABLE).insert([{ src: downloadURL }]);
+
+        if (error) throw new Error(error.message);
+
+        imageInput.value = '';
+        showStatusPopup(true, 'News Header image uploaded successfully! 🖼️');
+        await fetchAndRender(NEWS_IMAGE_TABLE, renderNewsImages);
+
+    } catch (error) {
+        showStatusPopup(false, 'Image operation failed: ' + error.message + ' ❌');
+    }
+};
+
+
+// --- INITIALIZATION AND TAB CONTROL ---
+
+// Function to fetch all necessary data after login
+const initializeData = () => {
+    // Landing Page Management
+    fetchAndRender(MAIN_IMAGE_TABLE, renderMainImages);
+    fetchAndRender(LANDING_VIDEO_TABLE, renderLandingVideos);
+    fetchAndRender(TESTIMONIAL_TABLE, renderTestimonials);
     
-    // No initial data fetching on DOMContentLoaded since the login screen covers everything.
-    // The data will be fetched upon successful login inside handleLogin().
+    // Highlight Videos Panel
+    fetchAndRender(HIGHLIGHT_VIDEO_TABLE, renderHighlightVideos);
+    fetchAndRender(HIGHLIGHT_IMAGE_TABLE, renderHighlightImages);
+    
+    // News Panel
+    fetchAndRender(NEWS_TABLE, renderNews);
+    fetchAndRender(NEWS_IMAGE_TABLE, renderNewsImages);
+};
+
+// Function to handle tab switching
+window.switchTab = (tabId) => {
+    // Hide all content and remove active class from all buttons
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    // Show the selected content and set the active button
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`.tab-button[onclick="switchTab('${tabId}')"]`).classList.add('active');
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Data fetching happens only upon successful login via handleLogin()
 });
     </script>
 </body>
