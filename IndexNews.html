@@ -1092,621 +1092,333 @@ Every match, every moment, every heartbeat captured here</p>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // Corasel
-
-// Wait for the DOM to load
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    // Get the slider element
-
-    const slider = document.getElementById('slider');
-
-    // Check if the slider element exists before proceeding
-
-    if (slider) {
-
-        // Get the images within the slider
-
-        const images = slider.querySelectorAll('img');
-
-        let currentImageIndex = 0;
-
-    
-
-        // Function to show the next image in the slider
-
-        function showNextImage() {
-
-            // Check if there are images
-
-            if (images.length === 0) return;
-
-
-
-            // Hide the current image
-
-            images[currentImageIndex].classList.remove('active');
-
-    
-
-            // Increment the image index
-
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-
-    
-
-            // Show the next image
-
-            images[currentImageIndex].classList.add('active');
-
-        }
-
-    
-
-        // Initially show the first image
-
-        if (images.length > 0) {
-
-            images[currentImageIndex].classList.add('active');
-
-            // Set the interval for transitioning to the next image (5 seconds = 5000 milliseconds)
-
-            setInterval(showNextImage, 5000);
-
-        }
-
-    }
-
-});
-
-
-
-//------------- NAV SCROLL ------------------//
-
-window.addEventListener('scroll', () => {
-
-    document.querySelector('nav').classList.toggle
-
-    ('window-scroll', window.scrollY > 0);
-
-})
-
-
-
-// SWIPER JS Code
-
-var swiper = new Swiper(".mySwiper", {
-
-    slidesPerView: 1,
-
-    spaceBetween: 20,
-
-    loop: true,
-
-    grabCursor: true,
-
-    pagination: {
-
-        el: ".swiper-pagination",
-
-        clickable: true,
-
-    },
-
-    autoplay: {
-
-        delay: 7000,
-
-        disableOnInteraction: false,
-
-    },
-
-    breakpoints: {
-
-        768: {
-
-            slidesPerView: 2, // 2 slides side by side on tablets
-
-        },
-
-        1024: {
-
-            slidesPerView: 3, // 3 slides side by side on desktops
-
-        }
-
-    }
-
-});
-
-
-
-// Menu Bar Toggle
-
-const menu = document.querySelector(".nav-menu");
-
-const menuBtn = document.querySelector("#open-menu-btn");
-
-const closeBtn = document.querySelector("#close-menu-btn");
-
-
-
-if (menu && menuBtn && closeBtn) {
-
-    menuBtn.addEventListener('click', () => {
-
-        menu.style.display = "flex";
-
-        closeBtn.style.display = "inline-block";
-
-        menuBtn.style.display = "none";
-
-    })
-
-
-
-    const closeNav = () => {
-
-        menu.style.display = "none";
-
-        closeBtn.style.display = "none";
-
-        menuBtn.style.display = "inline-block";
-
-    }
-
-
-
-    closeBtn.addEventListener('click', closeNav);
-
+        // --- SUPABASE CONFIGURATION ---
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
+
+if (!window.supabase) {
+    console.error("Supabase client library not found. Please ensure the script tag for Supabase is included.");
+}
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+// --- SUPABASE TABLE NAMES ---
+const NEWS_TABLE = 'crypticLegionNews'; 
+const HIGHLIGHT_TABLE = 'crypticLegionNewsImage'; 
+
+
+// Helper function to fetch data from Supabase
+const fetchSupabaseData = async (tableName) => {
+    if (!supabase) return [];
+    const { data, error } = await supabase
+        .from(tableName)
+        .select('*')
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error(`Error fetching ${tableName} (Check RLS Select Policy):`, error); 
+        return [];
+    }
+    return data;
+};
+
+// ----------------------------------------------------------------------
+// --- LAZY LOADING & VIDEO/IMAGE RENDERING LOGIC ---
+// ----------------------------------------------------------------------
+
+// **FUNCTION: IMPROVE SITE LOADING SMOOTHNESS/PERFORMANCE (LAZY LOADING)**
+const lazyLoadMedia = () => {
+    // Select all elements marked for lazy loading
+    const lazyElements = document.querySelectorAll('.lazy-load[data-src]');
+
+    if (!('IntersectionObserver' in window)) {
+        lazyElements.forEach(media => {
+            if (media.dataset.src) {
+                media.src = media.dataset.src;
+                media.removeAttribute('data-src');
+                media.classList.remove('lazy-load');
+            }
+        });
+        return;
+    }
+
+    const observerOptions = {
+        rootMargin: '100px',
+        threshold: 0.01
+    };
+
+    if (window.mediaObserver) {
+        window.mediaObserver.disconnect();
+    }
+
+    const mediaObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const media = entry.target;
+                const dataSrc = media.getAttribute('data-src');
+
+                if (dataSrc) {
+                    media.src = dataSrc;
+                    media.removeAttribute('data-src');
+                    media.classList.remove('lazy-load');
+                    observer.unobserve(media);
+                }
+            }
+        });
+    }, observerOptions);
+
+    window.mediaObserver = mediaObserver;
+
+    lazyElements.forEach(media => {
+        mediaObserver.observe(media);
+    });
+};
+
+// Function to render header images and initialize the carousel
+const renderHeaderImages = async () => {
+    const images = await fetchSupabaseData(HIGHLIGHT_TABLE);
+    const slider = document.getElementById('slider');
+    if (!slider) return;
+
+    // 1. Clear existing static/dynamic <img> tags
+    slider.querySelectorAll('img').forEach(img => img.remove()); 
+
+    // 2. Inject new dynamic images
+    images.forEach((image, index) => {
+        const img = document.createElement('img');
+        // Use data-src for lazy loading and add the class
+        img.dataset.src = image.src; 
+        img.alt = `Header Image ${index + 1}`;
+        img.className = 'lazy-load';
+        slider.appendChild(img);
+    });
+
+    // 3. Initialize Image Carousel ONLY if dynamic images are present
+    const carouselImages = slider.querySelectorAll('img');
+    if (carouselImages.length > 0) {
+        let currentImageIndex = 0;
+        
+        // CRITICAL FIX: Load the first image immediately
+        if (carouselImages[0].dataset.src) {
+            carouselImages[0].src = carouselImages[0].dataset.src;
+            carouselImages[0].removeAttribute('data-src');
+            carouselImages[0].classList.remove('lazy-load');
+        }
+
+        // Clear old interval if it exists
+        if (window.carouselInterval) {
+            clearInterval(window.carouselInterval);
+        }
+        
+        // Initially show the first dynamic image
+        carouselImages[currentImageIndex].classList.add('active'); 
+        
+        function showNextImage() {
+            carouselImages[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
+
+            // Load the next image if it hasn't been loaded yet
+            const nextImage = carouselImages[currentImageIndex];
+            if (nextImage.dataset.src) {
+                nextImage.src = nextImage.dataset.src;
+                nextImage.removeAttribute('data-src');
+                nextImage.classList.remove('lazy-load');
+            }
+
+            nextImage.classList.add('active');
+        }
+        
+        window.carouselInterval = setInterval(showNextImage, 5000); 
+    }
+    
+    // Call lazy loading to observe all newly created lazy-load elements
+    lazyLoadMedia();
+};
+
+
+const renderNewsForViewer = async () => {
+    const articles = await fetchSupabaseData(NEWS_TABLE);
+    const container = document.getElementById('news-articles-container');
+    
+    if (!container) {
+        console.error("CRITICAL ERROR: News container element 'news-articles-container' not found in HTML.");
+        return;
+    }
+    container.innerHTML = '';
+
+    if (articles.length === 0) {
+        container.innerHTML = '<p>No news articles published yet.</p>';
+        return;
+    }
+
+    articles.forEach(article => {
+        const mediaURL = article.image_src;
+        const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
+
+        const mediaTag = mediaURL
+            ? isVideo
+                ? `<video data-src="${mediaURL}" controls loop muted class="news-media lazy-load"></video>`
+                : `<img data-src="${mediaURL}" alt="${article.title}" class="news-media lazy-load">`
+            : ''; 
+
+        const articleHTML = document.createElement('article');
+        articleHTML.className = 'news-article-card';
+        articleHTML.innerHTML = `
+            ${mediaTag} 
+            <div class="article-header">
+                <h3>${article.title}</h3>
+            </div>
+            <div class="article-body">
+                <p>${article.body}</p>
+            </div>
+            <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
+        `;
+        container.appendChild(articleHTML);
+    });
+
+    // Apply lazy loading to the new media elements
+    lazyLoadMedia();
+};
+
+
+// ----------------------------------------------------------------------
+// --- UTILITY/ANIMATION LOGIC (Consolidated and Cleaned) ---
+// ----------------------------------------------------------------------
+
+// SWIPER Initialization function (Consolidated)
+const initializeSwiper = () => {
+    // Check if Swiper class is available and the container exists
+    const swiperContainer = document.querySelector(".mySwiper");
+    if (typeof Swiper === 'undefined' || !swiperContainer) {
+        return;
+    }
+    
+    // Destroy previous Swiper instance if it exists (for a future soft reload)
+    if (window.mySwiperInstance) {
+        window.mySwiperInstance.destroy(true, true);
+    }
+    
+    window.mySwiperInstance = new Swiper(swiperContainer, {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        loop: true,
+        grabCursor: true,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        autoplay: {
+            delay: 7000,
+            disableOnInteraction: false,
+        },
+        breakpoints: {
+            768: {
+                slidesPerView: 2,
+            },
+            1024: {
+                slidesPerView: 3,
+            }
+        }
+    });
 }
 
 
-
-
-
-// Scrool Animation
-
-const observer = new IntersectionObserver((entries) => {
-
-    entries.forEach((entry) => {
-
-        // console.log(entry) // Commented out to reduce console spam
-
-        if (entry.isIntersecting) {
-
-            entry.target.classList.add('show');
-
-        } else {
-
-            entry.target.classList.remove('show');
-
-        }
-
-    });
-
-});
-
-
-
-// Safely observe elements
-
-document.querySelectorAll('.scrool').forEach((el) => observer.observe(el));
-
-document.querySelectorAll('.vibe').forEach((el) => observer.observe(el));
-
-document.querySelectorAll('.pop').forEach((el) => observer.observe(el));
-
-
-
-
-
-///// Count Animation Code (01)
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const countElement = document.getElementById("count");
-
-    const plusElement = document.getElementById("plus");
-
-
-
-    // Only run if both elements exist (prevents TypeError: Cannot set properties of null)
-
-    if (!countElement || !plusElement) return;
-
-
-
-    function animatePlusSign() {
-
-        plusElement.style.opacity = "1";
-
-        plusElement.style.transform = "scale(1)";
-
-    }
-
-
-
-    function startCounting() {
-
-        let count = 0;
-
-        const targetCount = 75;
-
-        const interval = 75; // milliseconds
-
-
-
-        const counterInterval = setInterval(() => {
-
-            count++;
-
-            countElement.textContent = count;
-
-
-
-            if (count === targetCount) {
-
-                clearInterval(counterInterval);
-
-                setTimeout(animatePlusSign, 500);
-
-            }
-
-        }, interval);
-
-    }
-
-
-
-    startCounting();
-
-});
-
-
-
-
-
-///// Count Animation Code (02)
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const countElement = document.getElementById("coun");
-
-    const plusElement = document.getElementById("plu");
-
-
-
-    // Only run if both elements exist
-
-    if (!countElement || !plusElement) return;
-
-
-
-    function animatePlusSign() {
-
-        plusElement.style.opacity = "1";
-
-        plusElement.style.transform = "scale(1)";
-
-    }
-
-
-
-    function startCounting() {
-
-        let coun = 0;
-
-        const targetCount = 1000;
-
-        const interval = 5.5; // milliseconds
-
-
-
-        const counterInterval = setInterval(() => {
-
-            coun++;
-
-            countElement.textContent = coun;
-
-
-
-            if (coun === targetCount) {
-
-                clearInterval(counterInterval);
-
-                setTimeout(animatePlusSign, 500);
-
-            }
-
-        }, interval);
-
-    }
-
-
-
-    startCounting();
-
-});
-
-
-
-
-
-///// Count Animation Code (03)
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const countElement = document.getElementById("cou");
-
-    const plusElement = document.getElementById("pl");
-
-
-
-    // Only run if both elements exist
-
-    if (!countElement || !plusElement) return;
-
-
-
-    function animatePlusSign() {
-
-        plusElement.style.opacity = "1";
-
-        plusElement.style.transform = "scale(1)";
-
-    }
-
-
-
-    function startCounting() {
-
-        let cou = 0;
-
-        const targetCount = 25;
-
-        const interval = 250; // milliseconds
-
-
-
-        const counterInterval = setInterval(() => {
-
-            cou++;
-
-            countElement.textContent = cou;
-
-
-
-            if (cou === targetCount) {
-
-                clearInterval(counterInterval);
-
-                setTimeout(animatePlusSign, 500);
-
-            }
-
-        }, interval);
-
-    }
-
-
-
-    startCounting();
-
-});
-
-
-
-
-
-// --- SUPABASE NEWS INTEGRATION ---
-
-(function() {
-
-    // --- SUPABASE CONFIGURATION ---
-
-    const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
-
-    // Ensure the Supabase client is available before creating it
-    if (!window.supabase) {
-        console.error("Supabase client library not found. Please ensure the script tag is included.");
-        return;
+// --- COUNT ANIMATION FUNCTION (Consolidated Helper) ---
+function startCounter(countId, plusId, target, interval) {
+    const countElement = document.getElementById(countId);
+    const plusElement = document.getElementById(plusId);
+
+    if (!countElement) return;
+
+    function animatePlusSign() {
+        if (plusElement) {
+            plusElement.style.opacity = "1";
+            plusElement.style.transform = "scale(1)";
+        }
     }
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let currentCount = 0;
+    // Clear old interval if it exists (using a data attribute for ID storage)
+    if (countElement.dataset.counterInterval) {
+        clearInterval(parseInt(countElement.dataset.counterInterval));
+    }
+    
+    const counterInterval = setInterval(() => {
+        // Handle floating-point intervals by forcing a ceiling on the step
+        currentCount = Math.min(target, currentCount + 1); 
+        countElement.textContent = currentCount;
 
-    // --- TABLE NAMES ---
-    const NEWS_TABLE = 'crypticLegionNews'; 
-    // **CORRECTED TABLE NAME for header images**
-    const HIGHLIGHT_TABLE = 'crypticLegionNewsImage'; 
-
-
-    // ----------------------------------------------------------------------
-    // --- NEWS ARTICLE LOGIC (Kept for completeness) ---
-    // ----------------------------------------------------------------------
-
-    const fetchNews = async () => {
-        const { data, error } = await supabase
-            .from(NEWS_TABLE)
-            .select('*')
-            .order('id', { ascending: false });
-
-        if (error) {
-            console.error('Error fetching news:', error);
-            const container = document.getElementById('news-articles-container');
-            if (container) {
-                container.innerHTML = '<p style="color: red;">Failed to load news articles. Check RLS policies.</p>';
-            }
-            return [];
+        if (currentCount >= target) {
+            clearInterval(counterInterval);
+            countElement.textContent = target; 
+            setTimeout(animatePlusSign, 500);
         }
-        return data;
-    };
+    }, interval);
+    
+    countElement.dataset.counterInterval = counterInterval.toString();
+}
 
-    const renderNewsForViewer = (articles) => {
-        const container = document.getElementById('news-articles-container');
-        if (!container) {
-            console.error("CRITICAL ERROR: News container element 'news-articles-container' not found in HTML.");
-            return;
-        }
-        container.innerHTML = '';
+//------------- NAV SCROLL ------------------//
+window.addEventListener('scroll', () => {
+    document.querySelector('nav').classList.toggle
+    ('window-scroll', window.scrollY > 0);
+});
 
-        if (articles.length === 0) {
-            container.innerHTML = '<p>No news articles published yet.</p>';
-            return;
-        }
+// Menu Bar Toggle
+const menu = document.querySelector(".nav-menu");
+const menuBtn = document.querySelector("#open-menu-btn");
+const closeBtn = document.querySelector("#close-menu-btn");
 
-        articles.forEach(article => {
-            const mediaURL = article.image_src;
-            const isVideo = mediaURL && (mediaURL.endsWith('.mp4') || mediaURL.includes('video'));
-
-            const mediaTag = mediaURL
-                ? isVideo
-                    ? `<video src="${mediaURL}" controls loop muted class="news-media"></video>`
-                    : `<img src="${mediaURL}" alt="${article.title}" class="news-media">`
-                : ''; 
-
-            const articleHTML = document.createElement('article');
-            articleHTML.className = 'news-article-card';
-            articleHTML.innerHTML = `
-                ${mediaTag} 
-                <div class="article-header">
-                    <h3>${article.title}</h3>
-                </div>
-                <div class="article-body">
-                    <p>${article.body}</p>
-                </div>
-                <small class="article-date">${new Date(article.created_at).toLocaleDateString()}</small>
-            `;
-            container.appendChild(articleHTML);
-        });
-    };
-
-
-    // ----------------------------------------------------------------------
-    // --- HEADER IMAGE (CAROUSEL) LOGIC ---
-    // ----------------------------------------------------------------------
-
-    /**
-     * Fetches image URLs from the header image table, injects them, and returns success status.
-     * @returns {boolean} True if new images were injected, false otherwise.
-     */
-    const fetchAndRenderHighlightImages = async () => {
-        const slider = document.getElementById('slider');
-        if (!slider) {
-            console.error("CRITICAL ERROR: Slider element not found.");
-            return false;
-        }
-        
-        // 1. Fetch images from Supabase
-        const { data, error } = await supabase
-            .from(HIGHLIGHT_TABLE)
-            .select('src') 
-            .order('id', { ascending: false }); 
-
-        if (error) {
-            // Note the updated table name in the error message for easy debugging
-            console.error('Error fetching highlight images (Check RLS Select Policy for ' + HIGHLIGHT_TABLE + '):', error);
-            return false;
-        }
-
-        if (!data || data.length === 0) {
-            console.log("No header images found in Supabase. Using static images.");
-            return false; 
-        }
-        
-        // 2. Clear existing static <img> tags inside the slider
-        const staticImages = slider.querySelectorAll('img');
-        staticImages.forEach(img => img.remove());
-
-        // 3. Inject new dynamic images
-        let imagesInjected = 0;
-        data.forEach((item, index) => {
-            if (item.src) {
-                const imgTag = document.createElement('img');
-                imgTag.src = item.src;
-                imgTag.alt = `Header Image ${index + 1}`;
-                
-                slider.appendChild(imgTag);
-                imagesInjected++;
-            }
-        });
-        
-        return imagesInjected > 0;
-    };
-
-
-    /**
-     * Initializes the carousel (slider) using the dynamically injected images.
-     */
-    const initializeDynamicCarousel = () => {
-        const slider = document.getElementById('slider');
-        if (!slider) return;
-        
-        const images = slider.querySelectorAll('img');
-        let currentImageIndex = 0;
-        
-        if (images.length === 0) return;
-
-        function showNextImage() {
-            images[currentImageIndex].classList.remove('active');
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            images[currentImageIndex].classList.add('active');
-        }
-        
-        // Initial setup
-        images[currentImageIndex].classList.add('active');
-        setInterval(showNextImage, 5000);
-    };
-
-
-    // ----------------------------------------------------------------------
-    // --- INITIALIZATION (MASTER RUNNER) ---
-    // ----------------------------------------------------------------------
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        // 1. Fetch and inject Header Images
-        const imagesWereInjected = await fetchAndRenderHighlightImages(); 
-
-        // 2. Only initialize the carousel if images were successfully loaded/injected
-        if (imagesWereInjected) {
-            initializeDynamicCarousel(); 
-        }
-        
-        // 3. Fetch and render News Articles
-        const newsData = await fetchNews();
-        renderNewsForViewer(newsData);
+if (menu && menuBtn && closeBtn) { 
+    menuBtn.addEventListener('click', () => {
+        menu.style.display = "flex";
+        closeBtn.style.display = "inline-block";
+        menuBtn.style.display = "none";
     });
 
-})(); // End of Supabase integration IIFE
+    const closeNav = () => {
+        menu.style.display = "none";
+        closeBtn.style.display = "none";
+        menuBtn.style.display = "inline-block";
+    };
+
+    closeBtn.addEventListener('click', closeNav);
+}
+
+// Scrool Animation (using a single observer and query selector)
+const initScrollAnimations = () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            } else {
+                entry.target.classList.remove('show');
+            }
+        });
+    });
+    
+    // Safely observe all combined classes
+    document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.observe(el));
+}
+
+
+// ----------------------------------------------------------------------
+// --- MAIN INITIALIZATION BLOCK ---
+// ----------------------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', function() {
+    // --- DYNAMIC CONTENT ---
+    renderHeaderImages();
+    renderNewsForViewer();
+    initializeSwiper(); // Initializes any Swiper instance (like for Testimonials)
+
+    // --- UTILITIES & ANIMATIONS ---
+    initScrollAnimations();
+    
+    // Start counting animations
+    startCounter("count", "plus", 75, 75);      
+    startCounter("coun", "plu", 1000, 5.5);    
+    startCounter("cou", "pl", 25, 250);      
+});
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
