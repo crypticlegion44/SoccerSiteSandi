@@ -1378,18 +1378,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 4. Apply Initial Lazy Loading
     lazyLoadMedia();
-    
-    // ----------------------------------------------------------------------
-    // **FORCED RELOAD EVERY 1 MINUTE** (Guaranteed update cycle)
-    const ONE_MINUTE_MS = 1 * 60 * 1000; // 60,000 milliseconds
-
-    setInterval(() => {
-        console.log("Forcing a page reload to check for new content (1-minute interval).");
-        window.location.reload();
-    }, ONE_MINUTE_MS);
-    // ----------------------------------------------------------------------
 });
 </script>
 </body>
 </html>
+
 
