@@ -946,17 +946,18 @@ pro:nth-child(4) {
     
     <script>
         // --- SUPABASE CONFIGURATION ---
-const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM'; 
-
+const SUPABASE_URL = 'https://hzduwqstaowpllqmuwrc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6ZHV3cXN0YW93cGxscW11d3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjM4NDgsImV4cCI6MjA3NDIzOTg0OH0.V0QQ_au79MtQ7T6p6uDn_c2xkMrIt2L5QwqF_InN9eM';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // --- SUPABASE TABLE NAMES (Using the HIGHLIGHTS specific names) ---
-const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages'; // Assumed working case
-const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos'; // Assumed working case
+const HIGHLIGHT_IMAGE_TABLE = 'crypticLegionHighlightImages'; // Used 'HIGHLIGHT_IMAGE_TABLE'
+const HIGHLIGHT_VIDEO_TABLE = 'crypticLegionHighlightVideos'; // Used 'HIGHLIGHT_VIDEO_TABLE'
+const TESTIMONIAL_TABLE = 'crypticLegionTestimonials'; // Re-added for completeness if used elsewhere
 
 // --- ELEMENT ID FOR VIDEOS ---
 const HIGHLIGHT_VIDEOS_CONTAINER_ID = 'highlight-videos-section'; 
+const VIDEO_CONTAINER_CLASS = '.team-container'; // Common class for video section
 
 // Helper function to fetch data from Supabase
 const fetchSupabaseData = async (tableName) => {
@@ -967,10 +968,58 @@ const fetchSupabaseData = async (tableName) => {
 
     if (error) {
         // This log will catch the 401 error if RLS is still the problem
-        console.error(`Error fetching ${tableName}:`, error); 
+        console.error(`Error fetching ${tableName}:`, error);
         return [];
     }
     return data;
+};
+
+// **FUNCTION: IMPROVE SITE LOADING SMOOTHNESS/PERFORMANCE (LAZY LOADING)**
+const lazyLoadMedia = () => {
+    // Select all elements marked for lazy loading
+    const lazyElements = document.querySelectorAll('.lazy-load[data-src]');
+
+    if (!('IntersectionObserver' in window)) {
+        lazyElements.forEach(media => {
+            if (media.dataset.src) {
+                media.src = media.dataset.src;
+                media.removeAttribute('data-src');
+                media.classList.remove('lazy-load');
+            }
+        });
+        return;
+    }
+
+    const observerOptions = {
+        rootMargin: '100px',
+        threshold: 0.01
+    };
+
+    if (window.mediaObserver) {
+        window.mediaObserver.disconnect();
+    }
+
+    const mediaObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const media = entry.target;
+                const dataSrc = media.getAttribute('data-src');
+
+                if (dataSrc) {
+                    media.src = dataSrc;
+                    media.removeAttribute('data-src');
+                    media.classList.remove('lazy-load');
+                    observer.unobserve(media);
+                }
+            }
+        });
+    }, observerOptions);
+
+    window.mediaObserver = mediaObserver;
+
+    lazyElements.forEach(media => {
+        mediaObserver.observe(media);
+    });
 };
 
 // Function to render header images and initialize the carousel
@@ -979,14 +1028,16 @@ const renderHeaderImages = async () => {
     const slider = document.getElementById('slider');
     if (!slider) return;
 
-    // Remove any existing dynamic image elements 
-    slider.querySelectorAll('img').forEach(img => img.remove()); 
+    // Remove any existing dynamic image elements 
+    slider.querySelectorAll('img').forEach(img => img.remove()); 
 
     // Add dynamic images AFTER the text slide
     images.forEach((image, index) => {
         const img = document.createElement('img');
-        img.src = image.src; 
+        // CRITICAL: Use data-src for lazy loading
+        img.dataset.src = image.src; 
         img.alt = `Header Image ${index + 1}`;
+        img.className = 'lazy-load'; // Add lazy-load class
         slider.appendChild(img);
     });
 
@@ -995,30 +1046,59 @@ const renderHeaderImages = async () => {
     if (carouselImages.length > 0) {
         let currentImageIndex = 0;
         
-        // Clear old interval if it exists (prevents multiple carousels running)
+        // CRITICAL FIX: Load the first image immediately for the carousel to start
+        if (carouselImages[0].dataset.src) {
+            carouselImages[0].src = carouselImages[0].dataset.src;
+            carouselImages[0].removeAttribute('data-src');
+            carouselImages[0].classList.remove('lazy-load');
+        }
+
+        // Clear old interval if it exists
         if (slider.hasAttribute('data-interval')) {
             clearInterval(parseInt(slider.getAttribute('data-interval')));
         }
         
         // Initially show the first dynamic image
-        carouselImages[currentImageIndex].classList.add('active'); 
+        carouselImages[currentImageIndex].classList.add('active'); 
         
         function showNextImage() {
             carouselImages[currentImageIndex].classList.remove('active');
             currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
-            carouselImages[currentImageIndex].classList.add('active');
+
+            // Load the next image if it hasn't been loaded yet by the observer or this function
+            const nextImage = carouselImages[currentImageIndex];
+            if (nextImage.dataset.src) {
+                nextImage.src = nextImage.dataset.src;
+                nextImage.removeAttribute('data-src');
+                nextImage.classList.remove('lazy-load');
+            }
+
+            nextImage.classList.add('active');
         }
         
-        const newInterval = setInterval(showNextImage, 5000); 
+        const newInterval = setInterval(showNextImage, 5000); 
         slider.setAttribute('data-interval', newInterval); 
     }
+    
+    // Call lazy loading to observe all newly created lazy-load elements
+    lazyLoadMedia();
+};
+
+// **FUNCTION: ENSURES VIDEOS PLAY ONLY ONCE**
+const addVideoSinglePlayListener = (videoElement) => {
+    // 1. Remove the 'loop' attribute
+    videoElement.removeAttribute('loop');
+    // 2. Add an event listener to pause the video when it ends
+    videoElement.addEventListener('ended', () => {
+        videoElement.pause();
+    });
 };
 
 // Function to render videos (Highlights)
 const renderVideos = async () => {
     const videos = await fetchSupabaseData(HIGHLIGHT_VIDEO_TABLE);
-    // CRITICAL FIX: Target the specific ID for highlight videos
-    const videosContainer = document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID); 
+    // Use the container class from previous versions if ID is not available, or use the ID
+    const videosContainer = document.querySelector(VIDEO_CONTAINER_CLASS) || document.getElementById(HIGHLIGHT_VIDEOS_CONTAINER_ID);
     if (!videosContainer) return;
 
     videosContainer.innerHTML = ''; // Clear existing content
@@ -1030,10 +1110,10 @@ const renderVideos = async () => {
 
     videos.forEach(video => {
         const videoArticle = document.createElement('article');
-        videoArticle.className = 'team-member'; 
+        videoArticle.className = 'team-member'; 
         videoArticle.innerHTML = `
             <div class="team-member-video">
-                <video src="${video.src}" controls width="100%" height="200" loop></video>
+                <video data-src="${video.src}" controls width="100%" height="200" class="lazy-load"></video>
             </div>
             <div class="team-member-info">
                 <h4>Highlight</h4>
@@ -1042,7 +1122,41 @@ const renderVideos = async () => {
         `;
         videosContainer.appendChild(videoArticle);
     });
+
+    // Apply single-play logic after DOM insertion
+    videosContainer.querySelectorAll('video').forEach(addVideoSinglePlayListener);
+    
+    // Call lazy loading to observe all newly created lazy-load elements
+    lazyLoadMedia();
 };
+
+// **FUNCTION: IMPLEMENT REAL-TIME UPDATES (FORCING FULL RELOAD - BACKUP)**
+const subscribeToUpdates = () => {
+    console.log('Setting up Supabase Realtime subscriptions...');
+
+    const handleReload = (payload) => {
+        console.log(`Supabase change detected: ${payload.table} (${payload.eventType}). Performing full page reload.`);
+        window.location.reload();
+    };
+
+    // Use HIGHLIGHT tables and the Testimonial table (if it exists)
+    supabase
+        .channel('highlight_image_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: HIGHLIGHT_IMAGE_TABLE }, handleReload)
+        .subscribe();
+
+    supabase
+        .channel('highlight_video_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: HIGHLIGHT_VIDEO_TABLE }, handleReload)
+        .subscribe();
+        
+    // Assuming you might still have a testimonial table to check
+    supabase
+        .channel('testimonial_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: TESTIMONIAL_TABLE }, handleReload)
+        .subscribe();
+};
+
 
 // --- COUNT ANIMATION FUNCTION (Consolidated Helper) ---
 function startCounter(countId, plusId, target, interval) {
@@ -1059,15 +1173,23 @@ function startCounter(countId, plusId, target, interval) {
     }
 
     let currentCount = 0;
+    // Clear old interval if it exists
+    if (countElement.dataset.counterInterval) {
+        clearInterval(parseInt(countElement.dataset.counterInterval));
+    }
+    
     const counterInterval = setInterval(() => {
         currentCount++;
         countElement.textContent = currentCount;
 
-        if (currentCount === target) {
+        if (currentCount >= target) {
             clearInterval(counterInterval);
+            countElement.textContent = target; // Ensure it stops exactly at the target
             setTimeout(animatePlusSign, 500);
         }
     }, interval);
+    
+    countElement.dataset.counterInterval = counterInterval.toString();
 }
 
 //------------- NAV SCROLL ------------------//
@@ -1103,7 +1225,7 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.classList.add('show');
         } else {
-            entry.target.classList.remove('show');
+            // entry.target.classList.remove('show');
         }
     });
 });
@@ -1113,33 +1235,21 @@ document.querySelectorAll('.scrool, .vibe, .pop').forEach((el) => observer.obser
 
 // --- MAIN INITIALIZATION BLOCK ---
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Fetch and render all dynamic content from Supabase
+    // 1. Set up Real-Time Updates (for the fastest update if Supabase is working)
+    subscribeToUpdates();
+
+    // 2. Fetch and render all dynamic content from Supabase
     renderHeaderImages();
     renderVideos();
     
-    // 2. Start counting animations
-    startCounter("count", "plus", 75, 75);      
-    startCounter("coun", "plu", 1000, 5.5);    
-    startCounter("cou", "pl", 25, 250);      
+    // 3. Start counting animations
+    startCounter("count", "plus", 75, 75);      
+    startCounter("coun", "plu", 1000, 5.5);    
+    startCounter("cou", "pl", 25, 250);      
+
+    // 4. Apply Initial Lazy Loading
+    lazyLoadMedia();
 });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
